@@ -179,6 +179,11 @@ export default function Home() {
                       </div>
                     </div>
 
+                    {/* Espaçador entre o título e o conteúdo expandido */}
+                    {hasDetails(classInfo) && expandedId === classInfo.id && (
+                      <div className="h-4"></div>
+                    )}
+
                     {/* Conteúdo Expandido */}
                     {hasDetails(classInfo) && (
                       <div
