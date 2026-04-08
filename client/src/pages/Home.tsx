@@ -177,7 +177,7 @@ export default function Home() {
                             {isNoClass(classInfo) && (
                               <Coffee size={18} className="text-gray-400 flex-shrink-0" />
                             )}
-                            <h3 className={`text-base md:text-lg font-bold line-clamp-2 ${
+                            <h3 className={`text-base md:text-lg font-bold line-clamp-2 pr-2 ${
                               isNoClass(classInfo) ? 'text-gray-500 italic' : 'text-gray-900'
                             }`}>
                               {classInfo.subject}
