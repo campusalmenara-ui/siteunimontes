@@ -123,7 +123,7 @@ export default function Home() {
       {/* Título da Semana */}
       <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-6 px-4">
         <div className="container">
-          <h2 className="text-2xl md:text-3xl font-bold text-center">
+          <h2 className="text-xl md:text-2xl font-bold text-center">
             Semana de 06/04 a 11/04
           </h2>
         </div>
