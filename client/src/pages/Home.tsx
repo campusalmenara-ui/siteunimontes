@@ -107,11 +107,13 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-yellow-50">
       {/* Hero Section com Imagem Personalizada */}
       <div
-        className="relative w-full h-72 md:h-96 bg-cover bg-center overflow-hidden"
+        className="relative w-full h-72 md:h-96 overflow-hidden"
         style={{
           backgroundImage: 'url(https://d2xsxph8kpxj0f.cloudfront.net/310419663030187894/57Ypr7wbFX6eHCZZ7V6o8w/FaculdadeDivertidaAzuleAmareloCapaparaFacebook_59750132.png)',
-          backgroundSize: 'cover',
+          backgroundSize: 'contain',
           backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundColor: '#4A90E2',
         }}
       >
         {/* Overlay suave */}
