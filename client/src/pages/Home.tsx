@@ -66,13 +66,23 @@ export default function Home() {
         setLoading(true);
         setError(null);
 
-        // Usar a URL de publicação do Google Sheets (mais confiável)
-        const sheetUrl = 'https://docs.google.com/spreadsheets/d/1q_bLd3HXuFUH7Sogj3lo9D7aLv2BMqgX8P2iAnwbMF0/pub?gid=0&single=true&output=csv';
+        // URL do Google Sheets que funciona com compartilhamento
+        const sheetUrl = 'https://docs.google.com/spreadsheets/d/1q_bLd3HXuFUH7Sogj3lo9D7aLv2BMqgX8P2iAnwbMF0/export?format=csv';
 
-        const response = await fetch(sheetUrl);
+        let response = await fetch(sheetUrl);
+        let csv = await response.text();
+        
+        // Se receber HTML (redirect), extrair URL e fazer novo fetch
+        if (csv.includes('Temporary Redirect') && csv.includes('HREF')) {
+          const match = csv.match(/HREF="([^"]+)"/);
+          if (match && match[1]) {
+            const redirectUrl = match[1].replace(/&amp;/g, '&');
+            response = await fetch(redirectUrl);
+            csv = await response.text();
+          }
+        }
+        
         if (!response.ok) throw new Error(`Erro ao buscar dados da planilha: ${response.status}`);
-
-        const csv = await response.text();
         
         // Validar se recebeu CSV válido
         if (!csv || csv.includes('<HTML>') || csv.includes('<!DOCTYPE')) {
@@ -91,7 +101,7 @@ export default function Home() {
         // Processar dados das aulas (a partir da linha 2, começando na coluna C)
         const courses: { [key: string]: ClassInfo[] } = {};
 
-        for (let i = 2; i < lines.length; i++) {
+        for (let i = 1; i < lines.length; i++) {
           const line = lines[i].trim();
           if (!line) continue;
 
