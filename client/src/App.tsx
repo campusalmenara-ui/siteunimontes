@@ -1,20 +1,33 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { Route, Switch, Router as WouterRouter } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
+import { useMemo } from "react";
 
+// Detectar o basename baseado no ambiente
+const getBasename = () => {
+  if (typeof window === 'undefined') return '/';
+  const pathname = window.location.pathname;
+  // Se estamos no GitHub Pages com /agendauni/, usar isso como basename
+  if (pathname.includes('/agendauni/')) return '/agendauni';
+  return '/';
+};
 
 function Router() {
+  const basename = useMemo(() => getBasename(), []);
+  
   return (
-    <Switch>
-      <Route path={"/"} component={Home} />
-      <Route path={"/404"} component={NotFound} />
-      {/* Final fallback route */}
-      <Route component={NotFound} />
-    </Switch>
+    <WouterRouter base={basename}>
+      <Switch>
+        <Route path={"/"} component={Home} />
+        <Route path={"/404"} component={NotFound} />
+        {/* Final fallback route */}
+        <Route component={NotFound} />
+      </Switch>
+    </WouterRouter>
   );
 }
 
