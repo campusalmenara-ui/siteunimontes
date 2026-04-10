@@ -276,11 +276,11 @@ export default function Home() {
 
       {/* Hero Section com Imagem de Agenda Semanal */}
       <div
-        className="relative w-full overflow-hidden h-[120px] md:h-[150px]"
+        className="relative w-full overflow-hidden h-[110px] sm:h-[130px] md:h-[150px]"
         style={{
           backgroundImage: 'url(https://d2xsxph8kpxj0f.cloudfront.net/310419663030187894/57Ypr7wbFX6eHCZZ7V6o8w/agenda-semanal_4a0a5151.png)',
-          backgroundSize: '100% auto',
-          backgroundPosition: 'center top',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
         }}
       >
@@ -322,7 +322,7 @@ export default function Home() {
                     >
                       <button
                         onClick={() => toggleExpand(classInfo.id)}
-                        className={`w-full text-left border-l-4 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden ${
+                        className={`w-full text-left rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border-l-4 ${
                           isNoClass(classInfo)
                             ? 'bg-gradient-to-br from-gray-100 to-gray-50 border-gray-300 opacity-75 cursor-not-allowed'
                             : `${classInfo.bgColor} ${classInfo.color}`
