@@ -257,7 +257,8 @@ export default function Home() {
       </div>
 
       {/* Main Content */}
-      <div className="container py-8 md:py-12">
+      <div className="py-8 md:py-12 px-4 md:px-8 lg:px-16 xl:px-24">
+        <div className="max-w-7xl mx-auto">
         {/* Instruções */}
         <div className="mb-8 p-4 bg-yellow-100 border-l-4 border-yellow-500 rounded-lg shadow-sm">
           <p className="text-sm md:text-base text-gray-800">
@@ -399,14 +400,15 @@ export default function Home() {
           </div>
         )}
 
-        {/* Footer Info */}
-        <div className="mt-12 pt-8 border-t-2 border-yellow-300 text-center">
-          <p className="text-sm text-gray-600 font-semibold">
-            Agenda da Semana - Unimontes Campus Almenara
-          </p>
-          <p className="text-xs text-gray-500 mt-2">
-            
-          </p>
+          {/* Footer Info */}
+          <div className="mt-12 pt-8 border-t-2 border-yellow-300 text-center">
+            <p className="text-sm text-gray-600 font-semibold">
+              Agenda da Semana - Unimontes Campus Almenara
+            </p>
+            <p className="text-xs text-gray-500 mt-2">
+              
+            </p>
+          </div>
         </div>
       </div>
     </div>
