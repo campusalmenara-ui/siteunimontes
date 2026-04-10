@@ -405,7 +405,7 @@ export default function Home() {
             Agenda da Semana - Unimontes Campus Almenara
           </p>
           <p className="text-xs text-gray-500 mt-2">
-            Dados carregados automaticamente do Google Sheets
+            
           </p>
         </div>
       </div>
