@@ -181,7 +181,7 @@
       max-width: 1280px; /* Standard content width */
     }
   }
-
+}
   /* Header Card - Imagem + Barra Azul */
   .header-card {
     width: 100%;
@@ -194,4 +194,3 @@
     width: 100%;
     height: auto;
   }
-}
