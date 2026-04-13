@@ -449,10 +449,10 @@ export default function Home() {
       <div className="bg-gray-800 text-white py-8 px-4 md:px-8 lg:px-16 xl:px-24">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-sm font-semibold">
-            Agenda da Semana - Unimontes Campus Almenara
+            Universidade Estadual de Montes Claros - UNIMONTES - Campus Almenara
           </p>
           <p className="text-xs text-gray-400 mt-2">
-            © 2026 Universidade Estadual de Montes Claros
+            © 2026 - Desenvolvido por Secretaria da Unimontes - Campus Almenara
           </p>
         </div>
       </div>
