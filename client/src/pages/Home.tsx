@@ -334,10 +334,10 @@ export default function Home() {
                     >
                       <button
                         onClick={() => toggleExpand(classInfo.id)}
-                        className={`w-full text-left rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border-l-4 ${
+                        className={`w-full text-left rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden ${
                           isNoClass(classInfo)
-                            ? 'bg-gradient-to-br from-gray-100 to-gray-50 border-gray-300 opacity-75 cursor-not-allowed'
-                            : `${classInfo.bgColor} ${classInfo.color} border-l-4`
+                            ? 'bg-gradient-to-br from-gray-100 to-gray-50 border-l-4 border-gray-300 opacity-75 cursor-not-allowed'
+                            : `border-l-4 ${classInfo.color} ${classInfo.bgColor}`
                         }`}
                         disabled={isNoClass(classInfo)}
                       >
