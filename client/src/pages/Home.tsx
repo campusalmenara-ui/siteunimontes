@@ -337,7 +337,7 @@ export default function Home() {
                         className={`w-full text-left rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border-l-4 ${
                           isNoClass(classInfo)
                             ? 'bg-gradient-to-br from-gray-100 to-gray-50 border-gray-300 opacity-75 cursor-not-allowed'
-                            : `${classInfo.bgColor} ${classInfo.color}`
+                            : `${classInfo.bgColor} ${classInfo.color} border-l-4`
                         }`}
                         disabled={isNoClass(classInfo)}
                       >
