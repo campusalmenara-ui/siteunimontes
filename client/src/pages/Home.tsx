@@ -30,28 +30,10 @@ interface CourseData {
   bgColor: string;
 }
 
-// Cores para cada período (alternando entre cursos)
-const periodColors: { [key: string]: { [key: string]: { border: string; bg: string } } } = {
-  'Pedagogia': {
-    '1º': { border: 'border-purple-400', bg: 'bg-purple-50' },
-    '2º': { border: 'border-purple-500', bg: 'bg-purple-50' },
-    '3º': { border: 'border-purple-500', bg: 'bg-purple-50' },
-    '4º': { border: 'border-purple-600', bg: 'bg-purple-50' },
-    '5º': { border: 'border-purple-600', bg: 'bg-purple-50' },
-    '6º': { border: 'border-purple-700', bg: 'bg-purple-50' },
-    '7º': { border: 'border-purple-700', bg: 'bg-purple-50' },
-    '8º': { border: 'border-purple-800', bg: 'bg-purple-50' },
-  },
-  'Letras': {
-    '1º': { border: 'border-blue-400', bg: 'bg-blue-50' },
-    '2º': { border: 'border-blue-500', bg: 'bg-blue-50' },
-    '3º': { border: 'border-blue-500', bg: 'bg-blue-50' },
-    '4º': { border: 'border-blue-600', bg: 'bg-blue-50' },
-    '5º': { border: 'border-blue-600', bg: 'bg-blue-50' },
-    '6º': { border: 'border-blue-500', bg: 'bg-blue-50' },
-    '7º': { border: 'border-blue-600', bg: 'bg-blue-50' },
-    '8º': { border: 'border-blue-600', bg: 'bg-blue-50' },
-  },
+// Cores para cada curso
+const courseColors: { [key: string]: { border: string; bg: string } } = {
+  'Pedagogia': { border: 'border-purple-400', bg: 'bg-purple-50' },
+  'Letras': { border: 'border-blue-400', bg: 'bg-blue-50' },
 };
 
 export default function Home() {
@@ -127,9 +109,8 @@ export default function Home() {
             courses[curso] = [];
           }
 
-          // Determinar cor baseado no período
-          const colorKey = periodo.replace('º', '').replace('ª', '');
-          const colorObj = periodColors[curso]?.[colorKey] || { border: 'border-gray-400', bg: 'bg-gray-50' };
+          // Determinar cor baseado no curso
+          const colorObj = courseColors[curso] || { border: 'border-gray-400', bg: 'bg-gray-50' };
 
           // Criar ID único
           const id = `${curso.toLowerCase()}-${periodo.toLowerCase()}-${i}`;
