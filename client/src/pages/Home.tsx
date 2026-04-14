@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, BookOpen, User, Clock, AlertCircle, Coffee, Instagram, MessageCircle } from 'lucide-react';
+import { ChevronDown, BookOpen, User, Clock, AlertCircle, Coffee, Instagram, MessageCircle, MapPin } from 'lucide-react';
 import { NewsSection } from '@/components/NewsSection';
 
 /**
@@ -268,6 +268,17 @@ export default function Home() {
                 aria-label="WhatsApp"
               >
                 <MessageCircle size={24} />
+              </a>
+
+              {/* Localização */}
+              <a
+                href="https://www.google.com/maps/place/Universidade+Estadual+de+Montes+Claros-Campus+Almenara/@-16.1728886,-40.6997711,19.5z/data=!4m6!3m5!1s0x74979a777fe4b51:0xa5de31e5bfa50efc!8m2!3d-16.1728958!4d-40.6993386!16s%2Fg%2F1tk4rb_5?entry=ttu&g_ep=EgoyMDI2MDQxMi4wIKXMDSoASAFQAw%3D%3D"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-600 hover:text-red-600 transition-colors duration-300"
+                aria-label="Localização"
+              >
+                <MapPin size={24} />
               </a>
             </div>
           </div>
