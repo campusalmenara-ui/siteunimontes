@@ -300,27 +300,27 @@ export default function Home() {
             </div>
 
             {/* Mobile Layout */}
-            <div className="md:hidden flex items-center justify-between">
+            <div className="md:hidden flex items-center justify-between gap-4">
               {/* Menu Hamburger - Mobile (Esquerda) */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="text-gray-600 hover:text-blue-600 transition-colors"
+                className="text-gray-600 hover:text-blue-600 transition-colors flex-shrink-0"
                 aria-label="Menu"
               >
                 {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
 
               {/* Logo - Mobile (Centro) */}
-              <div className="flex-shrink-0">
+              <div className="flex-1 flex justify-center">
                 <img 
                   src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030187894/57Ypr7wbFX6eHCZZ7V6o8w/logo_cc3239cb.png" 
                   alt="Unimontes Logo" 
-                  className="h-12 w-auto"
+                  className="h-10 w-auto"
                 />
               </div>
 
               {/* Ícones de Redes Sociais - Mobile (Direita) */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 flex-shrink-0">
                 {/* Instagram */}
                 <a
                   href="https://www.instagram.com/unimontes.almenara"
