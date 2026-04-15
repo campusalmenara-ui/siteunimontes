@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown, BookOpen, User, Clock, AlertCircle, Coffee, Instagram, MessageCircle, MapPin } from 'lucide-react';
 import { NewsSection } from '@/components/NewsSection';
+import { useState as useStateNav, useEffect as useEffectNav } from 'react';
 
 /**
  * Design Philosophy: Lúdico Azul e Amarelo
@@ -42,6 +43,7 @@ export default function Home() {
   const [weekDates, setWeekDates] = useState({ start: '', end: '' });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState<'agenda' | 'noticias'>('agenda');
 
   // Fetch dados do Google Sheets
   useEffect(() => {
@@ -227,6 +229,36 @@ export default function Home() {
               />
             </div>
 
+            {/* Navegacao Principal */}
+            <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
+              <button
+                onClick={() => {
+                  setActiveSection('agenda');
+                  document.getElementById('agenda-section')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className={`text-lg font-semibold transition-all duration-300 pb-2 ${
+                  activeSection === 'agenda'
+                    ? 'text-blue-600 border-b-3 border-blue-600'
+                    : 'text-gray-600 hover:text-blue-600 border-b-3 border-transparent'
+                }`}
+              >
+                Agenda Semanal
+              </button>
+              <button
+                onClick={() => {
+                  setActiveSection('noticias');
+                  document.getElementById('noticias-section')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className={`text-lg font-semibold transition-all duration-300 pb-2 ${
+                  activeSection === 'noticias'
+                    ? 'text-blue-600 border-b-3 border-blue-600'
+                    : 'text-gray-600 hover:text-blue-600 border-b-3 border-transparent'
+                }`}
+              >
+                Notícias
+              </button>
+            </div>
+
             {/* Ícones de Redes Sociais */}
             <div className="flex items-center gap-4">
               {/* Instagram */}
@@ -269,6 +301,8 @@ export default function Home() {
       {/* Main Content */}
       <div className="py-8 md:py-12 px-4 md:px-8 lg:px-16 xl:px-24">
         <div className="max-w-7xl mx-auto">
+          {/* Seção de Agenda */}
+          <div id="agenda-section">
           {/* Header Card - Imagem + Barra Azul */}
           <div className="header-card rounded-lg overflow-hidden mb-8 shadow-md">
             {/* Hero Section com Imagem de Agenda Semanal */}
@@ -430,12 +464,17 @@ export default function Home() {
               <p className="text-gray-600">Nenhuma aula encontrada para esta semana.</p>
             </div>
           )}
+          </div>
+          {/* Fim da Seção de Agenda */}
+
+          {/* Seção de Notícias */}
+          <div id="noticias-section" className="mt-16">
+            <NewsSection />
+          </div>
+          {/* Fim da Seção de Notícias */}
 
         </div>
       </div>
-
-      {/* Seção de Notícias */}
-      <NewsSection />
 
       {/* Footer */}
       <div className="bg-gray-800 text-white py-8 px-4 md:px-8 lg:px-16 xl:px-24">
