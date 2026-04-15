@@ -226,51 +226,44 @@ export default function Home() {
       {/* Cabeçalho */}
       <header className="bg-white shadow-md sticky top-0 z-50">
         <div className="py-4 px-4 md:px-8 lg:px-16 xl:px-24">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
-            {/* Logo */}
-            <div className="flex-shrink-0">
-              <img 
-                src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030187894/57Ypr7wbFX6eHCZZ7V6o8w/logo_cc3239cb.png" 
-                alt="Unimontes Logo" 
-                className="h-12 md:h-14 w-auto"
-              />
-            </div>
+          <div className="max-w-7xl mx-auto">
+            {/* Desktop Layout */}
+            <div className="hidden md:flex items-center justify-between">
+              {/* Logo - Desktop */}
+              <div className="flex-shrink-0">
+                <img 
+                  src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030187894/57Ypr7wbFX6eHCZZ7V6o8w/logo_cc3239cb.png" 
+                  alt="Unimontes Logo" 
+                  className="h-12 md:h-14 w-auto"
+                />
+              </div>
 
-            {/* Navegacao Principal - Desktop */}
-            <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
-              <button
-                onClick={() => handleNavClick('agenda')}
-                className={`text-lg font-semibold transition-all duration-300 pb-2 ${
-                  activeSection === 'agenda'
-                    ? 'text-blue-600 border-b-3 border-blue-600'
-                    : 'text-gray-600 hover:text-blue-600 border-b-3 border-transparent'
-                }`}
-              >
-                Agenda Semanal
-              </button>
-              <button
-                onClick={() => handleNavClick('noticias')}
-                className={`text-lg font-semibold transition-all duration-300 pb-2 ${
-                  activeSection === 'noticias'
-                    ? 'text-blue-600 border-b-3 border-blue-600'
-                    : 'text-gray-600 hover:text-blue-600 border-b-3 border-transparent'
-                }`}
-              >
-                Notícias
-              </button>
-            </div>
+              {/* Navegacao Principal - Desktop */}
+              <div className="flex items-center gap-8 flex-1 justify-center">
+                <button
+                  onClick={() => handleNavClick('agenda')}
+                  className={`text-lg font-semibold transition-all duration-300 pb-2 ${
+                    activeSection === 'agenda'
+                      ? 'text-blue-600 border-b-3 border-blue-600'
+                      : 'text-gray-600 hover:text-blue-600 border-b-3 border-transparent'
+                  }`}
+                >
+                  Agenda Semanal
+                </button>
+                <button
+                  onClick={() => handleNavClick('noticias')}
+                  className={`text-lg font-semibold transition-all duration-300 pb-2 ${
+                    activeSection === 'noticias'
+                      ? 'text-blue-600 border-b-3 border-blue-600'
+                      : 'text-gray-600 hover:text-blue-600 border-b-3 border-transparent'
+                  }`}
+                >
+                  Notícias
+                </button>
+              </div>
 
-            {/* Menu Hamburger - Mobile */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden text-gray-600 hover:text-blue-600 transition-colors"
-              aria-label="Menu"
-            >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-
-            {/* Ícones de Redes Sociais */}
-            <div className="flex items-center gap-4">
+              {/* Ícones de Redes Sociais - Desktop */}
+              <div className="flex items-center gap-4">
               {/* Instagram */}
               <a
                 href="https://www.instagram.com/unimontes.almenara"
@@ -303,6 +296,64 @@ export default function Home() {
               >
                 <MapPin size={24} />
               </a>
+              </div>
+            </div>
+
+            {/* Mobile Layout */}
+            <div className="md:hidden flex items-center justify-between">
+              {/* Menu Hamburger - Mobile (Esquerda) */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="text-gray-600 hover:text-blue-600 transition-colors"
+                aria-label="Menu"
+              >
+                {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+
+              {/* Logo - Mobile (Centro) */}
+              <div className="flex-shrink-0">
+                <img 
+                  src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030187894/57Ypr7wbFX6eHCZZ7V6o8w/logo_cc3239cb.png" 
+                  alt="Unimontes Logo" 
+                  className="h-12 w-auto"
+                />
+              </div>
+
+              {/* Ícones de Redes Sociais - Mobile (Direita) */}
+              <div className="flex items-center gap-2">
+                {/* Instagram */}
+                <a
+                  href="https://www.instagram.com/unimontes.almenara"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-pink-600 transition-colors duration-300"
+                  aria-label="Instagram"
+                >
+                  <Instagram size={20} />
+                </a>
+
+                {/* WhatsApp */}
+                <a
+                  href="https://wa.me/5538991840146?text=Olá%20Unimontes%20Campus%20Almenara"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-green-600 transition-colors duration-300"
+                  aria-label="WhatsApp"
+                >
+                  <MessageCircle size={20} />
+                </a>
+
+                {/* Localização */}
+                <a
+                  href="https://www.google.com/maps/place/Universidade+Estadual+de+Montes+Claros-Campus+Almenara/@-16.1728886,-40.6997711,19.5z/data=!4m6!3m5!1s0x74979a777fe4b51:0xa5de31e5bfa50efc!8m2!3d-16.1728958!4d-40.6993386!16s%2Fg%2F1tk4rb_5?entry=ttu&g_ep=EgoyMDI2MDQxMi4wIKXMDSoASAFQAw%3D%3D"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-red-600 transition-colors duration-300"
+                  aria-label="Localização"
+                >
+                  <MapPin size={20} />
+                </a>
+              </div>
             </div>
           </div>
         </div>
