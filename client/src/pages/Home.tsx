@@ -300,18 +300,18 @@ export default function Home() {
             </div>
 
             {/* Mobile Layout */}
-            <div className="md:hidden flex items-center justify-between gap-4">
-              {/* Menu Hamburger - Mobile (Esquerda) */}
+            <div className="md:hidden flex items-center justify-center relative">
+              {/* Menu Hamburger - Mobile (Esquerda Absoluta) */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="text-gray-600 hover:text-blue-600 transition-colors flex-shrink-0"
+                className="text-gray-600 hover:text-blue-600 transition-colors absolute left-0"
                 aria-label="Menu"
               >
-                {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
 
-              {/* Logo - Mobile (Centro) */}
-              <div className="flex-1 flex justify-center">
+              {/* Logo - Mobile (Centro Absoluto) */}
+              <div className="flex justify-center">
                 <img 
                   src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030187894/57Ypr7wbFX6eHCZZ7V6o8w/logo_cc3239cb.png" 
                   alt="Unimontes Logo" 
@@ -319,8 +319,8 @@ export default function Home() {
                 />
               </div>
 
-              {/* Ícones de Redes Sociais - Mobile (Direita) */}
-              <div className="flex items-center gap-3 flex-shrink-0">
+              {/* Ícones de Redes Sociais - Mobile (Direita Absoluta) */}
+              <div className="flex items-center gap-2 absolute right-0">
                 {/* Instagram */}
                 <a
                   href="https://www.instagram.com/unimontes.almenara"
@@ -329,7 +329,7 @@ export default function Home() {
                   className="text-gray-600 hover:text-pink-600 transition-colors duration-300"
                   aria-label="Instagram"
                 >
-                  <Instagram size={20} />
+                  <Instagram size={18} />
                 </a>
 
                 {/* WhatsApp */}
@@ -340,7 +340,7 @@ export default function Home() {
                   className="text-gray-600 hover:text-green-600 transition-colors duration-300"
                   aria-label="WhatsApp"
                 >
-                  <MessageCircle size={20} />
+                  <MessageCircle size={18} />
                 </a>
 
                 {/* Localização */}
@@ -351,7 +351,7 @@ export default function Home() {
                   className="text-gray-600 hover:text-red-600 transition-colors duration-300"
                   aria-label="Localização"
                 >
-                  <MapPin size={20} />
+                  <MapPin size={18} />
                 </a>
               </div>
             </div>
