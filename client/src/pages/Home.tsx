@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, BookOpen, User, Clock, AlertCircle, Coffee, Instagram, MessageCircle, MapPin } from 'lucide-react';
+import { ChevronDown, BookOpen, User, Clock, AlertCircle, Coffee, Instagram, MessageCircle, MapPin, Menu, X } from 'lucide-react';
 import { NewsSection } from '@/components/NewsSection';
 import { useState as useStateNav, useEffect as useEffectNav } from 'react';
 
@@ -44,6 +44,13 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<'agenda' | 'noticias'>('agenda');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const handleNavClick = (section: 'agenda' | 'noticias') => {
+    setActiveSection(section);
+    setMobileMenuOpen(false);
+    document.getElementById(section === 'agenda' ? 'agenda-section' : 'noticias-section')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   // Fetch dados do Google Sheets
   useEffect(() => {
@@ -229,13 +236,10 @@ export default function Home() {
               />
             </div>
 
-            {/* Navegacao Principal */}
+            {/* Navegacao Principal - Desktop */}
             <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
               <button
-                onClick={() => {
-                  setActiveSection('agenda');
-                  document.getElementById('agenda-section')?.scrollIntoView({ behavior: 'smooth' });
-                }}
+                onClick={() => handleNavClick('agenda')}
                 className={`text-lg font-semibold transition-all duration-300 pb-2 ${
                   activeSection === 'agenda'
                     ? 'text-blue-600 border-b-3 border-blue-600'
@@ -245,10 +249,7 @@ export default function Home() {
                 Agenda Semanal
               </button>
               <button
-                onClick={() => {
-                  setActiveSection('noticias');
-                  document.getElementById('noticias-section')?.scrollIntoView({ behavior: 'smooth' });
-                }}
+                onClick={() => handleNavClick('noticias')}
                 className={`text-lg font-semibold transition-all duration-300 pb-2 ${
                   activeSection === 'noticias'
                     ? 'text-blue-600 border-b-3 border-blue-600'
@@ -258,6 +259,15 @@ export default function Home() {
                 Notícias
               </button>
             </div>
+
+            {/* Menu Hamburger - Mobile */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden text-gray-600 hover:text-blue-600 transition-colors"
+              aria-label="Menu"
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
 
             {/* Ícones de Redes Sociais */}
             <div className="flex items-center gap-4">
@@ -297,6 +307,34 @@ export default function Home() {
           </div>
         </div>
       </header>
+
+      {/* Menu Lateral Mobile */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-white border-b border-gray-200 shadow-md">
+          <div className="px-4 py-4 space-y-2">
+            <button
+              onClick={() => handleNavClick('agenda')}
+              className={`w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 ${
+                activeSection === 'agenda'
+                  ? 'bg-blue-100 text-blue-600'
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              Agenda Semanal
+            </button>
+            <button
+              onClick={() => handleNavClick('noticias')}
+              className={`w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 ${
+                activeSection === 'noticias'
+                  ? 'bg-blue-100 text-blue-600'
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              Notícias
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="py-8 md:py-12 px-4 md:px-8 lg:px-16 xl:px-24">
