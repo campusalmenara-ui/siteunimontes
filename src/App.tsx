@@ -1,0 +1,56 @@
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import NotFound from "@/pages/NotFound";
+import { Route, Switch, Router as WouterRouter } from "wouter";
+import ErrorBoundary from "./components/ErrorBoundary";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import Home from "./pages/Home";
+import { useMemo } from "react";
+
+// Detectar o basename baseado no ambiente
+const getBasename = () => {
+  if (typeof window === 'undefined') return '/';
+  const pathname = window.location.pathname;
+  // Se estamos no GitHub Pages com /agenda-unimontes/, usar isso como basename
+  if (pathname.includes('/agenda-unimontes/')) return '/agenda-unimontes';
+  // Se estamos no GitHub Pages com /siteunimontes/, usar isso como basename
+  if (pathname.includes('/siteunimontes/')) return '/siteunimontes';
+  // Se estamos no GitHub Pages com /agendauni/, usar isso como basename (compatibilidade)
+  if (pathname.includes('/agendauni/')) return '/agendauni';
+  return '/';
+};
+
+function Router() {
+  const basename = useMemo(() => getBasename(), []);
+  
+  return (
+    <WouterRouter base={basename}>
+      <Switch>
+        <Route path={"/"} component={Home} />
+        <Route path={"/404"} component={NotFound} />
+        {/* Final fallback route */}
+        <Route component={NotFound} />
+      </Switch>
+    </WouterRouter>
+  );
+}
+
+// NOTE: About Theme
+// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
+//   to keep consistent foreground/background color across components
+// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
+
+function App() {
+  return (
+    <ErrorBoundary>
+      <ThemeProvider defaultTheme="light">
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
+  );
+}
+
+export default App;
