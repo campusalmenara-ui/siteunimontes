@@ -62,11 +62,40 @@ export default function Home() {
 
   // Fetch dados do Google Sheets
   useEffect(() => {
-    const fetchSheetData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  const fetchSheetData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
+      // Dados mock para demonstração
+      const mockData: CourseData[] = [
+        {
+          name: 'Pedagogia',
+          bgColor: 'bg-purple-50',
+          classes: [
+            { id: '1', period: '1º', subject: 'Introdução à Educação', professor: 'Prof. Maria', hours: '4h', color: 'border-purple-400', bgColor: 'bg-purple-50' },
+            { id: '2', period: '2º', subject: 'Psicologia da Aprendizagem', professor: 'Prof. João', hours: '4h', color: 'border-purple-400', bgColor: 'bg-purple-50' },
+            { id: '3', period: '3º', subject: 'Didática Geral', professor: 'Prof. Ana', hours: '4h', color: 'border-purple-400', bgColor: 'bg-purple-50' },
+          ]
+        },
+        {
+          name: 'Letras',
+          bgColor: 'bg-blue-50',
+          classes: [
+            { id: '4', period: '1º', subject: 'Português I', professor: 'Prof. Carlos', hours: '4h', color: 'border-blue-400', bgColor: 'bg-blue-50' },
+            { id: '5', period: '2º', subject: 'Literatura Brasileira', professor: 'Prof. Sofia', hours: '4h', color: 'border-blue-400', bgColor: 'bg-blue-50' },
+            { id: '6', period: '3º', subject: 'Linguística', professor: 'Prof. Pedro', hours: '4h', color: 'border-blue-400', bgColor: 'bg-blue-50' },
+          ]
+        }
+      ];
+
+      setCoursesData(mockData);
+      setWeekDates({ start: '18/05', end: '23/05' });
+      setLoading(false);
+      return;
+
+      // Código original comentado para referência futura
+      /*
         // URL do Google Sheets que funciona com compartilhamento
         const sheetUrl = 'https://docs.google.com/spreadsheets/d/1q_bLd3HXuFUH7Sogj3lo9D7aLv2BMqgX8P2iAnwbMF0/export?format=csv';
 
@@ -89,6 +118,7 @@ export default function Home() {
         if (!csv || csv.includes('<HTML>') || csv.includes('<!DOCTYPE')) {
           throw new Error('Planilha não está acessível. Verifique se está compartilhada publicamente.');
         }
+      */
         const lines = csv.trim().split('\n');
 
         // Extrair datas: A2 (linha 1, coluna 0) e B2 (linha 1, coluna 1)
