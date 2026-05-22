@@ -52,7 +52,7 @@ export default function Home() {
       return;
     }
     if (section === 'editais') {
-      window.open('https://www.coteps.unimontes.br/', '_blank');
+      window.open('https://unimontes.br/editais/', '_blank');
       return;
     }
     setActiveSection(section);
@@ -219,11 +219,23 @@ export default function Home() {
                 >
                   Editais
                 </button>
+                <button
+                  onClick={() => window.open('https://www.coteps.unimontes.br/vestibular/', '_blank')}
+                  className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex-shrink-0"
+                >
+                  Vestibular
+                </button>
+                <button
+                  onClick={() => window.open('https://www.webgiz.unimontes.br/', '_blank')}
+                  className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex-shrink-0"
+                >
+                  Webgiz
+                </button>
               </div>
 
               {/* Ícones de Redes Sociais - Desktop */}
-<div className="flex items-center gap-4">
-  <span className="text-sm font-semibold text-gray-600 whitespace-nowrap">Fale conosco:</span>
+              <div className="flex items-center gap-4">
+              <span className="text-sm font-semibold text-gray-600 whitespace-nowrap">Fale conosco</span>
               {/* Instagram */}
               <a
                 href="https://www.instagram.com/unimontes.almenara"
@@ -281,9 +293,9 @@ export default function Home() {
                 />
               </div>
 
-             {/* Ícones de Redes Sociais - Mobile (Direita Absoluta) */}
-<div className="flex items-center gap-2 absolute right-0">
-  <span className="text-xs font-semibold text-gray-600 whitespace-nowrap">Fale conosco:</span>
+              {/* Ícones de Redes Sociais - Mobile (Direita Absoluta) */}
+              <div className="flex items-center gap-2 absolute right-0">
+                <span className="text-xs font-semibold text-gray-600 whitespace-nowrap">Fale conosco</span>
                 {/* Instagram */}
                 <a
                   href="https://www.instagram.com/unimontes.almenara"
@@ -359,6 +371,18 @@ export default function Home() {
               className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100"
             >
               Editais
+            </button>
+            <button
+              onClick={() => window.open('https://www.coteps.unimontes.br/vestibular/', '_blank')}
+              className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100"
+            >
+              Vestibular
+            </button>
+            <button
+              onClick={() => window.open('https://www.webgiz.unimontes.br/', '_blank')}
+              className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100"
+            >
+              Webgiz
             </button>
           </div>
         </div>
