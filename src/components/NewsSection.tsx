@@ -45,60 +45,35 @@ export function NewsSection() {
       setLoading(true);
       setError(null);
 
+      // Dados mock para demonstração
+      const mockNews: NewsItem[] = [
+        {
+          imageUrl: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop',
+          title: 'Novo Calendário Acadêmico 2026 Divulgado',
+          link: 'https://www.unimontes.br'
+        },
+        {
+          imageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f70504c11?w=400https://images.unsplash.com/photo-1427504494785-cdaa41d52470?w=400&h=300&fit=croph=300https://images.unsplash.com/photo-1427504494785-cdaa41d52470?w=400&h=300&fit=cropfit=crop',
+          title: 'Inscrições Abertas para Programas de Bolsa',
+          link: 'https://www.unimontes.br'
+        },
+        {
+          imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop',
+          title: 'Seminário de Educação e Tecnologia',
+          link: 'https://www.unimontes.br'
+        }
+      ];
+
+      setNews(mockNews);
+      setError(null);
+      return;
+
+      // Código original comentado para referência futura
       // URL do Google Sheets que funciona com compartilhamento
       // gid=1463370073 é a aba NOTÍCIAS
-      const sheetUrl = 'https://docs.google.com/spreadsheets/d/1q_bLd3HXuFUH7Sogj3lo9D7aLv2BMqgX8P2iAnwbMF0/export?format=csv&gid=1463370073';
+      // const sheetUrl = 'https://docs.google.com/spreadsheets/d/1q_bLd3HXuFUH7Sogj3lo9D7aLv2BMqgX8P2iAnwbMF0/export?format=csv&gid=1463370073';
 
-      let response = await fetch(sheetUrl);
-      let csv = await response.text();
-      
-      // Se receber HTML (redirect), extrair URL e fazer novo fetch
-      if (csv.includes('Temporary Redirect') && csv.includes('HREF')) {
-        const match = csv.match(/HREF="([^"]+)"/);
-        if (match && match[1]) {
-          const redirectUrl = match[1].replace(/&amp;/g, '&');
-          response = await fetch(redirectUrl);
-          csv = await response.text();
-        }
-      }
-      
-      if (!response.ok) throw new Error(`Erro ao buscar dados da planilha: ${response.status}`);
-      
-      // Validar se recebeu CSV válido
-      if (!csv || csv.includes('<HTML>') || csv.includes('<!DOCTYPE')) {
-        throw new Error('Planilha não está acessível. Verifique se está compartilhada publicamente.');
-      }
-
-      const lines = csv.trim().split('\n');
-      const newsItems: NewsItem[] = [];
-
-      // Pular header (primeira linha) e processar dados
-      for (let i = 1; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (!line) continue;
-
-        // Parse CSV com suporte a aspas
-        const cells = parseCSVLine(line);
-        
-        if (cells.length >= 2) {
-          const imageUrl = cells[0]?.trim() || '';
-          const title = cells[1]?.trim() || '';
-          const link = cells[2]?.trim() || '';
-          
-          // Validar URLs
-          if (imageUrl.startsWith('http')) {
-            newsItems.push({
-              imageUrl,
-              title,
-              link: link.startsWith('http') ? link : '',
-            });
-          }
-        }
-      }
-      
-      console.log('Notícias carregadas:', newsItems);
-      setNews(newsItems);
-      setError(null);
+      // Código original comentado para referência futura
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : String(err);
       console.error('Erro ao buscar notícias:', errorMsg);
