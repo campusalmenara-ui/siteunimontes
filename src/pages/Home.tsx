@@ -279,7 +279,7 @@ export default function Home() {
 
               {/* Ícones de Redes Sociais - Desktop */}
               <div className="flex items-center gap-4">
-              <span className="text-sm font-semibold text-gray-600 whitespace-nowrap">Fale conosco</span>
+              <span className="text-sm font-semibold text-gray-600 whitespace-nowrap">Fale conosco: </span>
               {/* Instagram */}
               <a
                 href="https://www.instagram.com/unimontes.almenara"
@@ -339,7 +339,7 @@ export default function Home() {
 
               {/* Ícones de Redes Sociais - Mobile (Direita Absoluta) */}
               <div className="flex items-center gap-2 absolute right-0">
-                <span className="text-xs font-semibold text-gray-600 whitespace-nowrap">Fale conosco</span>
+                <span className="text-xs font-semibold text-gray-600 whitespace-nowrap">Fale conosco: </span>
                 {/* Instagram */}
                 <a
                   href="https://www.instagram.com/unimontes.almenara"
