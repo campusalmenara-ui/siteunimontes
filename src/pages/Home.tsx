@@ -62,42 +62,86 @@ export default function Home() {
 
   // Fetch dados do Google Sheets
   useEffect(() => {
-  const fetchSheetData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+    const fetchSheetData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-      // Dados mock para demonstração
-      const mockData: CourseData[] = [
-        {
-          name: 'Pedagogia',
-          bgColor: 'bg-purple-50',
-          classes: [
-            { id: '1', period: '1º', subject: 'Introdução à Educação', professor: 'Prof. Maria', hours: '4h', color: 'border-purple-400', bgColor: 'bg-purple-50' },
-            { id: '2', period: '2º', subject: 'Psicologia da Aprendizagem', professor: 'Prof. João', hours: '4h', color: 'border-purple-400', bgColor: 'bg-purple-50' },
-            { id: '3', period: '3º', subject: 'Didática Geral', professor: 'Prof. Ana', hours: '4h', color: 'border-purple-400', bgColor: 'bg-purple-50' },
-          ]
-        },
-        {
-          name: 'Letras',
-          bgColor: 'bg-blue-50',
-          classes: [
-            { id: '4', period: '1º', subject: 'Português I', professor: 'Prof. Carlos', hours: '4h', color: 'border-blue-400', bgColor: 'bg-blue-50' },
-            { id: '5', period: '2º', subject: 'Literatura Brasileira', professor: 'Prof. Sofia', hours: '4h', color: 'border-blue-400', bgColor: 'bg-blue-50' },
-            { id: '6', period: '3º', subject: 'Linguística', professor: 'Prof. Pedro', hours: '4h', color: 'border-blue-400', bgColor: 'bg-blue-50' },
-          ]
+        const sheetUrl = 'https://docs.google.com/spreadsheets/d/1q_bLd3HXuFUH7Sogj3lo9D7aLv2BMqgX8P2iAnwbMF0/export?format=csv';
+
+        let response = await fetch(sheetUrl);
+        let csv = await response.text();
+
+        if (csv.includes('Temporary Redirect') && csv.includes('HREF')) {
+          const match = csv.match(/HREF="([^"]+)"/);
+          if (match && match[1]) {
+            const redirectUrl = match[1].replace(/&amp;/g, '&');
+            response = await fetch(redirectUrl);
+            csv = await response.text();
+          }
         }
-      ];
 
-      setCoursesData(mockData);
-      setWeekDates({ start: '18/05', end: '23/05' });
-      setLoading(false);
-      return;
+        if (!response.ok) throw new Error(`Erro ao buscar dados da planilha: ${response.status}`);
 
-      // Código original comentado para referência futura
-      // URL do Google Sheets que funciona com compartilhamento
-      // const sheetUrl = 'https://docs.google.com/spreadsheets/d/1q_bLd3HXuFUH7Sogj3lo9D7aLv2BMqgX8P2iAnwbMF0/export?format=csv';
-      // Quando a planilha estiver acessível, descomente o código acima e remova os dados mock
+        if (!csv || csv.includes('<HTML>') || csv.includes('<!DOCTYPE')) {
+          throw new Error('Planilha não está acessível. Verifique se está compartilhada publicamente.');
+        }
+
+        const lines = csv.trim().split('\n');
+
+        if (lines.length > 1) {
+          const firstRow = parseCSVLine(lines[1]);
+          const start = firstRow[0]?.trim() || '';
+          const end = firstRow[1]?.trim() || '';
+          setWeekDates({ start, end });
+        }
+
+        const courseColorMap: { [key: string]: { border: string; bg: string } } = {
+          'Pedagogia': { border: 'border-purple-400', bg: 'bg-purple-50' },
+          'Letras':    { border: 'border-blue-400',   bg: 'bg-blue-50'   },
+        };
+
+        const coursesMap: { [key: string]: ClassInfo[] } = {};
+
+        for (let i = 1; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (!line) continue;
+
+          const cells = parseCSVLine(line);
+          if (cells.length < 5) continue;
+
+          const curso     = cells[2]?.trim() || '';
+          const periodo   = cells[3]?.trim() || '';
+          const materia   = cells[4]?.trim() || '';
+          const professor = cells[5]?.trim() || '';
+          const hours     = cells[6]?.trim() || '';
+          const obs       = cells[7]?.trim() || '';
+
+          if (!curso || !periodo || !materia) continue;
+
+          const colors = courseColorMap[curso] || { border: 'border-gray-400', bg: 'bg-gray-50' };
+          const id = `${curso.toLowerCase()}-${periodo.toLowerCase()}-${i}`;
+
+          if (!coursesMap[curso]) coursesMap[curso] = [];
+
+          coursesMap[curso].push({
+            id,
+            period: `${periodo} Período`,
+            subject: materia,
+            professor: professor || undefined,
+            hours: hours || undefined,
+            observation: obs || undefined,
+            color: colors.border,
+            bgColor: colors.bg,
+          });
+        }
+
+        const coursesArray: CourseData[] = [
+          { name: 'Pedagogia',        bgColor: 'from-purple-400 to-purple-500', classes: coursesMap['Pedagogia'] || [] },
+          { name: 'Letras/Português', bgColor: 'from-blue-400 to-blue-500',     classes: coursesMap['Letras'] || [] },
+        ].filter(c => c.classes.length > 0);
+
+        setCoursesData(coursesArray);
       } catch (err) {
         console.error('Erro ao carregar dados:', err);
         setError('Erro ao carregar dados da planilha. Tente novamente mais tarde.');
