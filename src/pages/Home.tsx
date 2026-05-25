@@ -217,7 +217,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-yellow-50">
       {/* Cabeçalho */}
-      <header className="bg-white shadow-md sticky top-0 z-50">
+      <header className="bg-white shadow-md sticky top-0" style={{ zIndex: 100, overflow: "visible" }}>
         <div className="py-4 px-4 md:px-8 lg:px-16 xl:px-24">
           <div className="max-w-7xl mx-auto">
             {/* Desktop Layout */}
@@ -289,7 +289,7 @@ export default function Home() {
                     <ChevronDown size={14} />
                   </button>
                   {projetosOpen && (
-                    <div className="absolute top-full left-0 mt-1 bg-white shadow-lg rounded-lg py-2 min-w-[160px] z-50">
+                    <div className="absolute top-full left-0 mt-1 bg-white shadow-lg rounded-lg py-2 min-w-[160px]" style={{ zIndex: 9999, boxShadow: "0 8px 24px rgba(0,0,0,0.15)" }}>
                       <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">AACC</button>
                       <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">AIEX</button>
                       <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">CIFOP</button>
@@ -311,7 +311,7 @@ export default function Home() {
                     <ChevronDown size={14} />
                   </button>
                   {modelosOpen && (
-                    <div className="absolute top-full left-0 mt-1 bg-white shadow-lg rounded-lg py-2 min-w-[160px] z-50">
+                    <div className="absolute top-full left-0 mt-1 bg-white shadow-lg rounded-lg py-2 min-w-[160px]" style={{ zIndex: 9999, boxShadow: "0 8px 24px rgba(0,0,0,0.15)" }}>
                       <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Declarações</button>
                       <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">E-book</button>
                       <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Currículo LATTES</button>
@@ -326,8 +326,9 @@ export default function Home() {
               </div>
 
               {/* Ícones de Redes Sociais - Desktop */}
-              <div className="flex items-center gap-4">
-              <span className="text-sm font-semibold text-gray-600 whitespace-nowrap">Fale conosco</span>
+              <div className="flex flex-col items-center gap-1">
+              <span className="text-xs font-semibold text-gray-500 whitespace-nowrap">Fale conosco</span>
+              <div className="flex items-center gap-3">
               {/* Instagram */}
               <a
                 href="https://www.instagram.com/unimontes.almenara"
@@ -363,6 +364,7 @@ export default function Home() {
                 <MapPin size={24} />
               </a>
               </div>
+              </div>
             </div>
 
             {/* Mobile Layout */}
@@ -386,8 +388,9 @@ export default function Home() {
               </div>
 
               {/* Ícones de Redes Sociais - Mobile (Direita Absoluta) */}
-              <div className="flex items-center gap-2 absolute right-0">
-                <span className="text-xs font-semibold text-gray-600 whitespace-nowrap">Fale conosco</span>
+              <div className="flex flex-col items-center gap-1 absolute right-0">
+                <span className="text-xs font-semibold text-gray-500 whitespace-nowrap">Fale conosco</span>
+                <div className="flex items-center gap-2">
                 {/* Instagram */}
                 <a
                   href="https://www.instagram.com/unimontes.almenara"
@@ -422,6 +425,7 @@ export default function Home() {
                 >
                   <MapPin size={18} />
                 </a>
+                </div>
               </div>
             </div>
           </div>
