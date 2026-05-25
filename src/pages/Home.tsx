@@ -304,14 +304,37 @@ export default function Home() {
                     <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">CIFOP</button>
                     <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Seminários</button>
                     <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">PIBID</button>
+                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Eventos</button>
                   </div>
                 </div>
 
-                <button
-                  className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex-shrink-0"
+                {/* Modelos com dropdown hover */}
+                <div
+                  className="relative flex-shrink-0"
+                  onMouseEnter={e => {
+                    const menu = e.currentTarget.querySelector('.modelos-menu') as HTMLElement;
+                    if (menu) menu.style.display = 'block';
+                  }}
+                  onMouseLeave={e => {
+                    const menu = e.currentTarget.querySelector('.modelos-menu') as HTMLElement;
+                    if (menu) menu.style.display = 'none';
+                  }}
                 >
-                  Modelos
-                </button>
+                  <button
+                    className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex items-center gap-1"
+                  >
+                    Modelos
+                    <ChevronDown size={14} />
+                  </button>
+                  <div
+                    className="modelos-menu absolute top-full left-0 mt-1 bg-white shadow-lg rounded-lg py-2 min-w-[160px] z-50"
+                    style={{ display: 'none' }}
+                  >
+                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Declarações</button>
+                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">E-book</button>
+                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Currículo LATTES</button>
+                  </div>
+                </div>
                 <button
                   className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex-shrink-0"
                 >
@@ -489,14 +512,28 @@ export default function Home() {
                 <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">CIFOP</button>
                 <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Seminários</button>
                 <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">PIBID</button>
+                <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Eventos</button>
               </div>
             </div>
 
-            <button
-              className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100"
-            >
-              Modelos
-            </button>
+            {/* Modelos - Mobile */}
+            <div>
+              <button
+                onClick={() => {
+                  const el = document.getElementById('modelos-mobile');
+                  if (el) el.classList.toggle('hidden');
+                }}
+                className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100 flex items-center justify-between"
+              >
+                Modelos
+                <ChevronDown size={16} />
+              </button>
+              <div id="modelos-mobile" className="hidden pl-4 space-y-1">
+                <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Declarações</button>
+                <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">E-book</button>
+                <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Currículo LATTES</button>
+              </div>
+            </div>
             <button
               className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100"
             >
