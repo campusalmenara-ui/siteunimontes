@@ -275,11 +275,39 @@ export default function Home() {
                 >
                   Webgiz
                 </button>
+
+                {/* Projetos com dropdown */}
+                <div className="relative group flex-shrink-0">
+                  <button
+                    className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex items-center gap-1"
+                  >
+                    Projetos
+                    <ChevronDown size={14} />
+                  </button>
+                  <div className="absolute top-full left-0 mt-1 bg-white shadow-lg rounded-lg py-2 min-w-[160px] z-50 hidden group-hover:block">
+                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">AACC</button>
+                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">AIEX</button>
+                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">CIFOP</button>
+                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Seminários</button>
+                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">PIBID</button>
+                  </div>
+                </div>
+
+                <button
+                  className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex-shrink-0"
+                >
+                  Modelos
+                </button>
+                <button
+                  className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex-shrink-0"
+                >
+                  Sobre
+                </button>
               </div>
 
               {/* Ícones de Redes Sociais - Desktop */}
               <div className="flex items-center gap-4">
-              <span className="text-sm font-semibold text-gray-600 whitespace-nowrap">Fale conosco: </span>
+              <span className="text-sm font-semibold text-gray-600 whitespace-nowrap">Fale conosco</span>
               {/* Instagram */}
               <a
                 href="https://www.instagram.com/unimontes.almenara"
@@ -339,7 +367,7 @@ export default function Home() {
 
               {/* Ícones de Redes Sociais - Mobile (Direita Absoluta) */}
               <div className="flex items-center gap-2 absolute right-0">
-                <span className="text-xs font-semibold text-gray-600 whitespace-nowrap">Fale conosco: </span>
+                <span className="text-xs font-semibold text-gray-600 whitespace-nowrap">Fale conosco</span>
                 {/* Instagram */}
                 <a
                   href="https://www.instagram.com/unimontes.almenara"
@@ -427,6 +455,38 @@ export default function Home() {
               className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100"
             >
               Webgiz
+            </button>
+
+            {/* Projetos - Mobile */}
+            <div>
+              <button
+                onClick={() => {
+                  const el = document.getElementById('projetos-mobile');
+                  if (el) el.classList.toggle('hidden');
+                }}
+                className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100 flex items-center justify-between"
+              >
+                Projetos
+                <ChevronDown size={16} />
+              </button>
+              <div id="projetos-mobile" className="hidden pl-4 space-y-1">
+                <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">AACC</button>
+                <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">AIEX</button>
+                <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">CIFOP</button>
+                <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Seminários</button>
+                <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">PIBID</button>
+              </div>
+            </div>
+
+            <button
+              className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100"
+            >
+              Modelos
+            </button>
+            <button
+              className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100"
+            >
+              Sobre
             </button>
           </div>
         </div>
