@@ -232,7 +232,7 @@ export default function Home() {
               </div>
 
               {/* Navegacao Principal - Desktop */}
-              <div className="flex items-center gap-2 md:gap-4 lg:gap-6 flex-1 justify-center flex-nowrap min-w-0 overflow-hidden">
+              <div className="flex items-center gap-2 md:gap-4 lg:gap-6 flex-1 justify-center flex-nowrap min-w-0 overflow-visible">
                 <button
                   onClick={() => handleNavClick('agenda')}
                   className={`text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 whitespace-nowrap flex-shrink-0 ${
@@ -281,16 +281,15 @@ export default function Home() {
                 {/* Projetos com dropdown hover */}
                 <div
                   className="relative flex-shrink-0"
-                  onMouseEnter={() => { console.log('[DROPDOWN] Projetos: mouse entrou, abrindo...'); setProjetosOpen(true); }}
-                  onMouseLeave={() => { console.log('[DROPDOWN] Projetos: mouse saiu, fechando...'); setProjetosOpen(false); }}
+                  onMouseEnter={() => setProjetosOpen(true)}
+                  onMouseLeave={() => setProjetosOpen(false)}
                 >
                   <button className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex items-center gap-1">
                     Projetos
                     <ChevronDown size={14} />
                   </button>
-                  {(() => { console.log('[DROPDOWN] projetosOpen =', projetosOpen); return null; })()}
                   {projetosOpen && (
-                    <div className="absolute top-full left-0 mt-1 bg-white shadow-lg rounded-lg py-2 min-w-[160px] z-50" style={{ border: '2px solid red' }}>
+                    <div className="absolute top-full left-0 mt-1 bg-white shadow-lg rounded-lg py-2 min-w-[160px] z-50">
                       <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">AACC</button>
                       <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">AIEX</button>
                       <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">CIFOP</button>
