@@ -45,6 +45,8 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<'agenda' | 'noticias' | 'calendario' | 'editais'>('agenda');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [projetosOpen, setProjetosOpen] = useState(false);
+  const [modelosOpen, setModelosOpen] = useState(false);
 
   const handleNavClick = (section: 'agenda' | 'noticias' | 'calendario' | 'editais') => {
     if (section === 'calendario') {
@@ -279,61 +281,42 @@ export default function Home() {
                 {/* Projetos com dropdown hover */}
                 <div
                   className="relative flex-shrink-0"
-                  style={{ position: 'relative' }}
-                  onMouseEnter={e => {
-                    const menu = e.currentTarget.querySelector('.projetos-menu') as HTMLElement;
-                    if (menu) menu.style.display = 'block';
-                  }}
-                  onMouseLeave={e => {
-                    const menu = e.currentTarget.querySelector('.projetos-menu') as HTMLElement;
-                    if (menu) menu.style.display = 'none';
-                  }}
+                  onMouseEnter={() => setProjetosOpen(true)}
+                  onMouseLeave={() => setProjetosOpen(false)}
                 >
-                  <button
-                    className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex items-center gap-1"
-                  >
+                  <button className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex items-center gap-1">
                     Projetos
                     <ChevronDown size={14} />
                   </button>
-                  <div
-                    className="projetos-menu absolute top-full left-0 mt-1 bg-white shadow-lg rounded-lg py-2 min-w-[160px] z-50"
-                    style={{ display: 'none' }}
-                  >
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">AACC</button>
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">AIEX</button>
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">CIFOP</button>
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Seminários</button>
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">PIBID</button>
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Eventos</button>
-                  </div>
+                  {projetosOpen && (
+                    <div className="absolute top-full left-0 mt-1 bg-white shadow-lg rounded-lg py-2 min-w-[160px] z-50">
+                      <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">AACC</button>
+                      <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">AIEX</button>
+                      <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">CIFOP</button>
+                      <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Seminários</button>
+                      <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">PIBID</button>
+                      <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Eventos</button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Modelos com dropdown hover */}
                 <div
                   className="relative flex-shrink-0"
-                  onMouseEnter={e => {
-                    const menu = e.currentTarget.querySelector('.modelos-menu') as HTMLElement;
-                    if (menu) menu.style.display = 'block';
-                  }}
-                  onMouseLeave={e => {
-                    const menu = e.currentTarget.querySelector('.modelos-menu') as HTMLElement;
-                    if (menu) menu.style.display = 'none';
-                  }}
+                  onMouseEnter={() => setModelosOpen(true)}
+                  onMouseLeave={() => setModelosOpen(false)}
                 >
-                  <button
-                    className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex items-center gap-1"
-                  >
+                  <button className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex items-center gap-1">
                     Modelos
                     <ChevronDown size={14} />
                   </button>
-                  <div
-                    className="modelos-menu absolute top-full left-0 mt-1 bg-white shadow-lg rounded-lg py-2 min-w-[160px] z-50"
-                    style={{ display: 'none' }}
-                  >
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Declarações</button>
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">E-book</button>
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Currículo LATTES</button>
-                  </div>
+                  {modelosOpen && (
+                    <div className="absolute top-full left-0 mt-1 bg-white shadow-lg rounded-lg py-2 min-w-[160px] z-50">
+                      <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Declarações</button>
+                      <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">E-book</button>
+                      <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Currículo LATTES</button>
+                    </div>
+                  )}
                 </div>
                 <button
                   className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex-shrink-0"
