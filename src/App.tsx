@@ -5,40 +5,42 @@ import { Route, Switch, Router as WouterRouter } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
+import AACC from "./pages/projetos/AACC";
+import AIEX from "./pages/projetos/AIEX";
+import CIFOP from "./pages/projetos/CIFOP";
+import Seminarios from "./pages/projetos/Seminarios";
+import PIBID from "./pages/projetos/PIBID";
+import Eventos from "./pages/projetos/Eventos";
 import { useMemo } from "react";
 
-// Detectar o basename baseado no ambiente
 const getBasename = () => {
   if (typeof window === 'undefined') return '/';
   const pathname = window.location.pathname;
-  // Se estamos no GitHub Pages com /agenda-unimontes/, usar isso como basename
   if (pathname.includes('/agenda-unimontes/')) return '/agenda-unimontes';
-  // Se estamos no GitHub Pages com /siteunimontes/, usar isso como basename
   if (pathname.includes('/siteunimontes/')) return '/siteunimontes';
-  // Se estamos no GitHub Pages com /agendauni/, usar isso como basename (compatibilidade)
   if (pathname.includes('/agendauni/')) return '/agendauni';
   return '/';
 };
 
 function Router() {
   const basename = useMemo(() => getBasename(), []);
-  
+
   return (
     <WouterRouter base={basename}>
       <Switch>
-        <Route path={"/"} component={Home} />
-        <Route path={"/404"} component={NotFound} />
-        {/* Final fallback route */}
+        <Route path="/" component={Home} />
+        <Route path="/projetos/aacc" component={AACC} />
+        <Route path="/projetos/aiex" component={AIEX} />
+        <Route path="/projetos/cifop" component={CIFOP} />
+        <Route path="/projetos/seminarios" component={Seminarios} />
+        <Route path="/projetos/pibid" component={PIBID} />
+        <Route path="/projetos/eventos" component={Eventos} />
+        <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>
     </WouterRouter>
   );
 }
-
-// NOTE: About Theme
-// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
-//   to keep consistent foreground/background color across components
-// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 
 function App() {
   return (
