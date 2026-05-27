@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'wouter';
 import { ChevronDown, BookOpen, User, Clock, AlertCircle, Coffee, Instagram, MapPin, Menu, X } from 'lucide-react';
 import { NewsSection } from '@/components/NewsSection';
 import { useState as useStateNav, useEffect as useEffectNav } from 'react';
@@ -39,6 +40,7 @@ const courseColors: { [key: string]: { border: string; bg: string } } = {
 
 export default function Home() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [, navigate] = useLocation();
   const [coursesData, setCoursesData] = useState<CourseData[]>([]);
   const [weekDates, setWeekDates] = useState({ start: '', end: '' });
   const [loading, setLoading] = useState(true);
@@ -290,12 +292,12 @@ export default function Home() {
                   </button>
                   {projetosOpen && (
                     <div className="absolute top-full left-0 mt-1 bg-white shadow-lg rounded-lg py-2 min-w-[160px]" style={{ zIndex: 9999, boxShadow: "0 8px 24px rgba(0,0,0,0.15)" }}>
-                      <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">AACC</button>
-                      <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">AIEX</button>
-                      <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">CIFOP</button>
-                      <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Seminários</button>
-                      <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">PIBID</button>
-                      <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Eventos</button>
+                      <button onClick={() => { navigate('/projetos/aacc'); setProjetosOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">AACC</button>
+                      <button onClick={() => { navigate('/projetos/aiex'); setProjetosOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">AIEX</button>
+                      <button onClick={() => { navigate('/projetos/cifop'); setProjetosOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">CIFOP</button>
+                      <button onClick={() => { navigate('/projetos/seminarios'); setProjetosOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Seminários</button>
+                      <button onClick={() => { navigate('/projetos/pibid'); setProjetosOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">PIBID</button>
+                      <button onClick={() => { navigate('/projetos/eventos'); setProjetosOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Eventos</button>
                     </div>
                   )}
                 </div>
@@ -494,12 +496,12 @@ export default function Home() {
                 <ChevronDown size={16} />
               </button>
               <div id="projetos-mobile" className="hidden pl-4 space-y-1">
-                <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">AACC</button>
-                <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">AIEX</button>
-                <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">CIFOP</button>
-                <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Seminários</button>
-                <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">PIBID</button>
-                <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Eventos</button>
+                <button onClick={() => { navigate('/projetos/aacc'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">AACC</button>
+                <button onClick={() => { navigate('/projetos/aiex'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">AIEX</button>
+                <button onClick={() => { navigate('/projetos/cifop'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">CIFOP</button>
+                <button onClick={() => { navigate('/projetos/seminarios'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Seminários</button>
+                <button onClick={() => { navigate('/projetos/pibid'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">PIBID</button>
+                <button onClick={() => { navigate('/projetos/eventos'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Eventos</button>
               </div>
             </div>
 
