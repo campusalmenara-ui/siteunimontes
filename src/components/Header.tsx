@@ -8,6 +8,14 @@ const WHATSAPP_SVG = (size: number) => (
   </svg>
 );
 
+const dropdownStyle = {
+  zIndex: 9999,
+  boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+  marginTop: '-2px',
+  paddingTop: '6px',
+  paddingBottom: '6px',
+};
+
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [projetosOpen, setProjetosOpen] = useState(false);
@@ -15,6 +23,15 @@ export function Header() {
   const [, navigate] = useLocation();
 
   const navBtn = "text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex-shrink-0";
+
+  const projetoLinks = [
+    ['AACC', '/projetos/aacc'],
+    ['AIEX', '/projetos/aiex'],
+    ['CIFOP', '/projetos/cifop'],
+    ['Seminários', '/projetos/seminarios'],
+    ['PIBID', '/projetos/pibid'],
+    ['Eventos', '/projetos/eventos'],
+  ];
 
   return (
     <header className="bg-white shadow-md sticky top-0" style={{ zIndex: 100, overflow: 'visible' }}>
@@ -36,7 +53,7 @@ export function Header() {
             <div className="flex items-center gap-2 md:gap-4 lg:gap-6 flex-1 justify-center flex-nowrap min-w-0 overflow-visible">
               <button onClick={() => navigate('/')} className={navBtn}>Agenda Semanal</button>
               <button onClick={() => navigate('/')} className={navBtn}>Notícias</button>
-              <button className={navBtn}>Calendário Escolar</button>
+              <button onClick={() => window.open('https://drive.google.com/file/d/1KtIHqC2_AzpwGb-lZFTKTyxNVGr_MIcV/view', '_blank')} className={navBtn}>Calendário Escolar</button>
               <button onClick={() => window.open('https://unimontes.br/editais/', '_blank')} className={navBtn}>Editais</button>
               <button onClick={() => window.open('https://www.coteps.unimontes.br/vestibular/', '_blank')} className={navBtn}>Vestibular</button>
               <button onClick={() => window.open('https://www.webgiz.unimontes.br/', '_blank')} className={navBtn}>Webgiz</button>
@@ -47,8 +64,8 @@ export function Header() {
                   Projetos <ChevronDown size={14} />
                 </button>
                 {projetosOpen && (
-                  <div className="absolute top-full left-0 mt-1 bg-white rounded-lg py-2 min-w-[160px]" style={{ zIndex: 9999, boxShadow: '0 8px 24px rgba(0,0,0,0.15)' }}>
-                    {[['AACC', '/projetos/aacc'], ['AIEX', '/projetos/aiex'], ['CIFOP', '/projetos/cifop'], ['Seminários', '/projetos/seminarios'], ['PIBID', '/projetos/pibid'], ['Eventos', '/projetos/eventos']].map(([label, path]) => (
+                  <div className="absolute top-full left-0 bg-white rounded-lg min-w-[160px]" style={dropdownStyle}>
+                    {projetoLinks.map(([label, path]) => (
                       <button key={path} onClick={() => { navigate(path); setProjetosOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">{label}</button>
                     ))}
                   </div>
@@ -61,7 +78,7 @@ export function Header() {
                   Modelos <ChevronDown size={14} />
                 </button>
                 {modelosOpen && (
-                  <div className="absolute top-full left-0 mt-1 bg-white rounded-lg py-2 min-w-[160px]" style={{ zIndex: 9999, boxShadow: '0 8px 24px rgba(0,0,0,0.15)' }}>
+                  <div className="absolute top-full left-0 bg-white rounded-lg min-w-[160px]" style={dropdownStyle}>
                     {['Declarações', 'E-book', 'Currículo LATTES'].map((label) => (
                       <button key={label} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">{label}</button>
                     ))}
@@ -106,7 +123,7 @@ export function Header() {
             <div className="md:hidden mt-4 pb-2 border-t border-gray-100 space-y-1">
               <button onClick={() => { navigate('/'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100">Agenda Semanal</button>
               <button onClick={() => { navigate('/'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100">Notícias</button>
-              <button className="w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100">Calendário Escolar</button>
+              <button onClick={() => window.open('https://drive.google.com/file/d/1KtIHqC2_AzpwGb-lZFTKTyxNVGr_MIcV/view', '_blank')} className="w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100">Calendário Escolar</button>
               <button onClick={() => window.open('https://unimontes.br/editais/', '_blank')} className="w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100">Editais</button>
               <button onClick={() => window.open('https://www.coteps.unimontes.br/vestibular/', '_blank')} className="w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100">Vestibular</button>
               <button onClick={() => window.open('https://www.webgiz.unimontes.br/', '_blank')} className="w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100">Webgiz</button>
@@ -117,7 +134,7 @@ export function Header() {
                   Projetos <ChevronDown size={16} />
                 </button>
                 <div id="projetos-mobile-menu" className="hidden pl-4 space-y-1">
-                  {[['AACC', '/projetos/aacc'], ['AIEX', '/projetos/aiex'], ['CIFOP', '/projetos/cifop'], ['Seminários', '/projetos/seminarios'], ['PIBID', '/projetos/pibid'], ['Eventos', '/projetos/eventos']].map(([label, path]) => (
+                  {projetoLinks.map(([label, path]) => (
                     <button key={path} onClick={() => { navigate(path); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">{label}</button>
                   ))}
                 </div>
