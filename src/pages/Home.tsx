@@ -298,7 +298,7 @@ export default function Home() {
                       <button onClick={() => { navigate('/projetos/seminarios'); setProjetosOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Seminários</button>
                       <button onClick={() => { navigate('/projetos/pibid'); setProjetosOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">PIBID</button>
                       <button onClick={() => { navigate('/projetos/eventos'); setProjetosOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Eventos</button>
-                    </div></div>
+                    </div>
                   )}
                 </div>
 
