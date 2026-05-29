@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
+import { useHashLocation } from 'wouter/use-hash-location';
 import { ChevronDown, BookOpen, User, Clock, AlertCircle, Coffee, Instagram, MapPin, Menu, X } from 'lucide-react';
 import { NewsSection } from '@/components/NewsSection';
 import { useState as useStateNav, useEffect as useEffectNav } from 'react';
@@ -40,7 +40,7 @@ const courseColors: { [key: string]: { border: string; bg: string } } = {
 
 export default function Home() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [, navigate] = useLocation();
+  const [, navigate] = useHashLocation();
   const [coursesData, setCoursesData] = useState<CourseData[]>([]);
   const [weekDates, setWeekDates] = useState({ start: '', end: '' });
   const [loading, setLoading] = useState(true);
