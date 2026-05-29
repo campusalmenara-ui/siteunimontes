@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch, Router as WouterRouter } from "wouter";
+import { useHashLocation } from "wouter/use-hash-location";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
@@ -11,22 +12,10 @@ import CIFOP from "./pages/projetos/CIFOP";
 import Seminarios from "./pages/projetos/Seminarios";
 import PIBID from "./pages/projetos/PIBID";
 import Eventos from "./pages/projetos/Eventos";
-import { useMemo } from "react";
-
-const getBasename = () => {
-  if (typeof window === 'undefined') return '/';
-  const pathname = window.location.pathname;
-  if (pathname.includes('/agenda-unimontes/')) return '/agenda-unimontes';
-  if (pathname.includes('/siteunimontes/')) return '/siteunimontes';
-  if (pathname.includes('/agendauni/')) return '/agendauni';
-  return '/';
-};
 
 function Router() {
-  const basename = useMemo(() => getBasename(), []);
-
   return (
-    <WouterRouter base={basename}>
+    <WouterRouter hook={useHashLocation}>
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/projetos/aacc" component={AACC} />
