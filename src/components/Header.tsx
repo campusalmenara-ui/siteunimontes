@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ChevronDown, Instagram, MapPin, Menu, X } from 'lucide-react';
 import { useLocation } from 'wouter';
+import { useHashLocation } from 'wouter/use-hash-location';
 
 const WHATSAPP_SVG = (size: number) => (
   <svg width={size} height={size} viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -20,7 +21,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [projetosOpen, setProjetosOpen] = useState(false);
   const [modelosOpen, setModelosOpen] = useState(false);
-  const [, navigate] = useLocation();
+  const [, navigate] = useHashLocation();
 
   const navBtn = "text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex-shrink-0";
 
