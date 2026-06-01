@@ -32,6 +32,12 @@ export function Header() {
     ['Seminários', '/projetos/seminarios'],
     ['PIBID', '/projetos/pibid'],
     ['Eventos', '/projetos/eventos'],
+    ['Materiais Gratuitos', '/projetos/materiais'],
+  ];
+
+  const secretariaLinks = [
+    ['Solicitações', '/secretaria/solicitacoes'],
+    ['Contatos', '/secretaria/contatos'],
   ];
 
   return (
@@ -73,15 +79,15 @@ export function Header() {
                 )}
               </div>
 
-              {/* Modelos dropdown */}
+              {/* Secretaria dropdown */}
               <div className="relative flex-shrink-0" onMouseEnter={() => setModelosOpen(true)} onMouseLeave={() => setModelosOpen(false)}>
                 <button className={`${navBtn} flex items-center gap-1`}>
-                  Modelos <ChevronDown size={14} />
+                  Secretaria <ChevronDown size={14} />
                 </button>
                 {modelosOpen && (
                   <div className="absolute top-full left-0 bg-white rounded-lg min-w-[160px]" style={dropdownStyle}>
-                    {['Declarações', 'E-book', 'Currículo LATTES'].map((label) => (
-                      <button key={label} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">{label}</button>
+                    {secretariaLinks.map(([label, path]) => (
+                      <button key={path} onClick={() => { navigate(path); setModelosOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">{label}</button>
                     ))}
                   </div>
                 )}
@@ -141,14 +147,14 @@ export function Header() {
                 </div>
               </div>
 
-              {/* Modelos mobile */}
+              {/* Secretaria mobile */}
               <div>
                 <button onClick={() => { const el = document.getElementById('modelos-mobile-menu'); if (el) el.classList.toggle('hidden'); }} className="w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 flex items-center justify-between">
-                  Modelos <ChevronDown size={16} />
+                  Secretaria <ChevronDown size={16} />
                 </button>
                 <div id="modelos-mobile-menu" className="hidden pl-4 space-y-1">
-                  {['Declarações', 'E-book', 'Currículo LATTES'].map((label) => (
-                    <button key={label} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">{label}</button>
+                  {secretariaLinks.map(([label, path]) => (
+                    <button key={path} onClick={() => { navigate(path); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">{label}</button>
                   ))}
                 </div>
               </div>
