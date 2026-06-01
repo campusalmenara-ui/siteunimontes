@@ -298,25 +298,25 @@ export default function Home() {
                       <button onClick={() => { navigate('/projetos/seminarios'); setProjetosOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Seminários</button>
                       <button onClick={() => { navigate('/projetos/pibid'); setProjetosOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">PIBID</button>
                       <button onClick={() => { navigate('/projetos/eventos'); setProjetosOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Eventos</button>
+                      <button onClick={() => { navigate('/projetos/materiais'); setProjetosOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Materiais Gratuitos</button>
                     </div>
                   )}
                 </div>
 
-                {/* Modelos com dropdown hover */}
+                {/* Secretaria dropdown */}
                 <div
                   className="relative flex-shrink-0"
                   onMouseEnter={() => setModelosOpen(true)}
                   onMouseLeave={() => setModelosOpen(false)}
                 >
                   <button className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex items-center gap-1">
-                    Modelos
+                    Secretaria
                     <ChevronDown size={14} />
                   </button>
                   {modelosOpen && (
                     <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg min-w-[160px]" style={{ zIndex: 9999, boxShadow: "0 8px 24px rgba(0,0,0,0.15)", paddingTop: "6px", marginTop: "-2px" }}>
-                      <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Declarações</button>
-                      <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">E-book</button>
-                      <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Currículo LATTES</button>
+                      <button onClick={() => navigate('/secretaria/solicitacoes')} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Solicitações</button>
+                      <button onClick={() => navigate('/secretaria/contatos')} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Contatos</button>
                     </div>
                   )}
                 </div>
@@ -502,10 +502,11 @@ export default function Home() {
                 <button onClick={() => { navigate('/projetos/seminarios'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Seminários</button>
                 <button onClick={() => { navigate('/projetos/pibid'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">PIBID</button>
                 <button onClick={() => { navigate('/projetos/eventos'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Eventos</button>
+                <button onClick={() => { navigate('/projetos/materiais'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Materiais Gratuitos</button>
               </div>
             </div>
 
-            {/* Modelos - Mobile */}
+            {/* Secretaria - Mobile */}
             <div>
               <button
                 onClick={() => {
@@ -514,13 +515,12 @@ export default function Home() {
                 }}
                 className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100 flex items-center justify-between"
               >
-                Modelos
+                Secretaria
                 <ChevronDown size={16} />
               </button>
               <div id="modelos-mobile" className="hidden pl-4 space-y-1">
-                <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Declarações</button>
-                <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">E-book</button>
-                <button className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Currículo LATTES</button>
+                <button onClick={() => { navigate('/secretaria/solicitacoes'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Solicitações</button>
+                <button onClick={() => { navigate('/secretaria/contatos'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Contatos</button>
               </div>
             </div>
             <button
