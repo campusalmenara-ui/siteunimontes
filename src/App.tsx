@@ -12,6 +12,9 @@ import CIFOP from "./pages/projetos/CIFOP";
 import Seminarios from "./pages/projetos/Seminarios";
 import PIBID from "./pages/projetos/PIBID";
 import Eventos from "./pages/projetos/Eventos";
+import MateriaisGratuitos from "./pages/projetos/MateriaisGratuitos";
+import Solicitacoes from "./pages/secretaria/Solicitacoes";
+import Contatos from "./pages/secretaria/Contatos";
 
 function Router() {
   return (
@@ -24,6 +27,9 @@ function Router() {
         <Route path="/projetos/seminarios" component={Seminarios} />
         <Route path="/projetos/pibid" component={PIBID} />
         <Route path="/projetos/eventos" component={Eventos} />
+        <Route path="/projetos/materiais" component={MateriaisGratuitos} />
+        <Route path="/secretaria/solicitacoes" component={Solicitacoes} />
+        <Route path="/secretaria/contatos" component={Contatos} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>
