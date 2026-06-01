@@ -12,7 +12,7 @@ interface Contato {
 }
 
 const SHEET_ID = '1q_bLd3HXuFUH7Sogj3lo9D7aLv2BMqgX8P2iAnwbMF0';
-const GID_CONTATOS = 'GID_CONTATOS';
+const GID_CONTATOS = '31373278';
 
 const parseCSVLine = (line: string): string[] => {
   const result: string[] = [];
