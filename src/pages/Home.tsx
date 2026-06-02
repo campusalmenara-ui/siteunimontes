@@ -524,6 +524,7 @@ export default function Home() {
               </div>
             </div>
             <button
+              onClick={() => { navigate('/sobre'); setMobileMenuOpen(false); }}
               className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100"
             >
               Sobre
