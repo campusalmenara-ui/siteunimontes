@@ -321,6 +321,7 @@ export default function Home() {
                   )}
                 </div>
                 <button
+                  onClick={() => navigate('/sobre')}
                   className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex-shrink-0"
                 >
                   Sobre
