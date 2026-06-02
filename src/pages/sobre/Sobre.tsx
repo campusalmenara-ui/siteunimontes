@@ -12,7 +12,7 @@ const cursos = [
     turno: 'Noturno',
     area: 'Ciências Humanas',
     modalidade: 'Licenciatura',
-    unidade: 'Centro de Ciências Humanas — CCH',
+    unidade: 'Campus Almenara',
     duracao: '8 Períodos (4 anos)',
     ingresso: 'SISU (ENEM) e Vestibular Próprio COTEPS',
     sobre: 'O curso de Pedagogia forma educadores aptos a atuar na Educação Infantil, nos Anos Iniciais do Ensino Fundamental e na gestão escolar. A formação é sólida em fundamentos filosóficos, sociológicos e psicológicos da educação, aliando teoria à prática por meio de estágios supervisionados desde os primeiros períodos.',
@@ -28,7 +28,7 @@ const cursos = [
     turno: 'Noturno',
     area: 'Linguística, Letras e Artes',
     modalidade: 'Licenciatura',
-    unidade: 'Centro de Ciências Humanas — CCH',
+    unidade: 'Campus Almenara',
     duracao: '8 Períodos (4 anos)',
     ingresso: 'SISU (ENEM) e Vestibular Próprio COTEPS',
     sobre: 'O curso de Letras com habilitação em Língua Portuguesa forma professores para o ensino de Língua Portuguesa e Literatura nos níveis fundamental e médio. O currículo abrange estudos linguísticos, literatura brasileira e portuguesa, produção textual e metodologias de ensino.',
@@ -148,7 +148,7 @@ export default function Sobre() {
                 Bem-vindo à
               </h1>
               <h2 className="text-4xl md:text-5xl font-black text-yellow-300 leading-tight mb-1">
-                Unimontes
+                UNIMONTES
               </h2>
               <h2 className="text-4xl md:text-5xl font-black text-white leading-tight mb-6">
                 Campus Almenara
