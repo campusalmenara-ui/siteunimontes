@@ -15,6 +15,7 @@ import Eventos from "./pages/projetos/Eventos";
 import MateriaisGratuitos from "./pages/projetos/MateriaisGratuitos";
 import Solicitacoes from "./pages/secretaria/Solicitacoes";
 import Contatos from "./pages/secretaria/Contatos";
+import Sobre from "./pages/sobre/Sobre";
 
 function Router() {
   return (
@@ -30,6 +31,7 @@ function Router() {
         <Route path="/projetos/materiais" component={MateriaisGratuitos} />
         <Route path="/secretaria/solicitacoes" component={Solicitacoes} />
         <Route path="/secretaria/contatos" component={Contatos} />
+        <Route path="/sobre" component={Sobre} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>
