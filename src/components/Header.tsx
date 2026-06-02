@@ -93,7 +93,7 @@ export function Header() {
                 )}
               </div>
 
-              <button className={navBtn}>Sobre</button>
+              <button onClick={() => navigate('/sobre')} className={navBtn}>Sobre</button>
             </div>
 
             {/* Fale conosco */}
@@ -159,7 +159,7 @@ export function Header() {
                 </div>
               </div>
 
-              <button className="w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100">Sobre</button>
+              <button onClick={() => { navigate('/sobre'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100">Sobre</button>
             </div>
           )}
 
