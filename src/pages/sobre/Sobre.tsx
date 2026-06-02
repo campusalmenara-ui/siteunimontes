@@ -144,10 +144,13 @@ export default function Sobre() {
               <span className="inline-block bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-4">
                 Unimontes
               </span>
-              <h1 className="text-4xl md:text-6xl font-black text-white leading-tight mb-2">
-                Bem-vindo ao
+              <h1 className="text-4xl md:text-5xl font-black text-white leading-tight mb-2">
+                Bem-vindo à
               </h1>
-              <h2 className="text-4xl md:text-6xl font-black text-yellow-300 leading-tight mb-6">
+              <h2 className="text-4xl md:text-5xl font-black text-yellow-300 leading-tight mb-1">
+                Unimontes
+              </h2>
+              <h2 className="text-4xl md:text-5xl font-black text-white leading-tight mb-6">
                 Campus Almenara
               </h2>
               <p className="text-blue-100 text-base md:text-lg leading-relaxed mb-8 max-w-lg">
@@ -169,17 +172,12 @@ export default function Sobre() {
             <div className="relative">
               <div className="rounded-2xl overflow-hidden shadow-2xl border-4 border-white/20">
                 <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Unimontes_-_Almenara.jpg/1200px-Unimontes_-_Almenara.jpg"
+                  src="https://campusalmenara-ui.github.io/siteunimontes/campus.jpg"
                   alt="Campus Almenara - Unimontes"
                   className="w-full h-72 md:h-96 object-cover"
                   onError={e => {
                     const el = e.target as HTMLImageElement;
-                    el.parentElement!.innerHTML = `
-                      <div class="w-full h-72 md:h-96 bg-gradient-to-br from-blue-800 to-blue-900 flex flex-col items-center justify-center gap-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                        <p style="color:rgba(255,255,255,0.4);font-size:14px">Campus Almenara</p>
-                      </div>
-                    `;
+                    el.src = 'https://raw.githubusercontent.com/campusalmenara-ui/siteunimontes/main/docs/campus.jpg';
                   }}
                 />
               </div>
@@ -191,9 +189,31 @@ export default function Sobre() {
             </div>
           </div>
         </div>
+
+        {/* Seta de scroll animada */}
+        <div className="flex justify-center pb-8 pt-2">
+          <button
+            onClick={() => document.getElementById('conteudo-sobre')?.scrollIntoView({ behavior: 'smooth' })}
+            className="flex flex-col items-center gap-1 text-white/60 hover:text-white transition-colors group"
+            aria-label="Ver mais"
+          >
+            <span className="text-xs uppercase tracking-widest">Ver mais</span>
+            <div className="flex flex-col items-center" style={{ animation: 'bounce 1.5s infinite' }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </div>
+          </button>
+        </div>
+        <style>{`
+          @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(6px); }
+          }
+        `}</style>
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-16">
+      <main id="conteudo-sobre" className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-16">
 
         {/* Seção Cursos */}
         <div className="mb-16">
