@@ -72,10 +72,10 @@ export default function MateriaisGratuitos() {
     : materiais.filter(m => m.categoria === filtroAtivo);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-yellow-50">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-yellow-50 flex flex-col">
       <Header />
 
-      <main className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-10">
+      <main className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-10 flex-1">
 
         {/* Cabeçalho */}
         <div className="mb-10">
