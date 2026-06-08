@@ -191,7 +191,7 @@ export default function Sobre() {
         </div>
 
         {/* Botão scroll - canto inferior direito */}
-        <div className="flex justify-end px-4 md:px-8 lg:px-16 xl:px-24 pb-8 pt-2 max-w-7xl mx-auto w-full">
+        <div className="flex justify-end px-4 md:px-8 lg:px-16 xl:px-24 pb-12 pt-2 max-w-7xl mx-auto w-full">
           <button
             onClick={() => document.getElementById('conteudo-sobre')?.scrollIntoView({ behavior: 'smooth' })}
             className="group flex items-center gap-3 bg-yellow-400 hover:bg-yellow-300 text-blue-900 font-bold px-5 py-3 rounded-full shadow-lg hover:shadow-yellow-400/40 transition-all duration-300 hover:scale-105"
