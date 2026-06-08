@@ -12,7 +12,7 @@ const cursos = [
     turno: 'Noturno',
     area: 'Ciências Humanas',
     modalidade: 'Licenciatura',
-    unidade: 'Campus Almenara',
+    unidade: 'Centro de Ciências Humanas — CCH',
     duracao: '8 Períodos (4 anos)',
     ingresso: 'SISU (ENEM) e Vestibular Próprio COTEPS',
     sobre: 'O curso de Pedagogia forma educadores aptos a atuar na Educação Infantil, nos Anos Iniciais do Ensino Fundamental e na gestão escolar. A formação é sólida em fundamentos filosóficos, sociológicos e psicológicos da educação, aliando teoria à prática por meio de estágios supervisionados desde os primeiros períodos.',
@@ -28,7 +28,7 @@ const cursos = [
     turno: 'Noturno',
     area: 'Linguística, Letras e Artes',
     modalidade: 'Licenciatura',
-    unidade: 'Campus Almenara',
+    unidade: 'Centro de Ciências Humanas — CCH',
     duracao: '8 Períodos (4 anos)',
     ingresso: 'SISU (ENEM) e Vestibular Próprio COTEPS',
     sobre: 'O curso de Letras com habilitação em Língua Portuguesa forma professores para o ensino de Língua Portuguesa e Literatura nos níveis fundamental e médio. O currículo abrange estudos linguísticos, literatura brasileira e portuguesa, produção textual e metodologias de ensino.',
@@ -148,7 +148,7 @@ export default function Sobre() {
                 Bem-vindo à
               </h1>
               <h2 className="text-4xl md:text-5xl font-black text-yellow-300 leading-tight mb-1">
-                UNIMONTES
+                Unimontes
               </h2>
               <h2 className="text-4xl md:text-5xl font-black text-white leading-tight mb-6">
                 Campus Almenara
@@ -190,25 +190,25 @@ export default function Sobre() {
           </div>
         </div>
 
-        {/* Seta de scroll animada */}
-        <div className="flex justify-center pb-8 pt-2">
+        {/* Botão scroll - canto inferior direito */}
+        <div className="flex justify-end px-4 md:px-8 lg:px-16 xl:px-24 pb-8 pt-2 max-w-7xl mx-auto w-full">
           <button
             onClick={() => document.getElementById('conteudo-sobre')?.scrollIntoView({ behavior: 'smooth' })}
-            className="flex flex-col items-center gap-1 text-white/60 hover:text-white transition-colors group"
-            aria-label="Ver mais"
+            className="group flex items-center gap-3 bg-yellow-400 hover:bg-yellow-300 text-blue-900 font-bold px-5 py-3 rounded-full shadow-lg hover:shadow-yellow-400/40 transition-all duration-300 hover:scale-105"
+            aria-label="Explorar"
           >
-            <span className="text-xs uppercase tracking-widest">Ver mais</span>
-            <div className="flex flex-col items-center" style={{ animation: 'bounce 1.5s infinite' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <span className="text-sm uppercase tracking-widest">Explorar</span>
+            <div style={{ animation: 'bounceDown 1.2s infinite' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="6 9 12 15 18 9"/>
               </svg>
             </div>
           </button>
         </div>
         <style>{`
-          @keyframes bounce {
+          @keyframes bounceDown {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(6px); }
+            50% { transform: translateY(5px); }
           }
         `}</style>
       </div>
