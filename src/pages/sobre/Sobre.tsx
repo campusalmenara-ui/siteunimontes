@@ -172,7 +172,7 @@ export default function Sobre() {
             <div className="relative">
               <div className="rounded-2xl overflow-hidden shadow-2xl border-4 border-white/20">
                 <img
-                  src="/campus.jpg"
+                  src="/siteunimontes/campus.jpg"
                   alt="Campus Almenara - Unimontes"
                   className="w-full h-72 md:h-96 object-cover"
                 />
