@@ -236,7 +236,7 @@ export default function Sobre() {
             <h2 className="text-2xl md:text-3xl font-bold text-gray-800">Contatos do Campus</h2>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 max-w-lg gap-6">
 
             {/* Card principal */}
             <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-6 text-white shadow-lg">
@@ -279,61 +279,3 @@ export default function Sobre() {
                 </div>
               </div>
             </div>
-
-            {/* Card coordenação */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                  <Users size={24} className="text-purple-600" />
-                </div>
-                <div>
-                  <p className="font-bold text-gray-800 text-lg">Coordenação</p>
-                  <p className="text-gray-500 text-sm">Direção do Campus</p>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="p-4 bg-gray-50 rounded-xl">
-                  <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-1">Coordenador</p>
-                  <p className="font-bold text-gray-800">Sérgio Renato Oliveira</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Clock size={18} className="text-gray-400 flex-shrink-0" />
-                  <div>
-                    <p className="text-xs text-gray-400 font-medium">Horário de Atendimento</p>
-                    <p className="text-gray-700 text-sm font-semibold">07h às 22h30min</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Mail size={18} className="text-gray-400 flex-shrink-0" />
-                  <div>
-                    <p className="text-xs text-gray-400 font-medium">E-mail Institucional</p>
-                    <a href="mailto:campus.almenara@unimontes.br"
-                      className="text-blue-600 text-sm hover:underline break-all">
-                      campus.almenara@unimontes.br
-                    </a>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Phone size={18} className="text-gray-400 flex-shrink-0" />
-                  <div>
-                    <p className="text-xs text-gray-400 font-medium">WhatsApp</p>
-                    <a href="https://wa.me/5538991840146" target="_blank" rel="noopener noreferrer"
-                      className="text-blue-600 text-sm hover:underline">
-                      (38) 99184-0146
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </main>
-
-      <footer className="mt-16 py-8 bg-white border-t border-gray-100 text-center text-sm text-gray-400">
-        © {new Date().getFullYear()} Unimontes — Campus Almenara
-      </footer>
-    </div>
-  );
-}
