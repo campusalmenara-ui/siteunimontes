@@ -123,7 +123,7 @@ export default function Sobre() {
       <Header />
 
       {/* Hero — Foto + Título + Introdução + Estrutura */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-600 to-blue-500">
+      <div className="relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-600 to-blue-500" style={{ paddingBottom: "80px" }}>
         {/* Padrão geométrico de fundo */}
         <div className="absolute inset-0 opacity-10">
           <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -172,13 +172,9 @@ export default function Sobre() {
             <div className="relative">
               <div className="rounded-2xl overflow-hidden shadow-2xl border-4 border-white/20">
                 <img
-                  src="https://campusalmenara-ui.github.io/siteunimontes/campus.jpg"
+                  src="/campus.jpg"
                   alt="Campus Almenara - Unimontes"
                   className="w-full h-72 md:h-96 object-cover"
-                  onError={e => {
-                    const el = e.target as HTMLImageElement;
-                    el.src = 'https://raw.githubusercontent.com/campusalmenara-ui/siteunimontes/main/docs/campus.jpg';
-                  }}
                 />
               </div>
               {/* Badge flutuante */}
@@ -190,7 +186,7 @@ export default function Sobre() {
           </div>
         </div>
 
-         {/* Botão scroll - canto inferior direito, posição absoluta */}
+        {/* Botão scroll - canto inferior direito, posição absoluta */}
         <div className="absolute bottom-10 right-8 md:right-16 lg:right-24 xl:right-32">
           <button
             onClick={() => document.getElementById('conteudo-sobre')?.scrollIntoView({ behavior: 'smooth' })}
@@ -212,7 +208,7 @@ export default function Sobre() {
           }
         `}</style>
       </div>
- 
+
       <main id="conteudo-sobre" className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-16">
 
         {/* Seção Cursos */}
