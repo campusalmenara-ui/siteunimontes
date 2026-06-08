@@ -279,3 +279,14 @@ export default function Sobre() {
                 </div>
               </div>
             </div>
+          </div>
+
+        </div>
+      </main>
+
+      <footer className="mt-16 py-8 bg-white border-t border-gray-100 text-center text-sm text-gray-400">
+        © {new Date().getFullYear()} Unimontes — Campus Almenara
+      </footer>
+    </div>
+  );
+}
