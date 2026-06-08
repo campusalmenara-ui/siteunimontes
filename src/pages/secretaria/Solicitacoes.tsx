@@ -770,9 +770,17 @@ export default function Solicitacoes() {
         </p>
       </main>
 
-      <footer className="mt-16 py-8 bg-white border-t border-gray-100 text-center text-sm text-gray-400">
-        © {new Date().getFullYear()} Unimontes — Campus Almenara
-      </footer>
+      {/* Footer */}
+      <div className="bg-gray-800 text-white py-8 px-4 md:px-8 lg:px-16 xl:px-24">
+        <div className="max-w-7xl mx-auto text-center">
+          <p className="text-sm font-semibold">
+            Universidade Estadual de Montes Claros - UNIMONTES - Campus Almenara
+          </p>
+          <p className="text-xs text-gray-400 mt-2">
+            © 2026 - Desenvolvido por Secretaria da Unimontes - Campus Almenara
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
