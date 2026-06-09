@@ -82,7 +82,7 @@ export function Header() {
                 </button>
                 {ingressoOpen && (
                   <div className="absolute top-full left-0 bg-white rounded-lg min-w-[180px]" style={dropdownStyle}>
-                    <button onClick={() => { navigate('/sobre'); setTimeout(() => document.getElementById('cursos-oferecidos')?.scrollIntoView({ behavior: 'smooth' }), 300); setIngressoOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Cursos</button>
+                    <button onClick={() => { navigate('/sobre'); setTimeout(() => { const el = document.getElementById('cursos-oferecidos'); if (el) { const y = el.getBoundingClientRect().top + window.scrollY - 80; window.scrollTo({ top: y, behavior: 'smooth' }); } }, 600); setIngressoOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Cursos</button>
                     <button onClick={() => { window.open('https://www.coteps.unimontes.br/vestibular/', '_blank'); setIngressoOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Vestibular</button>
                     <button onClick={() => { window.open('https://unimontes.br/editais/', '_blank'); setIngressoOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Editais</button>
                   </div>
