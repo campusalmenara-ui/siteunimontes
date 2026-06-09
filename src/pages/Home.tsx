@@ -47,6 +47,8 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<'agenda' | 'noticias' | 'calendario' | 'editais'>('agenda');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [alunoOpen, setAlunoOpen] = useState(false);
+  const [ingressoOpen, setIngressoOpen] = useState(false);
   const [projetosOpen, setProjetosOpen] = useState(false);
   const [modelosOpen, setModelosOpen] = useState(false);
 
@@ -235,50 +237,34 @@ export default function Home() {
 
               {/* Navegacao Principal - Desktop */}
               <div className="flex items-center gap-2 md:gap-4 lg:gap-6 flex-1 justify-center flex-nowrap min-w-0 overflow-visible">
-                <button
-                  onClick={() => handleNavClick('agenda')}
-                  className={`text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 whitespace-nowrap flex-shrink-0 ${
-                    activeSection === 'agenda'
-                      ? 'text-blue-600 border-b-3 border-blue-600'
-                      : 'text-gray-600 hover:text-blue-600 border-b-3 border-transparent'
-                  }`}
-                >
-                  Agenda Semanal
-                </button>
-                <button
-                  onClick={() => handleNavClick('noticias')}
-                  className={`text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 whitespace-nowrap flex-shrink-0 ${
-                    activeSection === 'noticias'
-                      ? 'text-blue-600 border-b-3 border-blue-600'
-                      : 'text-gray-600 hover:text-blue-600 border-b-3 border-transparent'
-                  }`}
-                >
-                  Notícias
-                </button>
-                <button
-                  onClick={() => handleNavClick('calendario')}
-                  className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex-shrink-0"
-                >
-                  Calendário Escolar
-                </button>
-                <button
-                  onClick={() => handleNavClick('editais')}
-                  className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex-shrink-0"
-                >
-                  Editais
-                </button>
-                <button
-                  onClick={() => window.open('https://www.coteps.unimontes.br/vestibular/', '_blank')}
-                  className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex-shrink-0"
-                >
-                  Vestibular
-                </button>
-                <button
-                  onClick={() => window.open('https://www.webgiz.unimontes.br/', '_blank')}
-                  className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex-shrink-0"
-                >
-                  Webgiz
-                </button>
+                {/* Aluno dropdown */}
+                <div className="relative flex-shrink-0" onMouseEnter={() => setAlunoOpen(true)} onMouseLeave={() => setAlunoOpen(false)}>
+                  <button className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex items-center gap-1">
+                    Aluno <ChevronDown size={14} />
+                  </button>
+                  {alunoOpen && (
+                    <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg min-w-[180px]" style={{ zIndex: 9999, boxShadow: '0 8px 24px rgba(0,0,0,0.15)', paddingTop: '6px', paddingBottom: '6px', marginTop: '-2px' }}>
+                      <button onClick={() => { handleNavClick('agenda'); setAlunoOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Agenda Semanal</button>
+                      <button onClick={() => { window.open('https://drive.google.com/file/d/1KtIHqC2_AzpwGb-lZFTKTyxNVGr_MIcV/view', '_blank'); setAlunoOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Calendário Escolar</button>
+                      <button onClick={() => { window.open('https://www.webgiz.unimontes.br/', '_blank'); setAlunoOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Webgiz</button>
+                      <button onClick={() => { window.open('https://pergamum.unimontes.br/', '_blank'); setAlunoOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Acervo - Biblioteca</button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Formas de Ingresso dropdown */}
+                <div className="relative flex-shrink-0" onMouseEnter={() => setIngressoOpen(true)} onMouseLeave={() => setIngressoOpen(false)}>
+                  <button className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex items-center gap-1">
+                    Formas de Ingresso <ChevronDown size={14} />
+                  </button>
+                  {ingressoOpen && (
+                    <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg min-w-[180px]" style={{ zIndex: 9999, boxShadow: '0 8px 24px rgba(0,0,0,0.15)', paddingTop: '6px', paddingBottom: '6px', marginTop: '-2px' }}>
+                      <button onClick={() => { navigate('/sobre'); setTimeout(() => document.getElementById('cursos-oferecidos')?.scrollIntoView({ behavior: 'smooth' }), 300); setIngressoOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Cursos</button>
+                      <button onClick={() => { window.open('https://www.coteps.unimontes.br/vestibular/', '_blank'); setIngressoOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Vestibular</button>
+                      <button onClick={() => { window.open('https://unimontes.br/editais/', '_blank'); setIngressoOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Editais</button>
+                    </div>
+                  )}
+                </div>
 
                 {/* Projetos com dropdown hover */}
                 <div
@@ -320,6 +306,12 @@ export default function Home() {
                     </div>
                   )}
                 </div>
+                <button
+                  onClick={() => handleNavClick('noticias')}
+                  className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex-shrink-0"
+                >
+                  Notícias
+                </button>
                 <button
                   onClick={() => navigate('/sobre')}
                   className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex-shrink-0"
@@ -439,50 +431,30 @@ export default function Home() {
       {mobileMenuOpen && (
         <div className="md:hidden fixed top-16 left-0 right-0 bg-white border-b border-gray-200 shadow-md z-40 max-h-[calc(100vh-64px)] overflow-y-auto">
           <div className="px-4 py-4 space-y-2">
-            <button
-              onClick={() => handleNavClick('agenda')}
-              className={`w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 ${
-                activeSection === 'agenda'
-                  ? 'bg-blue-100 text-blue-600'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              Agenda Semanal
-            </button>
-            <button
-              onClick={() => handleNavClick('noticias')}
-              className={`w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 ${
-                activeSection === 'noticias'
-                  ? 'bg-blue-100 text-blue-600'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              Notícias
-            </button>
-            <button
-              onClick={() => handleNavClick('calendario')}
-              className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100"
-            >
-              Calendário Escolar
-            </button>
-            <button
-              onClick={() => handleNavClick('editais')}
-              className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100"
-            >
-              Editais
-            </button>
-            <button
-              onClick={() => window.open('https://www.coteps.unimontes.br/vestibular/', '_blank')}
-              className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100"
-            >
-              Vestibular
-            </button>
-            <button
-              onClick={() => window.open('https://www.webgiz.unimontes.br/', '_blank')}
-              className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100"
-            >
-              Webgiz
-            </button>
+            {/* Aluno mobile */}
+            <div>
+              <button onClick={() => { const el = document.getElementById('aluno-mobile'); if (el) el.classList.toggle('hidden'); }} className="w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 flex items-center justify-between">
+                Aluno <ChevronDown size={16} />
+              </button>
+              <div id="aluno-mobile" className="hidden pl-4 space-y-1">
+                <button onClick={() => { handleNavClick('agenda'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Agenda Semanal</button>
+                <button onClick={() => { window.open('https://drive.google.com/file/d/1KtIHqC2_AzpwGb-lZFTKTyxNVGr_MIcV/view', '_blank'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Calendário Escolar</button>
+                <button onClick={() => { window.open('https://www.webgiz.unimontes.br/', '_blank'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Webgiz</button>
+                <button onClick={() => { window.open('https://pergamum.unimontes.br/', '_blank'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Acervo - Biblioteca</button>
+              </div>
+            </div>
+
+            {/* Formas de Ingresso mobile */}
+            <div>
+              <button onClick={() => { const el = document.getElementById('ingresso-mobile'); if (el) el.classList.toggle('hidden'); }} className="w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 flex items-center justify-between">
+                Formas de Ingresso <ChevronDown size={16} />
+              </button>
+              <div id="ingresso-mobile" className="hidden pl-4 space-y-1">
+                <button onClick={() => { navigate('/sobre'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('cursos-oferecidos')?.scrollIntoView({ behavior: 'smooth' }), 300); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Cursos</button>
+                <button onClick={() => { window.open('https://www.coteps.unimontes.br/vestibular/', '_blank'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Vestibular</button>
+                <button onClick={() => { window.open('https://unimontes.br/editais/', '_blank'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Editais</button>
+              </div>
+            </div>
 
             {/* Projetos - Mobile */}
             <div>
@@ -524,6 +496,12 @@ export default function Home() {
                 <button onClick={() => { navigate('/secretaria/contatos'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Contatos</button>
               </div>
             </div>
+            <button
+              onClick={() => { handleNavClick('noticias'); setMobileMenuOpen(false); }}
+              className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100"
+            >
+              Notícias
+            </button>
             <button
               onClick={() => { navigate('/sobre'); setMobileMenuOpen(false); }}
               className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100"
