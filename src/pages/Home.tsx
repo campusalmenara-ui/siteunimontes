@@ -259,7 +259,7 @@ export default function Home() {
                   </button>
                   {ingressoOpen && (
                     <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg min-w-[180px]" style={{ zIndex: 9999, boxShadow: '0 8px 24px rgba(0,0,0,0.15)', paddingTop: '6px', paddingBottom: '6px', marginTop: '-2px' }}>
-                      <button onClick={() => { navigate('/sobre'); setTimeout(() => { const el = document.getElementById('cursos-oferecidos'); if (el) { const y = el.getBoundingClientRect().top + window.scrollY - 80; window.scrollTo({ top: y, behavior: 'smooth' }); } }, 600); setIngressoOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Cursos</button>
+                      <button onClick={() => { navigate('/sobre'); setTimeout(() => { const el = document.getElementById('cursos-oferecidos'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); }, 600); setIngressoOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Cursos</button>
                       <button onClick={() => { window.open('https://www.coteps.unimontes.br/vestibular/', '_blank'); setIngressoOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Vestibular</button>
                       <button onClick={() => { window.open('https://unimontes.br/editais/', '_blank'); setIngressoOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Editais</button>
                     </div>
