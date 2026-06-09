@@ -189,7 +189,7 @@ export default function Sobre() {
         {/* Botão scroll - canto inferior direito, posição absoluta */}
         <div className="absolute bottom-10 right-8 md:right-16 lg:right-24 xl:right-32">
           <button
-            onClick={() => document.getElementById('conteudo-sobre')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() => const el = document.getElementById('conteudo-sobre'); if (el) { const y = el.getBoundingClientRect().top + window.scrollY - 80; window.scrollTo({ top: y, behavior: 'smooth' }); }}
             className="group flex items-center gap-3 bg-yellow-400 hover:bg-yellow-300 text-blue-900 font-bold px-5 py-3 rounded-full shadow-lg hover:shadow-yellow-400/40 transition-all duration-300 hover:scale-105"
             aria-label="Explorar"
           >
