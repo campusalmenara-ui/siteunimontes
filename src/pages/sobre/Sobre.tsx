@@ -212,7 +212,7 @@ export default function Sobre() {
       <main id="conteudo-sobre" className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-16">
 
         {/* Seção Cursos */}
-        <div className="mb-16">
+        <div className="mb-16" id="cursos-oferecidos">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-blue-100 rounded-lg">
               <GraduationCap className="text-blue-600" size={22} />
