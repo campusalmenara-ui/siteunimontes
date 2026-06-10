@@ -307,7 +307,7 @@ export default function Home() {
                   )}
                 </div>
                 <button
-                  onClick={() => handleNavClick('noticias')}
+                  onClick={() => { if (window.location.hash === '#/') { handleNavClick('noticias'); } else { navigate('/'); setTimeout(() => { const el = document.getElementById('noticias-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); }, 600); } }}
                   className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex-shrink-0"
                 >
                   Notícias
@@ -497,7 +497,7 @@ export default function Home() {
               </div>
             </div>
             <button
-              onClick={() => { handleNavClick('noticias'); setMobileMenuOpen(false); }}
+              onClick={() => { if (window.location.hash === '#/') { handleNavClick('noticias'); } else { navigate('/'); setTimeout(() => { const el = document.getElementById('noticias-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); }, 600); } setMobileMenuOpen(false); }}
               className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100"
             >
               Notícias
@@ -511,6 +511,72 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      {/* Hero Institucional */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-600 to-blue-500">
+        {/* Padrão geométrico */}
+        <div className="absolute inset-0 opacity-10">
+          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="grid-home" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="1"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid-home)" />
+          </svg>
+        </div>
+        <div className="relative max-w-7xl mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-14 md:py-20">
+          <div className="grid md:grid-cols-2 gap-10 items-center">
+            {/* Texto */}
+            <div>
+              <span className="inline-block bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-4">
+                Unimontes — Campus Almenara
+              </span>
+              <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-4">
+                Educação pública<br />
+                <span className="text-yellow-300">de qualidade</span><br />
+                no Vale do<br className="md:hidden" /> Jequitinhonha
+              </h1>
+              <p className="text-blue-100 text-sm md:text-base leading-relaxed mb-8 max-w-md">
+                Formando educadores desde 2001 nos cursos de Pedagogia e Letras/Português. Acesse a agenda semanal, projetos acadêmicos e serviços da Secretaria em um só lugar.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => { const el = document.getElementById('agenda-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); }}
+                  className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-blue-900 font-bold px-5 py-2.5 rounded-full shadow-md transition-all duration-200 hover:scale-105 text-sm"
+                >
+                  Ver Agenda Semanal
+                </button>
+                <button
+                  onClick={() => navigate('/sobre')}
+                  className="flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white font-bold px-5 py-2.5 rounded-full border border-white/30 transition-all duration-200 text-sm"
+                >
+                  Conhecer o Campus
+                </button>
+              </div>
+            </div>
+            {/* Cards de acesso rápido */}
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { titulo: 'Agenda Semanal', desc: 'Veja as disciplinas da semana', emoji: '📅', acao: () => { const el = document.getElementById('agenda-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); } },
+                { titulo: 'Projetos', desc: 'PIBID, AACC, AIEX e mais', emoji: '🔬', acao: () => navigate('/projetos/aacc') },
+                { titulo: 'Secretaria', desc: 'Solicitações e contatos', emoji: '📋', acao: () => navigate('/secretaria/solicitacoes') },
+                { titulo: 'Notícias', desc: 'Novidades do campus', emoji: '📰', acao: () => { const el = document.getElementById('noticias-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); } },
+              ].map((item, i) => (
+                <button
+                  key={i}
+                  onClick={item.acao}
+                  className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-xl p-4 text-left transition-all duration-200 hover:scale-105 group"
+                >
+                  <span className="text-2xl mb-2 block">{item.emoji}</span>
+                  <p className="text-white font-bold text-sm">{item.titulo}</p>
+                  <p className="text-blue-200 text-xs mt-0.5">{item.desc}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Main Content */}
       <div className="py-8 md:py-12 px-4 md:px-8 lg:px-16 xl:px-24">
