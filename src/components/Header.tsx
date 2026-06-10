@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { ChevronDown, Instagram, MapPin, Menu, X } from 'lucide-react';
-import { useLocation } from 'wouter';
 import { useHashLocation } from 'wouter/use-hash-location';
 
 function scrollToNoticias() {
@@ -30,8 +29,7 @@ export function Header() {
   const [ingressoOpen, setIngressoOpen] = useState(false);
   const [projetosOpen, setProjetosOpen] = useState(false);
   const [modelosOpen, setModelosOpen] = useState(false);
-  const [, navigate] = useHashLocation();
-  const [location] = useLocation();
+  const [location, navigate] = useHashLocation();
 
   const handleNoticiasClick = () => {
     if (location === '/') {
