@@ -525,22 +525,46 @@ export default function Home() {
             <rect width="100%" height="100%" fill="url(#grid-home)" />
           </svg>
         </div>
-        <div className="relative max-w-7xl mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-14 md:py-20">
-          <div className="grid md:grid-cols-2 gap-10 items-center">
-            {/* Texto */}
-            <div>
-              <span className="inline-block bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-4">
-                Unimontes — Campus Almenara
-              </span>
+        <div className="relative max-w-7xl mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-12 md:py-16">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+
+            {/* Coluna esquerda — Logo com destaque máximo */}
+            <div className="flex items-center justify-center md:justify-start">
               <img
                 src="/siteunimontes/LogoCapa.png"
                 alt="Unimontes Campus Almenara"
-                className="h-32 md:h-44 w-auto mb-4"
+                className="w-full max-w-xs md:max-w-sm lg:max-w-md h-auto object-contain drop-shadow-2xl"
               />
-              <p className="text-blue-100 text-sm md:text-base leading-relaxed mb-8 max-w-md">
-                Universidade pública de qualidade no Vale do Jequitinhonha.<br />
-                Conhecimento, cultura e extensão a serviço da comunidade desde 2001.
+            </div>
+
+            {/* Coluna direita — Cards + descrição + botões */}
+            <div className="flex flex-col gap-4">
+              {/* 4 Cards de acesso rápido */}
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { titulo: 'Agenda Semanal', desc: 'Veja as disciplinas da semana', emoji: '📅', acao: () => { const el = document.getElementById('agenda-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); } },
+                  { titulo: 'Projetos', desc: 'PIBID, AACC, AIEX e mais', emoji: '🔬', acao: () => navigate('/projetos/aacc') },
+                  { titulo: 'Secretaria', desc: 'Solicitações e contatos', emoji: '📋', acao: () => navigate('/secretaria/solicitacoes') },
+                  { titulo: 'Notícias', desc: 'Novidades do campus', emoji: '📰', acao: () => { const el = document.getElementById('noticias-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); } },
+                ].map((item, i) => (
+                  <button
+                    key={i}
+                    onClick={item.acao}
+                    className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-xl p-4 text-left transition-all duration-200 hover:scale-105"
+                  >
+                    <span className="text-2xl mb-2 block">{item.emoji}</span>
+                    <p className="text-white font-bold text-sm">{item.titulo}</p>
+                    <p className="text-blue-200 text-xs mt-0.5">{item.desc}</p>
+                  </button>
+                ))}
+              </div>
+
+              {/* Descrição */}
+              <p className="text-blue-100 text-sm leading-relaxed">
+                Universidade pública de qualidade no Vale do Jequitinhonha. Conhecimento, cultura e extensão a serviço da comunidade desde 2001.
               </p>
+
+              {/* Botões */}
               <div className="flex flex-wrap gap-3">
                 <button
                   onClick={() => { const el = document.getElementById('agenda-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); }}
@@ -555,26 +579,13 @@ export default function Home() {
                   Conhecer o Campus
                 </button>
               </div>
+
+              {/* Badge movido para baixo */}
+              <span className="inline-block bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest w-fit">
+                Unimontes — Campus Almenara
+              </span>
             </div>
-            {/* Cards de acesso rápido */}
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { titulo: 'Agenda Semanal', desc: 'Veja as disciplinas da semana', emoji: '📅', acao: () => { const el = document.getElementById('agenda-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); } },
-                { titulo: 'Projetos', desc: 'PIBID, AACC, AIEX e mais', emoji: '🔬', acao: () => navigate('/projetos/aacc') },
-                { titulo: 'Secretaria', desc: 'Solicitações e contatos', emoji: '📋', acao: () => navigate('/secretaria/solicitacoes') },
-                { titulo: 'Notícias', desc: 'Novidades do campus', emoji: '📰', acao: () => { const el = document.getElementById('noticias-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); } },
-              ].map((item, i) => (
-                <button
-                  key={i}
-                  onClick={item.acao}
-                  className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-xl p-4 text-left transition-all duration-200 hover:scale-105 group"
-                >
-                  <span className="text-2xl mb-2 block">{item.emoji}</span>
-                  <p className="text-white font-bold text-sm">{item.titulo}</p>
-                  <p className="text-blue-200 text-xs mt-0.5">{item.desc}</p>
-                </button>
-              ))}
-            </div>
+
           </div>
         </div>
       </div>
