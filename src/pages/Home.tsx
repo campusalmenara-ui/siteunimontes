@@ -526,7 +526,7 @@ export default function Home() {
           </svg>
         </div>
         <div className="relative max-w-7xl mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-12 md:py-16">
-          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-stretch">
 
             {/* Coluna esquerda — Logo com destaque máximo */}
             <div className="flex items-center justify-center md:justify-start">
@@ -537,10 +537,10 @@ export default function Home() {
               />
             </div>
 
-            {/* Coluna direita — Cards + descrição + botões */}
-            <div className="flex flex-col gap-4">
+            {/* Coluna direita — Cards + descrição + botões, mesma altura da logo */}
+            <div className="flex flex-col justify-between h-full" style={{ minHeight: '100%' }}>
               {/* 4 Cards de acesso rápido */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3 flex-1">
                 {[
                   { titulo: 'Agenda Semanal', desc: 'Veja as disciplinas da semana', emoji: '📅', acao: () => { const el = document.getElementById('agenda-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); } },
                   { titulo: 'Projetos', desc: 'PIBID, AACC, AIEX e mais', emoji: '🔬', acao: () => navigate('/projetos/aacc') },
@@ -550,7 +550,7 @@ export default function Home() {
                   <button
                     key={i}
                     onClick={item.acao}
-                    className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-xl p-4 text-left transition-all duration-200 hover:scale-105"
+                    className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-xl p-4 text-left transition-all duration-200 hover:scale-105 flex flex-col justify-center"
                   >
                     <span className="text-2xl mb-2 block">{item.emoji}</span>
                     <p className="text-white font-bold text-sm">{item.titulo}</p>
@@ -560,12 +560,13 @@ export default function Home() {
               </div>
 
               {/* Descrição */}
-              <p className="text-blue-100 text-sm leading-relaxed">
-                Universidade pública de qualidade no Vale do Jequitinhonha. Conhecimento, cultura e extensão a serviço da comunidade desde 2001.
+              <p className="text-blue-100 text-sm leading-relaxed mt-4">
+                Universidade pública de qualidade no Vale do Jequitinhonha.<br />
+                Conhecimento, cultura e extensão a serviço da comunidade desde 2001.
               </p>
 
               {/* Botões */}
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-3 mt-4">
                 <button
                   onClick={() => { const el = document.getElementById('agenda-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); }}
                   className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-blue-900 font-bold px-5 py-2.5 rounded-full shadow-md transition-all duration-200 hover:scale-105 text-sm"
@@ -579,11 +580,6 @@ export default function Home() {
                   Conhecer o Campus
                 </button>
               </div>
-
-              {/* Badge movido para baixo */}
-              <span className="inline-block bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest w-fit">
-                Unimontes — Campus Almenara
-              </span>
             </div>
 
           </div>
