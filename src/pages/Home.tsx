@@ -532,13 +532,14 @@ export default function Home() {
               <span className="inline-block bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-4">
                 Unimontes — Campus Almenara
               </span>
-              <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-4">
-                Educação pública<br />
-                <span className="text-yellow-300">de qualidade</span><br />
-                no Vale do<br className="md:hidden" /> Jequitinhonha
-              </h1>
+              <img
+                src="/siteunimontes/LogoCapa.png"
+                alt="Unimontes Campus Almenara"
+                className="h-32 md:h-44 w-auto mb-4"
+              />
               <p className="text-blue-100 text-sm md:text-base leading-relaxed mb-8 max-w-md">
-                Formando educadores desde 2001 nos cursos de Pedagogia e Letras/Português. Acesse a agenda semanal, projetos acadêmicos e serviços da Secretaria em um só lugar.
+                Universidade pública de qualidade no Vale do Jequitinhonha.<br />
+                Conhecimento, cultura e extensão a serviço da comunidade desde 2001.
               </p>
               <div className="flex flex-wrap gap-3">
                 <button
