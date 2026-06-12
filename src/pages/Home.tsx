@@ -598,7 +598,7 @@ export default function Home() {
             <div
               className="relative w-full"
               style={{
-                backgroundImage: 'url(/agendasemanal.png)',
+                backgroundImage: 'url(/siteunimontes/agendasemanal.png)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center center',
                 backgroundRepeat: 'no-repeat',
