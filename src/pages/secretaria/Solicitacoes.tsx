@@ -766,8 +766,11 @@ export default function Solicitacoes() {
         )}
 
         <p className="text-center text-sm text-gray-400 mt-10">
-          {filtradas.length} solicitação{filtradas.length !== 1 ? 'ões' : ''} {busca ? 'encontrada' + (filtradas.length !== 1 ? 's' : '') : 'disponíve' + (filtradas.length !== 1 ? 'is' : 'l')}
-        </p>
+  {filtradas.length} {filtradas.length !== 1 ? 'solicitações' : 'solicitação'}{' '}
+  {busca
+    ? (filtradas.length !== 1 ? 'encontradas' : 'encontrada')
+    : (filtradas.length !== 1 ? 'disponíveis' : 'disponível')}
+</p>
       </main>
 
       {/* Footer */}
