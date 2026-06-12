@@ -637,6 +637,7 @@ export default function Home() {
     </h2>
   </div>
 </div>
+</div>
           {/* Cursos */}
           {coursesData.length > 0 ? (
             coursesData.map((course) => (
