@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Instagram, Play, Image, ExternalLink } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Instagram, ChevronLeft, ChevronRight, Play, Image as ImageIcon, X } from 'lucide-react';
 
 interface Post {
   imagem: string;
@@ -29,6 +29,11 @@ export function RedesSociais() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalPost, setModalPost] = useState<Post | null>(null);
+  const [current, setCurrent] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  const CARD_WIDTH = 304; // px — largura do card + gap
+  const VISIBLE = 4;
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -43,8 +48,8 @@ export function RedesSociais() {
           .map(cells => ({
             imagem: cells[0]?.trim() || '',
             legenda: cells[1]?.trim() || '',
-            link: cells[2]?.trim() || '',
-            tipo: cells[3]?.trim().toLowerCase() || 'foto',
+            link:    cells[2]?.trim() || '',
+            tipo:    cells[3]?.trim().toLowerCase() || 'foto',
           }));
         setPosts(parsed);
       } catch (err) {
@@ -56,84 +61,134 @@ export function RedesSociais() {
     fetchPosts();
   }, []);
 
-  if (loading) return null;
-  if (posts.length === 0) return null;
+  const maxIndex = Math.max(0, posts.length - VISIBLE);
+
+  const prev = () => setCurrent(c => Math.max(0, c - 1));
+  const next = () => setCurrent(c => Math.min(maxIndex, c + 1));
 
   return (
     <>
-      <div className="mt-16">
-        {/* Cabeçalho da seção */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-1 h-8 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full" />
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+      {/* Seção fundo escuro — idêntica à estrutura da UFMG */}
+      <div className="mt-16 -mx-4 md:-mx-8 lg:-mx-16 xl:-mx-24 bg-[#1a2744] text-white">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-12 md:py-16 space-y-8">
+
+          {/* Cabeçalho */}
+          <div className="flex items-center justify-between">
+            <h2 className="pl-3 border-l-2 border-white text-3xl md:text-4xl font-bold">
               Unimontes (Almenara) nas Redes
             </h2>
+            <div className="hidden md:flex items-center gap-3">
+              <span className="font-semibold text-sm text-white/70">Siga-nos:</span>
+              <a
+                href="https://www.instagram.com/unimontes.almenara"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white hover:text-yellow-400 transition-colors"
+                aria-label="Instagram"
+              >
+                <Instagram size={22} />
+              </a>
+            </div>
           </div>
-          <a
-            href="https://www.instagram.com/unimontes.almenara"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-sm font-semibold text-pink-600 hover:text-pink-700 transition-colors"
-          >
-            <Instagram size={18} />
-            <span className="hidden md:inline">Seguir no Instagram</span>
-          </a>
-        </div>
 
-        {/* Grid de posts */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {posts.slice(0, 8).map((post, i) => (
-            <button
-              key={i}
-              onClick={() => setModalPost(post)}
-              className="group relative aspect-square rounded-xl overflow-hidden bg-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02]"
+          {/* Carrossel */}
+          {loading ? (
+            <div className="flex gap-8">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="flex-shrink-0 w-72 h-[22rem] rounded-lg bg-white/10 animate-pulse" />
+              ))}
+            </div>
+          ) : posts.length === 0 ? (
+            <p className="text-white/50 text-sm">Nenhuma postagem encontrada. Adicione dados na aba REDES SOCIAIS da planilha.</p>
+          ) : (
+            <div className="overflow-hidden" ref={carouselRef}>
+              <div
+                className="flex gap-8 transition-transform duration-500 ease-in-out"
+                style={{ transform: `translateX(-${current * CARD_WIDTH}px)` }}
+              >
+                {posts.map((post, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setModalPost(post)}
+                    className="flex-shrink-0 w-72 h-[22rem] md:h-[26rem] rounded-lg overflow-hidden relative group cursor-pointer focus:outline-none"
+                    style={{
+                      backgroundImage: `url('${post.imagem}')`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    }}
+                  >
+                    {/* Overlay gradiente */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+                    {/* Ícone play/foto */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center">
+                      {post.tipo === 'video' || post.tipo === 'reels'
+                        ? <Play size={20} className="text-white ml-1" />
+                        : <ImageIcon size={18} className="text-white" />
+                      }
+                    </div>
+
+                    {/* Título sobreposto no rodapé */}
+                    <h3 className="absolute bottom-0 left-0 right-0 p-4 text-white font-semibold text-base text-left line-clamp-3 z-10">
+                      {post.legenda}
+                    </h3>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Controles + link */}
+          <div className="flex items-center justify-between">
+            {/* Mobile — ícones redes */}
+            <div className="flex md:hidden items-center gap-3">
+              <a href="https://www.instagram.com/unimontes.almenara" target="_blank" rel="noopener noreferrer" className="text-white hover:text-yellow-400 transition-colors">
+                <Instagram size={20} />
+              </a>
+            </div>
+
+            {/* Navegação carrossel */}
+            {posts.length > VISIBLE && (
+              <div className="flex items-center gap-4 ml-auto">
+                <button
+                  onClick={prev}
+                  disabled={current === 0}
+                  className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <span className="text-sm text-white/60">
+                  {current + 1} / {maxIndex + 1}
+                </span>
+                <button
+                  onClick={next}
+                  disabled={current >= maxIndex}
+                  className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
+            )}
+
+            {/* Link ver mais */}
+            <a
+              href="https://www.instagram.com/unimontes.almenara"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-white font-medium text-sm hover:text-yellow-400 transition-colors ml-6"
             >
-              {/* Imagem */}
-              <img
-                src={post.imagem}
-                alt={post.legenda}
-                className="w-full h-full object-cover"
-                onError={e => {
-                  (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"%3E%3Crect fill="%23e5e7eb" width="400" height="400"/%3E%3C/svg%3E';
-                }}
-              />
+              Perfil oficial no Instagram
+              <ChevronRight size={16} />
+            </a>
+          </div>
 
-              {/* Overlay ao hover */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
-                <p className="text-white text-xs leading-snug line-clamp-3">{post.legenda}</p>
-              </div>
-
-              {/* Ícone do tipo */}
-              <div className="absolute top-2 right-2 bg-black/40 backdrop-blur-sm rounded-full p-1">
-                {post.tipo === 'video' || post.tipo === 'reels' ? (
-                  <Play size={12} className="text-white" />
-                ) : (
-                  <Image size={12} className="text-white" />
-                )}
-              </div>
-            </button>
-          ))}
-        </div>
-
-        {/* Link ver mais */}
-        <div className="flex justify-end mt-4">
-          <a
-            href="https://www.instagram.com/unimontes.almenara"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 text-sm font-semibold text-pink-600 hover:text-pink-700 transition-colors"
-          >
-            Ver todas as postagens
-            <ExternalLink size={14} />
-          </a>
         </div>
       </div>
 
       {/* Modal */}
       {modalPost && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
           onClick={() => setModalPost(null)}
         >
           <div
@@ -145,14 +200,13 @@ export function RedesSociais() {
               <img
                 src={modalPost.imagem}
                 alt={modalPost.legenda}
-                className="w-full h-full object-contain max-h-[400px]"
+                className="w-full h-full object-contain max-h-[420px]"
               />
             </div>
 
             {/* Conteúdo */}
             <div className="md:w-1/2 p-6 flex flex-col justify-between">
               <div>
-                {/* Header modal */}
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
@@ -160,19 +214,12 @@ export function RedesSociais() {
                     </div>
                     <span className="font-bold text-sm text-gray-800">unimontes.almenara</span>
                   </div>
-                  <button
-                    onClick={() => setModalPost(null)}
-                    className="text-gray-400 hover:text-gray-600 transition-colors text-xl font-light"
-                  >
-                    ✕
+                  <button onClick={() => setModalPost(null)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                    <X size={20} />
                   </button>
                 </div>
-
-                {/* Legenda */}
                 <p className="text-gray-700 text-sm leading-relaxed">{modalPost.legenda}</p>
               </div>
-
-              {/* Rodapé modal */}
               {modalPost.link && (
                 <div className="mt-6 pt-4 border-t border-gray-100">
                   <a
