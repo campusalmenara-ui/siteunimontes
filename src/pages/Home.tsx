@@ -595,17 +595,23 @@ export default function Home() {
           {/* Header Card - Imagem + Barra Azul */}
           <div className="header-card rounded-lg overflow-hidden mb-8 shadow-md">
             {/* Hero Section com Imagem de Agenda Semanal */}
-          <div
-          className="relative w-full"
-          style={{
-          backgroundImage: 'url(/siteunimontes/agendasemanal.png)',
-          backgroundSize: 'contain',
-          backgroundPosition: 'center center',
-          backgroundRepeat: 'no-repeat',
-          aspectRatio: '1640 / 262',
-            }}
-                >
-  {/* Overlay suave */}
+          {/* Banner Desktop */}
+<div className="hidden md:block relative w-full">
+  <img
+    src="/siteunimontes/agendasemanal.png"
+    alt="Agenda Semanal"
+    className="w-full h-auto block"
+  />
+  <div className="absolute inset-0 bg-black/10"></div>
+</div>
+
+{/* Banner Mobile */}
+<div className="block md:hidden relative w-full">
+  <img
+    src="/siteunimontes/agendasemanal2.png"
+    alt="Agenda Semanal"
+    className="w-full h-auto block"
+  />
   <div className="absolute inset-0 bg-black/10"></div>
 </div>
 
