@@ -596,30 +596,29 @@ export default function Home() {
           {/* Header Card - Imagem + Barra Azul */}
           <div className="header-card rounded-lg overflow-hidden mb-8 shadow-md">
             {/* Hero Section com Imagem de Agenda Semanal */}
-            <div
-              className="relative w-full"
-              style={{
-                backgroundImage: 'url(https://d2xsxph8kpxj0f.cloudfront.net/310419663030187894/57Ypr7wbFX6eHCZZ7V6o8w/agenda%20semanal_b5d79cb6.png)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center center',
-                backgroundRepeat: 'no-repeat',
-                paddingBottom: '40%',
-              }}
-            >
-              {/* Overlay suave */}
-              <div className="absolute inset-0 bg-black/10"></div>
+            {/* Banner Responsivo */}
+            <div className="relative w-full">
+              <picture>
+                <source
+                  media="(max-width: 767px)"
+                  srcSet="/siteunimontes/agendasemanal2.png"
+                />
+                <img
+                  src="/siteunimontes/agendasemanal.png"
+                  alt="Agenda Semanal"
+                  className="w-full h-auto block"
+                />
+              </picture>
+              <div className="absolute inset-0 bg-black/10 pointer-events-none"></div>
             </div>
-
             {/* Título da Semana */}
-            <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4">
-              <div className="py-2 md:py-3">
-                <h2 className="text-lg md:text-xl font-bold text-center border-3 border-white rounded-lg px-4 py-1">
-                  {weekDates.start && weekDates.end
-                    ? `Semana de ${weekDates.start} a ${weekDates.end}`
-                    : 'Carregando semana...'}
-                </h2>
-              </div>
-            </div>
+            <h2
+              className="w-full bg-[#ffbf00] text-[#3a3184] font-bold text-lg md:text-xl py-4 px-4 text-center tracking-wide"
+            >
+              📅 {weekDates.start && weekDates.end
+                ? `Semana de ${weekDates.start} a ${weekDates.end}`
+                : 'Carregando semana...'}
+            </h2>
           </div>
           {/* Cursos */}
           {coursesData.length > 0 ? (
@@ -758,7 +757,9 @@ export default function Home() {
           {/* Fim da Seção de Agenda */}
 
           {/* Seção Redes Sociais */}
-          <RedesSociais />
+          <div id="redes-section">
+            <RedesSociais />
+          </div>
 
           {/* Seção de Notícias */}
           <div id="noticias-section" className="mt-16">
