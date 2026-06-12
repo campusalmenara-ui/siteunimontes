@@ -609,17 +609,34 @@ export default function Home() {
   <div className="absolute inset-0 bg-black/10"></div>
 </div>
 
-            {/* Título da Semana */}
-            <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4">
-              <div className="py-2 md:py-3">
-                <h2 className="text-lg md:text-xl font-bold text-center border-3 border-white rounded-lg px-4 py-1">
-                  {weekDates.start && weekDates.end
-                    ? `Semana de ${weekDates.start} a ${weekDates.end}`
-                    : 'Carregando semana...'}
-                </h2>
-              </div>
-            </div>
-          </div>
+          {/* Título da Semana */}
+<div className="bg-white px-4 py-4">
+  <div className="flex justify-center">
+    <h2
+      className="
+        inline-flex
+        items-center
+        gap-2
+        bg-[#ffbf00]
+        text-[#3a3184]
+        font-bold
+        text-lg
+        md:text-xl
+        px-8
+        py-3
+        rounded-full
+        shadow-lg
+        border-2
+        border-white
+      "
+    >
+      📅
+      {weekDates.start && weekDates.end
+        ? `Semana de ${weekDates.start} a ${weekDates.end}`
+        : 'Carregando semana...'}
+    </h2>
+  </div>
+</div>
           {/* Cursos */}
           {coursesData.length > 0 ? (
             coursesData.map((course) => (
