@@ -158,9 +158,9 @@ export function RedesSociais() {
                 <button
                   key={i}
                   onClick={() => !isDragging.current && setModalPost(post)}
-                  className="flex-shrink-0 w-56 md:w-64 rounded-xl overflow-hidden relative group focus:outline-none"
+                  className="flex-shrink-0 w-44 md:w-64 rounded-xl overflow-hidden relative group focus:outline-none"
                   style={{
-                    height: '18rem',
+                    height: '22rem',
                     backgroundImage: `url('${post.imagem}')`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
@@ -174,7 +174,7 @@ export function RedesSociais() {
                       : <ImageIcon size={14} className="text-white" />
                     }
                   </div>
-                  <h3 className="absolute bottom-0 left-0 right-0 p-3 text-white font-semibold text-sm text-left line-clamp-3 z-10">
+                  <h3 className="absolute bottom-0 left-0 right-0 p-3 text-white font-semibold text-xs md:text-sm text-left line-clamp-2 md:line-clamp-3 z-10">
                     {post.legenda}
                   </h3>
                 </button>
