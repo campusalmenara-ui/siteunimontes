@@ -52,6 +52,7 @@ export default function Home() {
   const [ingressoOpen, setIngressoOpen] = useState(false);
   const [projetosOpen, setProjetosOpen] = useState(false);
   const [modelosOpen, setModelosOpen] = useState(false);
+  const [highlightMenu, setHighlightMenu] = useState<'projetos' | 'secretaria' | null>(null);
 
   const handleNavClick = (section: 'agenda' | 'noticias' | 'calendario' | 'editais') => {
     if (section === 'calendario') {
@@ -66,6 +67,34 @@ export default function Home() {
     setMobileMenuOpen(false);
     document.getElementById(section === 'agenda' ? 'agenda-section' : 'noticias-section')?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  const handleHighlightClick = (menu: 'projetos' | 'secretaria') => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    const isMobile = window.innerWidth < 768;
+
+    if (isMobile) {
+      setMobileMenuOpen(true);
+      setTimeout(() => {
+        const submenuId = menu === 'projetos' ? 'projetos-mobile' : 'modelos-mobile';
+        document.getElementById(submenuId)?.classList.remove('hidden');
+      }, 50);
+    } else {
+      if (menu === 'projetos') setProjetosOpen(true);
+      else setModelosOpen(true);
+    }
+
+    setHighlightMenu(menu);
+    setTimeout(() => {
+      setHighlightMenu(null);
+      if (!isMobile) {
+        if (menu === 'projetos') setProjetosOpen(false);
+        else setModelosOpen(false);
+      }
+    }, 2000);
+  };
+
+  const highlightClass = "ring-4 ring-yellow-400 ring-offset-2 rounded-lg animate-pulse";
 
   // Fetch dados do Google Sheets
   useEffect(() => {
@@ -271,9 +300,9 @@ export default function Home() {
                 <div
                   className="relative flex-shrink-0"
                   onMouseEnter={() => setProjetosOpen(true)}
-                  onMouseLeave={() => setProjetosOpen(false)}
+                  onMouseLeave={() => { if (highlightMenu !== 'projetos') setProjetosOpen(false); }}
                 >
-                  <button className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex items-center gap-1">
+                  <button className={`text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex items-center gap-1 ${highlightMenu === 'projetos' ? highlightClass : ''}`}>
                     Projetos
                     <ChevronDown size={14} />
                   </button>
@@ -294,9 +323,9 @@ export default function Home() {
                 <div
                   className="relative flex-shrink-0"
                   onMouseEnter={() => setModelosOpen(true)}
-                  onMouseLeave={() => setModelosOpen(false)}
+                  onMouseLeave={() => { if (highlightMenu !== 'secretaria') setModelosOpen(false); }}
                 >
-                  <button className="text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex items-center gap-1">
+                  <button className={`text-xs md:text-sm lg:text-base font-semibold transition-all duration-300 pb-2 text-gray-600 hover:text-blue-600 border-b-3 border-transparent whitespace-nowrap flex items-center gap-1 ${highlightMenu === 'secretaria' ? highlightClass : ''}`}>
                     Secretaria
                     <ChevronDown size={14} />
                   </button>
@@ -464,7 +493,7 @@ export default function Home() {
                   const el = document.getElementById('projetos-mobile');
                   if (el) el.classList.toggle('hidden');
                 }}
-                className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100 flex items-center justify-between"
+                className={`w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100 flex items-center justify-between ${highlightMenu === 'projetos' ? highlightClass : ''}`}
               >
                 Projetos
                 <ChevronDown size={16} />
@@ -487,7 +516,7 @@ export default function Home() {
                   const el = document.getElementById('modelos-mobile');
                   if (el) el.classList.toggle('hidden');
                 }}
-                className="w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100 flex items-center justify-between"
+                className={`w-full text-left px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-100 flex items-center justify-between ${highlightMenu === 'secretaria' ? highlightClass : ''}`}
               >
                 Secretaria
                 <ChevronDown size={16} />
@@ -545,8 +574,8 @@ export default function Home() {
               <div className="grid grid-cols-2 gap-3">
                 {[
                   { titulo: 'Agenda Semanal', desc: 'Veja as disciplinas da semana', emoji: '📅', acao: () => { const el = document.getElementById('agenda-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); } },
-                  { titulo: 'Projetos', desc: 'PIBID, AACC, AIEX e mais', emoji: '🔬', acao: () => { window.scrollTo({ top: 0, behavior: 'smooth' }); setTimeout(() => (window as any).__highlightHeaderMenu?.('projetos'), 400); } },
-                  { titulo: 'Secretaria', desc: 'Solicitações e contatos', emoji: '📋', acao: () => { window.scrollTo({ top: 0, behavior: 'smooth' }); setTimeout(() => (window as any).__highlightHeaderMenu?.('secretaria'), 400); } },
+                  { titulo: 'Projetos', desc: 'PIBID, AACC, AIEX e mais', emoji: '🔬', acao: () => handleHighlightClick('projetos') },
+                  { titulo: 'Secretaria', desc: 'Solicitações e contatos', emoji: '📋', acao: () => handleHighlightClick('secretaria') },
                   { titulo: 'Notícias', desc: 'Novidades do campus', emoji: '📰', acao: () => { const el = document.getElementById('noticias-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); } },
                 ].map((item, i) => (
                   <button
