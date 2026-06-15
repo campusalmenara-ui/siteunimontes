@@ -545,8 +545,8 @@ export default function Home() {
               <div className="grid grid-cols-2 gap-3">
                 {[
                   { titulo: 'Agenda Semanal', desc: 'Veja as disciplinas da semana', emoji: '📅', acao: () => { const el = document.getElementById('agenda-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); } },
-                  { titulo: 'Projetos', desc: 'PIBID, AACC, AIEX e mais', emoji: '🔬', acao: () => navigate('/projetos/aacc') },
-                  { titulo: 'Secretaria', desc: 'Solicitações e contatos', emoji: '📋', acao: () => navigate('/secretaria/solicitacoes') },
+                  { titulo: 'Projetos', desc: 'PIBID, AACC, AIEX e mais', emoji: '🔬', acao: () => { window.scrollTo({ top: 0, behavior: 'smooth' }); setTimeout(() => (window as any).__highlightHeaderMenu?.('projetos'), 400); } },
+                  { titulo: 'Secretaria', desc: 'Solicitações e contatos', emoji: '📋', acao: () => { window.scrollTo({ top: 0, behavior: 'smooth' }); setTimeout(() => (window as any).__highlightHeaderMenu?.('secretaria'), 400); } },
                   { titulo: 'Notícias', desc: 'Novidades do campus', emoji: '📰', acao: () => { const el = document.getElementById('noticias-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); } },
                 ].map((item, i) => (
                   <button
