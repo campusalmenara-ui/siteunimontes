@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronDown, Instagram, MapPin, Menu, X } from 'lucide-react';
 import { useHashLocation } from 'wouter/use-hash-location';
 
@@ -23,6 +23,40 @@ export function Header() {
   const [projetosOpen, setProjetosOpen] = useState(false);
   const [modelosOpen, setModelosOpen] = useState(false);
   const [location, navigate] = useHashLocation();
+  const [highlightMenu, setHighlightMenu] = useState<'projetos' | 'secretaria' | null>(null);
+
+  useEffect(() => {
+    (window as any).__highlightHeaderMenu = (menu: 'projetos' | 'secretaria') => {
+      const isMobile = window.innerWidth < 768;
+
+      if (isMobile) {
+        setMobileMenuOpen(true);
+        setTimeout(() => {
+          const submenuId = menu === 'projetos' ? 'projetos-mobile-menu' : 'modelos-mobile-menu';
+          const submenu = document.getElementById(submenuId);
+          if (submenu) submenu.classList.remove('hidden');
+        }, 50);
+      } else {
+        if (menu === 'projetos') setProjetosOpen(true);
+        else setModelosOpen(true);
+      }
+
+      setHighlightMenu(menu);
+      setTimeout(() => {
+        setHighlightMenu(null);
+        if (!isMobile) {
+          if (menu === 'projetos') setProjetosOpen(false);
+          else setModelosOpen(false);
+        }
+      }, 2000);
+    };
+
+    return () => {
+      delete (window as any).__highlightHeaderMenu;
+    };
+  }, []);
+
+  const highlightClass = "ring-4 ring-yellow-400 ring-offset-2 rounded-lg animate-pulse";
 
   const handleNoticiasClick = () => {
     navigate('/');
@@ -97,8 +131,8 @@ export function Header() {
               </div>
 
               {/* Projetos dropdown */}
-              <div className="relative flex-shrink-0" onMouseEnter={() => setProjetosOpen(true)} onMouseLeave={() => setProjetosOpen(false)}>
-                <button className={`${navBtn} flex items-center gap-1`}>
+              <div className="relative flex-shrink-0" onMouseEnter={() => setProjetosOpen(true)} onMouseLeave={() => { if (highlightMenu !== 'projetos') setProjetosOpen(false); }}>
+                <button className={`${navBtn} flex items-center gap-1 ${highlightMenu === 'projetos' ? highlightClass : ''}`}>
                   Projetos <ChevronDown size={14} />
                 </button>
                 {projetosOpen && (
@@ -111,8 +145,8 @@ export function Header() {
               </div>
 
               {/* Secretaria dropdown */}
-              <div className="relative flex-shrink-0" onMouseEnter={() => setModelosOpen(true)} onMouseLeave={() => setModelosOpen(false)}>
-                <button className={`${navBtn} flex items-center gap-1`}>
+              <div className="relative flex-shrink-0" onMouseEnter={() => setModelosOpen(true)} onMouseLeave={() => { if (highlightMenu !== 'secretaria') setModelosOpen(false); }}>
+                <button className={`${navBtn} flex items-center gap-1 ${highlightMenu === 'secretaria' ? highlightClass : ''}`}>
                   Secretaria <ChevronDown size={14} />
                 </button>
                 {modelosOpen && (
@@ -187,7 +221,7 @@ export function Header() {
 
               {/* Projetos mobile */}
               <div>
-                <button onClick={() => { const el = document.getElementById('projetos-mobile-menu'); if (el) el.classList.toggle('hidden'); }} className="w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 flex items-center justify-between">
+                <button onClick={() => { const el = document.getElementById('projetos-mobile-menu'); if (el) el.classList.toggle('hidden'); }} className={`w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 flex items-center justify-between ${highlightMenu === 'projetos' ? highlightClass : ''}`}>
                   Projetos <ChevronDown size={16} />
                 </button>
                 <div id="projetos-mobile-menu" className="hidden pl-4 space-y-1">
@@ -199,7 +233,7 @@ export function Header() {
 
               {/* Secretaria mobile */}
               <div>
-                <button onClick={() => { const el = document.getElementById('modelos-mobile-menu'); if (el) el.classList.toggle('hidden'); }} className="w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 flex items-center justify-between">
+                <button onClick={() => { const el = document.getElementById('modelos-mobile-menu'); if (el) el.classList.toggle('hidden'); }} className={`w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 flex items-center justify-between ${highlightMenu === 'secretaria' ? highlightClass : ''}`}>
                   Secretaria <ChevronDown size={16} />
                 </button>
                 <div id="modelos-mobile-menu" className="hidden pl-4 space-y-1">
