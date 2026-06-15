@@ -205,38 +205,43 @@ export function RedesSociais() {
 
       {/* Modal */}
       {modalPost && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+        <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/80 backdrop-blur-sm"
           onClick={() => setModalPost(null)}>
-          <div className="bg-white rounded-2xl overflow-hidden shadow-2xl w-full max-w-3xl flex flex-col md:flex-row max-h-[90vh]"
-            onClick={e => e.stopPropagation()}>
-
-            {/* Imagem com proporção 9:16 como card */}
-            <div className="md:w-[45%] flex-shrink-0 bg-black" style={{ aspectRatio: '9/16', maxHeight: '70vh' }}>
-              <img
-                src={modalPost.imagem}
-                alt={modalPost.legenda}
-                className="w-full h-full object-cover"
-              />
+          <div
+            className="bg-white w-full md:max-w-3xl md:rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row"
+            style={{ maxHeight: '92vh' }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Imagem — retangular no mobile (16:9), vertical no desktop (9:16) */}
+            <div className="flex-shrink-0 bg-black w-full md:w-[40%]">
+              {/* Mobile: 16:9 */}
+              <div className="md:hidden w-full" style={{ aspectRatio: '16/9' }}>
+                <img src={modalPost.imagem} alt={modalPost.legenda} className="w-full h-full object-cover" />
+              </div>
+              {/* Desktop: 9:16 */}
+              <div className="hidden md:block h-full" style={{ aspectRatio: '9/16', maxHeight: '70vh' }}>
+                <img src={modalPost.imagem} alt={modalPost.legenda} className="w-full h-full object-cover" />
+              </div>
             </div>
 
             {/* Conteúdo */}
-            <div className="flex-1 p-6 flex flex-col justify-between overflow-y-auto">
+            <div className="flex-1 p-5 flex flex-col justify-between overflow-y-auto">
               <div>
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                      <Instagram size={18} className="text-white" />
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                      <Instagram size={16} className="text-white" />
                     </div>
                     <span className="font-bold text-sm text-gray-800">unimontes.almenara</span>
                   </div>
-                  <button onClick={() => setModalPost(null)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                  <button onClick={() => setModalPost(null)} className="text-gray-400 hover:text-gray-600 transition-colors p-1">
                     <X size={20} />
                   </button>
                 </div>
                 <p className="text-gray-700 text-sm leading-relaxed">{modalPost.legenda}</p>
               </div>
               {modalPost.link && (
-                <div className="mt-6 pt-4 border-t border-gray-100">
+                <div className="mt-4 pt-4 border-t border-gray-100">
                   <a href={modalPost.link} target="_blank" rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold text-sm hover:opacity-90 transition-opacity">
                     <Instagram size={16} /> Ver no Instagram
