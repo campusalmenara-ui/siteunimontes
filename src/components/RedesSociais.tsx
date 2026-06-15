@@ -167,16 +167,21 @@ export function RedesSociais() {
                   }}
                   draggable={false}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center">
                     {post.tipo === 'video' || post.tipo === 'reels'
                       ? <Play size={16} className="text-white ml-0.5" />
                       : <ImageIcon size={14} className="text-white" />
                     }
                   </div>
-                  <h3 className="absolute bottom-0 left-0 right-0 p-3 text-white font-semibold text-xs md:text-sm text-left line-clamp-2 md:line-clamp-3 z-10">
-                    {post.legenda}
-                  </h3>
+                  <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
+                    <h3 className="text-white font-semibold text-xs md:text-sm text-left line-clamp-3 overflow-hidden">
+                      {post.legenda}
+                    </h3>
+                    <span className="block mt-1 text-yellow-400 text-[11px] font-semibold text-left">
+                      Ver mais
+                    </span>
+                  </div>
                 </button>
               ))}
             </div>
