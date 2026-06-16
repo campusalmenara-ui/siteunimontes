@@ -10,6 +10,36 @@ interface CalendarItem {
 
 const MESES_ABREV = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
 
+const MESES_NOMES: { [key: string]: number } = {
+  'janeiro': 1, 'jan': 1,
+  'fevereiro': 2, 'fev': 2,
+  'marco': 3, 'março': 3, 'mar': 3,
+  'abril': 4, 'abr': 4,
+  'maio': 5, 'mai': 5,
+  'junho': 6, 'jun': 6,
+  'julho': 7, 'jul': 7,
+  'agosto': 8, 'ago': 8,
+  'setembro': 9, 'set': 9,
+  'outubro': 10, 'out': 10,
+  'novembro': 11, 'nov': 11,
+  'dezembro': 12, 'dez': 12,
+};
+
+// Aceita o mês como número ("6") ou como nome em português ("Junho", "junho", "jun")
+function parseMes(raw: string): number {
+  const trimmed = raw.trim();
+
+  const asNumber = parseInt(trimmed, 10);
+  if (!isNaN(asNumber) && asNumber >= 1 && asNumber <= 12) return asNumber;
+
+  const normalized = trimmed
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, ''); // remove acentos
+
+  return MESES_NOMES[normalized] || 0;
+}
+
 // URL do PDF do Calendário Escolar (mesmo link usado no menu Aluno)
 const CALENDARIO_PDF_URL = 'https://drive.google.com/file/d/1KtIHqC2_AzpwGb-lZFTKTyxNVGr_MIcV/view';
 
@@ -80,7 +110,7 @@ export function CalendarioEscolar() {
         if (cells.length < 4) continue;
 
         const dia = parseInt(cells[0]?.trim() || '', 10);
-        const mes = parseInt(cells[1]?.trim() || '', 10);
+        const mes = parseMes(cells[1]?.trim() || '');
         const ano = parseInt(cells[2]?.trim() || '', 10);
         const atividade = cells[3]?.trim() || '';
 
@@ -111,7 +141,7 @@ export function CalendarioEscolar() {
   };
 
   return (
-    <div className="bg-white rounded-lg">
+    <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-6 md:p-8 h-full">
       <div className="flex items-center gap-2 mb-6">
         <div className="w-1 h-7 bg-blue-600 rounded-full" />
         <h2 className="text-xl md:text-2xl font-bold text-gray-800">Calendário Escolar</h2>
