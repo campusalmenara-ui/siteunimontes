@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useHashLocation } from 'wouter/use-hash-location';
 import { ChevronDown, BookOpen, User, Clock, AlertCircle, Coffee, Instagram, MapPin, Menu, X } from 'lucide-react';
 import { NewsSection } from '@/components/NewsSection';
+import { CalendarioEscolar } from '@/components/CalendarioEscolar';
 import { RedesSociais } from '@/components/RedesSociais';
 import { useState as useStateNav, useEffect as useEffectNav } from 'react';
 
@@ -790,11 +791,12 @@ export default function Home() {
             <RedesSociais />
           </div>
 
-          {/* Seção de Notícias */}
-          <div id="noticias-section" className="mt-16">
+          {/* Seção Calendário Escolar + Notícias */}
+          <div id="noticias-section" className="mt-16 grid md:grid-cols-2 gap-10">
+            <CalendarioEscolar />
             <NewsSection />
           </div>
-          {/* Fim da Seção de Notícias */}
+          {/* Fim da Seção Calendário Escolar + Notícias */}
 
         </div>
       </div>
