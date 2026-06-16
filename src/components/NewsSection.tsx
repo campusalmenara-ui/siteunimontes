@@ -160,7 +160,7 @@ export function NewsSection() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg">
+      <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-6 md:p-8 h-full">
         <div className="flex items-center gap-2 mb-6">
           <div className="w-1 h-7 bg-yellow-500 rounded-full" />
           <h2 className="text-xl md:text-2xl font-bold text-gray-800">Notícias</h2>
@@ -177,7 +177,7 @@ export function NewsSection() {
   }
 
   return (
-    <div className="bg-white rounded-lg">
+    <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-6 md:p-8 h-full">
       <div className="flex items-center gap-2 mb-6">
         <div className="w-1 h-7 bg-yellow-500 rounded-full" />
         <h2 className="text-xl md:text-2xl font-bold text-gray-800">Notícias</h2>
