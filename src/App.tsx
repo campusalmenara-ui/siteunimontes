@@ -4,6 +4,7 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch, Router as WouterRouter } from "wouter";
 import { useHashLocation } from "wouter/use-hash-location";
 import ErrorBoundary from "./components/ErrorBoundary";
+import { ScrollToTop } from "./components/ScrollToTop";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import AACC from "./pages/projetos/AACC";
@@ -20,6 +21,7 @@ import Sobre from "./pages/sobre/Sobre";
 function Router() {
   return (
     <WouterRouter hook={useHashLocation}>
+      <ScrollToTop />
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/projetos/aacc" component={AACC} />
