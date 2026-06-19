@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface CalendarItem {
   dia: number;
@@ -46,10 +47,13 @@ const CALENDARIO_PDF_URL = 'https://drive.google.com/file/d/1KtIHqC2_AzpwGb-lZFT
 // gid da aba "Calendário Escolar" na planilha
 const SHEET_GID = '1799591414';
 
+const ITEMS_PER_PAGE = 7;
+
 export function CalendarioEscolar() {
   const [items, setItems] = useState<CalendarItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchCalendario();
@@ -128,16 +132,27 @@ export function CalendarioEscolar() {
 
       const futuras = parsed
         .filter((item) => item.date >= hoje)
-        .sort((a, b) => a.date.getTime() - b.date.getTime())
-        .slice(0, 7);
+        .sort((a, b) => a.date.getTime() - b.date.getTime());
 
       setItems(futuras);
+      setCurrentPage(1);
     } catch (err) {
       console.error('Erro ao carregar calendário escolar:', err);
       setError('Não foi possível carregar o calendário escolar.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const totalPages = Math.max(1, Math.ceil(items.length / ITEMS_PER_PAGE));
+  const paginatedItems = items.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  const goToPage = (page: number) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
   };
 
   return (
@@ -163,10 +178,10 @@ export function CalendarioEscolar() {
 
       {!loading && !error && items.length > 0 && (
         <div className="space-y-0">
-          {items.map((item, idx) => (
+          {paginatedItems.map((item, idx) => (
             <div
               key={idx}
-              className={`flex gap-4 py-4 ${idx !== items.length - 1 ? 'border-b border-gray-100' : ''}`}
+              className={`flex gap-4 py-4 ${idx !== paginatedItems.length - 1 ? 'border-b border-gray-100' : ''}`}
             >
               <div className="flex-shrink-0 w-14 text-center">
                 <div className="bg-blue-50 rounded-lg py-2">
@@ -179,6 +194,43 @@ export function CalendarioEscolar() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Paginação numérica */}
+      {!loading && !error && totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 mt-6 pt-4 border-t border-gray-100">
+          <button
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            aria-label="Página anterior"
+          >
+            <ChevronLeft size={16} />
+          </button>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              onClick={() => goToPage(page)}
+              className={`w-8 h-8 rounded-lg text-sm font-semibold transition-colors ${
+                page === currentPage
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+
+          <button
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            aria-label="Próxima página"
+          >
+            <ChevronRight size={16} />
+          </button>
         </div>
       )}
 
