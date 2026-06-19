@@ -129,7 +129,7 @@ export function CalendarioEscolar() {
       const futuras = parsed
         .filter((item) => item.date >= hoje)
         .sort((a, b) => a.date.getTime() - b.date.getTime())
-        .slice(0, 5);
+        .slice(0, 6);
 
       setItems(futuras);
     } catch (err) {
