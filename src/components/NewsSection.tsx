@@ -297,11 +297,11 @@ export function NewsSection() {
         >
           <div
             className="bg-white w-full md:max-w-2xl md:rounded-2xl overflow-hidden shadow-2xl flex flex-col"
-            style={{ maxHeight: '92vh' }}
+            style={{ maxHeight: '90dvh' }}
             onClick={e => e.stopPropagation()}
           >
             {/* Imagem */}
-            <div className="w-full flex-shrink-0 bg-black" style={{ aspectRatio: '16/9', maxHeight: '320px' }}>
+            <div className="w-full flex-shrink-0 bg-black" style={{ aspectRatio: '16/9', maxHeight: '240px' }}>
               <img
                 src={modalItem.imageUrl}
                 alt={modalItem.title}
@@ -312,9 +312,9 @@ export function NewsSection() {
               />
             </div>
 
-            {/* Conteúdo */}
-            <div className="p-6 overflow-y-auto flex-1">
-              <div className="flex items-start justify-between gap-3 mb-3">
+            {/* Cabeçalho fixo — título, badge, data, botão X */}
+            <div className="px-6 pt-5 pb-3 flex-shrink-0 border-b border-gray-100">
+              <div className="flex items-start justify-between gap-3">
                 <div>
                   {modalItem.categoria && (
                     <span className="inline-block bg-blue-50 text-blue-600 text-xs font-semibold px-3 py-1 rounded-full mb-2">
@@ -331,26 +331,30 @@ export function NewsSection() {
                   <X size={22} />
                 </button>
               </div>
+            </div>
 
+            {/* Corpo — área scrollável */}
+            <div className="px-6 py-4 overflow-y-auto flex-1">
               {modalItem.texto ? (
-                <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line mt-4">{modalItem.texto}</p>
+                <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{modalItem.texto}</p>
               ) : (
-                <p className="text-gray-400 text-sm italic mt-4">Conteúdo completo não disponível.</p>
-              )}
-
-              {modalItem.link && (
-                <div className="mt-6 pt-4 border-t border-gray-100">
-                  <a
-                    href={modalItem.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700 transition-colors"
-                  >
-                    <ExternalLink size={16} /> Ver mais
-                  </a>
-                </div>
+                <p className="text-gray-400 text-sm italic">Conteúdo completo não disponível.</p>
               )}
             </div>
+
+            {/* Botão Ver mais — fixo no rodapé, fora da área de scroll */}
+            {modalItem.link && (
+              <div className="px-6 py-4 flex-shrink-0 border-t border-gray-100 bg-white">
+                <a
+                  href={modalItem.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700 transition-colors"
+                >
+                  <ExternalLink size={16} /> Ver mais
+                </a>
+              </div>
+            )}
           </div>
         </div>
       )}
