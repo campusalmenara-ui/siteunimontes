@@ -26,7 +26,6 @@ const MESES_NOMES: { [key: string]: number } = {
   'dezembro': 12, 'dez': 12,
 };
 
-// Aceita o mês como número ("6") ou como nome em português ("Junho", "junho", "jun")
 function parseMes(raw: string): number {
   const trimmed = raw.trim();
 
@@ -36,18 +35,66 @@ function parseMes(raw: string): number {
   const normalized = trimmed
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, ''); // remove acentos
+    .replace(/[\u0300-\u036f]/g, '');
 
   return MESES_NOMES[normalized] || 0;
 }
 
-// URL do PDF do Calendário Escolar (mesmo link usado no menu Aluno)
 const CALENDARIO_PDF_URL = 'https://drive.google.com/file/d/1KtIHqC2_AzpwGb-lZFTKTyxNVGr_MIcV/view';
-
-// gid da aba "Calendário Escolar" na planilha
 const SHEET_GID = '1799591414';
-
 const ITEMS_PER_PAGE = 7;
+
+// Parser de CSV completo que respeita quebras de linha dentro de células com aspas
+const parseCSV = (csv: string): string[][] => {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = '';
+  let insideQuotes = false;
+  let i = 0;
+
+  while (i < csv.length) {
+    const char = csv[i];
+    const next = csv[i + 1];
+
+    if (char === '"') {
+      if (insideQuotes && next === '"') {
+        cell += '"';
+        i += 2;
+        continue;
+      }
+      insideQuotes = !insideQuotes;
+      i++;
+      continue;
+    }
+
+    if (char === ',' && !insideQuotes) {
+      row.push(cell);
+      cell = '';
+      i++;
+      continue;
+    }
+
+    if ((char === '\n' || char === '\r') && !insideQuotes) {
+      if (char === '\r' && next === '\n') i++;
+      row.push(cell);
+      rows.push(row);
+      row = [];
+      cell = '';
+      i++;
+      continue;
+    }
+
+    cell += char;
+    i++;
+  }
+
+  if (cell.length > 0 || row.length > 0) {
+    row.push(cell);
+    rows.push(row);
+  }
+
+  return rows.filter(r => r.some(c => c.trim() !== ''));
+};
 
 export function CalendarioEscolar() {
   const [items, setItems] = useState<CalendarItem[]>([]);
@@ -58,26 +105,6 @@ export function CalendarioEscolar() {
   useEffect(() => {
     fetchCalendario();
   }, []);
-
-  const parseCSVLine = (line: string): string[] => {
-    const result: string[] = [];
-    let current = '';
-    let insideQuotes = false;
-
-    for (let i = 0; i < line.length; i++) {
-      const char = line[i];
-      if (char === '"') {
-        insideQuotes = !insideQuotes;
-      } else if (char === ',' && !insideQuotes) {
-        result.push(current);
-        current = '';
-      } else {
-        current += char;
-      }
-    }
-    result.push(current);
-    return result;
-  };
 
   const fetchCalendario = async () => {
     try {
@@ -103,14 +130,10 @@ export function CalendarioEscolar() {
         throw new Error('Planilha não está acessível.');
       }
 
-      const lines = csv.trim().split('\n');
+      const rows = parseCSV(csv).slice(1); // pula header
       const parsed: CalendarItem[] = [];
 
-      for (let i = 1; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (!line) continue;
-
-        const cells = parseCSVLine(line);
+      for (const cells of rows) {
         if (cells.length < 4) continue;
 
         const dia = parseInt(cells[0]?.trim() || '', 10);
@@ -190,7 +213,7 @@ export function CalendarioEscolar() {
                 </div>
               </div>
               <div className="flex-1 pt-1">
-                <p className="text-sm text-gray-700 leading-relaxed">{item.atividade}</p>
+                <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{item.atividade}</p>
               </div>
             </div>
           ))}
