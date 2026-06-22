@@ -15,6 +15,58 @@ interface NewsItem {
 
 const ITEMS_PER_PAGE = 5;
 
+// Parser de CSV completo que respeita quebras de linha dentro de células com aspas
+const parseCSV = (csv: string): string[][] => {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = '';
+  let insideQuotes = false;
+  let i = 0;
+
+  while (i < csv.length) {
+    const char = csv[i];
+    const next = csv[i + 1];
+
+    if (char === '"') {
+      if (insideQuotes && next === '"') {
+        cell += '"';
+        i += 2;
+        continue;
+      }
+      insideQuotes = !insideQuotes;
+      i++;
+      continue;
+    }
+
+    if (char === ',' && !insideQuotes) {
+      row.push(cell);
+      cell = '';
+      i++;
+      continue;
+    }
+
+    if ((char === '\n' || char === '\r') && !insideQuotes) {
+      if (char === '\r' && next === '\n') i++;
+      row.push(cell);
+      rows.push(row);
+      row = [];
+      cell = '';
+      i++;
+      continue;
+    }
+
+    cell += char;
+    i++;
+  }
+
+  if (cell.length > 0 || row.length > 0) {
+    row.push(cell);
+    rows.push(row);
+  }
+
+  return rows.filter(r => r.some(c => c.trim() !== ''));
+};
+
 export function NewsSection() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,28 +77,6 @@ export function NewsSection() {
   useEffect(() => {
     fetchNews();
   }, []);
-
-  const parseCSVLine = (line: string): string[] => {
-    const result: string[] = [];
-    let current = '';
-    let insideQuotes = false;
-
-    for (let i = 0; i < line.length; i++) {
-      const char = line[i];
-
-      if (char === '"') {
-        insideQuotes = !insideQuotes;
-      } else if (char === ',' && !insideQuotes) {
-        result.push(current);
-        current = '';
-      } else {
-        current += char;
-      }
-    }
-
-    result.push(current);
-    return result;
-  };
 
   // Converte "dd/mm/aa" ou "dd/mm/aaaa" em { dia, mes, ano, date }
   const parseDateBR = (raw: string): { dia: number; mes: number; ano: number; date: Date } | null => {
@@ -95,17 +125,11 @@ export function NewsSection() {
         throw new Error('Planilha não está acessível. Verifique se está compartilhada publicamente.');
       }
 
-      const lines = csv.trim().split('\n');
+      const rows = parseCSV(csv).slice(1); // pula header
       const newsItems: NewsItem[] = [];
 
-      // Pular header (primeira linha) e processar dados
       // Colunas: A=Imagem, B=Título, C=Link, D=Categoria, E=Data(dd/mm/aa), F=Texto
-      for (let i = 1; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (!line) continue;
-
-        const cells = parseCSVLine(line);
-
+      for (const cells of rows) {
         if (cells.length >= 2) {
           const imageUrl = cells[0]?.trim() || '';
           const title = cells[1]?.trim() || '';
