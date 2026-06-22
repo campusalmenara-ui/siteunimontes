@@ -22,18 +22,56 @@ interface ProjetoPageProps {
 const SHEET_ID = '1q_bLd3HXuFUH7Sogj3lo9D7aLv2BMqgX8P2iAnwbMF0';
 const CARDS_PER_PAGE = 6;
 
-const parseCSVLine = (line: string): string[] => {
-  const result: string[] = [];
-  let current = '';
+// Parser de CSV completo que respeita quebras de linha dentro de células com aspas
+const parseCSV = (csv: string): string[][] => {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = '';
   let insideQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i];
-    if (char === '"') { insideQuotes = !insideQuotes; }
-    else if (char === ',' && !insideQuotes) { result.push(current); current = ''; }
-    else { current += char; }
+  let i = 0;
+
+  while (i < csv.length) {
+    const char = csv[i];
+    const next = csv[i + 1];
+
+    if (char === '"') {
+      if (insideQuotes && next === '"') {
+        cell += '"';
+        i += 2;
+        continue;
+      }
+      insideQuotes = !insideQuotes;
+      i++;
+      continue;
+    }
+
+    if (char === ',' && !insideQuotes) {
+      row.push(cell);
+      cell = '';
+      i++;
+      continue;
+    }
+
+    if ((char === '\n' || char === '\r') && !insideQuotes) {
+      if (char === '\r' && next === '\n') i++;
+      row.push(cell);
+      rows.push(row);
+      row = [];
+      cell = '';
+      i++;
+      continue;
+    }
+
+    cell += char;
+    i++;
   }
-  result.push(current);
-  return result;
+
+  if (cell.length > 0 || row.length > 0) {
+    row.push(cell);
+    rows.push(row);
+  }
+
+  return rows.filter(r => r.some(c => c.trim() !== ''));
 };
 
 const parseDateBR = (raw: string): Date | null => {
@@ -74,19 +112,18 @@ export function ProjetoPage({ title, intro, sheetGid, configGid = '2102872257' }
         const configUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${configGid}`;
         const configRes = await fetch(configUrl);
         const configCsv = await configRes.text();
-        const configLines = configCsv.trim().split('\n').slice(1);
-        const cursosLista = configLines
-          .map(l => parseCSVLine(l)[0]?.trim())
+        const configRows = parseCSV(configCsv).slice(1);
+        const cursosLista = configRows
+          .map(cells => cells[0]?.trim())
           .filter(Boolean) as string[];
         setCursos(['Todos', ...cursosLista]);
 
         const postsUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${sheetGid}`;
         const postsRes = await fetch(postsUrl);
         const postsCsv = await postsRes.text();
-        const postsLines = postsCsv.trim().split('\n').slice(1);
+        const postsRows = parseCSV(postsCsv).slice(1);
 
-        const parsed: PostItem[] = postsLines
-          .map(l => parseCSVLine(l))
+        const parsed: PostItem[] = postsRows
           .filter(cells => cells[0]?.trim())
           .map(cells => {
             const dataRaw = cells[4]?.trim() || '';
