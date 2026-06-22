@@ -1,24 +1,26 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, ExternalLink, Calendar } from 'lucide-react';
 
 interface NewsItem {
   imageUrl: string;
   title: string;
   link: string;
   categoria: string;
+  texto: string;
   dia: number;
   mes: number;
   ano: number;
   date: Date;
 }
 
-const ITEMS_PER_PAGE = 7;
+const ITEMS_PER_PAGE = 5;
 
 export function NewsSection() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [modalItem, setModalItem] = useState<NewsItem | null>(null);
 
   useEffect(() => {
     fetchNews();
@@ -97,7 +99,7 @@ export function NewsSection() {
       const newsItems: NewsItem[] = [];
 
       // Pular header (primeira linha) e processar dados
-      // Colunas: A=Imagem, B=Título, C=Link, D=Categoria, E=Data(dd/mm/aa)
+      // Colunas: A=Imagem, B=Título, C=Link, D=Categoria, E=Data(dd/mm/aa), F=Texto
       for (let i = 1; i < lines.length; i++) {
         const line = lines[i].trim();
         if (!line) continue;
@@ -110,6 +112,7 @@ export function NewsSection() {
           const link = cells[2]?.trim() || '';
           const categoria = cells[3]?.trim() || '';
           const dataRaw = cells[4]?.trim() || '';
+          const texto = cells[5]?.trim() || '';
 
           const parsedDate = parseDateBR(dataRaw);
 
@@ -120,6 +123,7 @@ export function NewsSection() {
               title,
               link: link.startsWith('http') ? link : '',
               categoria,
+              texto,
               dia: parsedDate.dia,
               mes: parsedDate.mes,
               ano: parsedDate.ano,
@@ -177,96 +181,155 @@ export function NewsSection() {
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-6 md:p-8 h-full">
-      <div className="flex items-center gap-2 mb-6">
-        <div className="w-1 h-7 bg-yellow-500 rounded-full" />
-        <h2 className="text-xl md:text-2xl font-bold text-gray-800">Notícias</h2>
-      </div>
+    <>
+      <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-6 md:p-8 h-full">
+        <div className="flex items-center gap-2 mb-6">
+          <div className="w-1 h-7 bg-yellow-500 rounded-full" />
+          <h2 className="text-xl md:text-2xl font-bold text-gray-800">Notícias</h2>
+        </div>
 
-      {/* Lista de notícias */}
-      <div className="space-y-4">
-        {paginatedNews.map((item, index) => (
-          <div
-            key={index}
-            className="flex gap-4 cursor-pointer group pb-4 border-b border-gray-100 last:border-b-0 last:pb-0"
-            onClick={() => {
-              if (item.link) {
-                window.open(item.link, '_blank');
-              }
-            }}
-          >
-            {/* Conteúdo textual */}
-            <div className="flex-1 min-w-0">
-              {item.categoria && (
-                <span className="inline-block bg-blue-50 text-blue-600 text-xs font-semibold px-3 py-1 rounded-full mb-2">
-                  {item.categoria}
-                </span>
-              )}
-              <h3 className="font-bold text-sm md:text-base text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-2">
-                {item.title}
-              </h3>
-              <div className="flex items-center gap-1 mt-2 text-xs text-gray-500">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="flex-shrink-0">
-                  <rect x="3" y="4" width="18" height="18" rx="2" />
-                  <line x1="16" y1="2" x2="16" y2="6" />
-                  <line x1="8" y1="2" x2="8" y2="6" />
-                  <line x1="3" y1="10" x2="21" y2="10" />
-                </svg>
-                <span>{formatDate(item)}</span>
+        {/* Lista de notícias */}
+        <div className="space-y-4">
+          {paginatedNews.map((item, index) => (
+            <div
+              key={index}
+              className="flex gap-4 cursor-pointer group pb-4 border-b border-gray-100 last:border-b-0 last:pb-0"
+              onClick={() => setModalItem(item)}
+            >
+              {/* Conteúdo textual */}
+              <div className="flex-1 min-w-0">
+                {item.categoria && (
+                  <span className="inline-block bg-blue-50 text-blue-600 text-xs font-semibold px-3 py-1 rounded-full mb-2">
+                    {item.categoria}
+                  </span>
+                )}
+                <h3 className="font-bold text-sm md:text-base text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-2">
+                  {item.title}
+                </h3>
+                <div className="flex items-center gap-1 mt-2 text-xs text-gray-500">
+                  <Calendar size={12} className="flex-shrink-0" />
+                  <span>{formatDate(item)}</span>
+                </div>
+              </div>
+
+              {/* Imagem */}
+              <div className="flex-shrink-0 w-24 h-20 md:w-28 md:h-24 rounded-lg overflow-hidden bg-gray-100">
+                <img
+                  src={item.imageUrl}
+                  alt={item.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect fill="%23e5e7eb" width="400" height="300"/%3E%3C/svg%3E';
+                  }}
+                />
               </div>
             </div>
+          ))}
+        </div>
 
+        {/* Paginação numérica */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-6 pt-4 border-t border-gray-100">
+            <button
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              aria-label="Página anterior"
+            >
+              <ChevronLeft size={16} />
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => goToPage(page)}
+                className={`w-8 h-8 rounded-lg text-sm font-semibold transition-colors ${
+                  page === currentPage
+                    ? 'bg-blue-600 text-white'
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+
+            <button
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              aria-label="Próxima página"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Modal */}
+      {modalItem && (
+        <div
+          className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/80 backdrop-blur-sm"
+          onClick={() => setModalItem(null)}
+        >
+          <div
+            className="bg-white w-full md:max-w-2xl md:rounded-2xl overflow-hidden shadow-2xl flex flex-col"
+            style={{ maxHeight: '92vh' }}
+            onClick={e => e.stopPropagation()}
+          >
             {/* Imagem */}
-            <div className="flex-shrink-0 w-24 h-20 md:w-28 md:h-24 rounded-lg overflow-hidden bg-gray-100">
+            <div className="w-full flex-shrink-0 bg-black" style={{ aspectRatio: '16/9', maxHeight: '320px' }}>
               <img
-                src={item.imageUrl}
-                alt={item.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                src={modalItem.imageUrl}
+                alt={modalItem.title}
+                className="w-full h-full object-cover"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect fill="%23e5e7eb" width="400" height="300"/%3E%3C/svg%3E';
                 }}
               />
             </div>
+
+            {/* Conteúdo */}
+            <div className="p-6 overflow-y-auto flex-1">
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div>
+                  {modalItem.categoria && (
+                    <span className="inline-block bg-blue-50 text-blue-600 text-xs font-semibold px-3 py-1 rounded-full mb-2">
+                      {modalItem.categoria}
+                    </span>
+                  )}
+                  <h2 className="font-bold text-lg md:text-xl text-gray-800 leading-snug">{modalItem.title}</h2>
+                  <div className="flex items-center gap-1 mt-2 text-xs text-gray-500">
+                    <Calendar size={12} className="flex-shrink-0" />
+                    <span>{formatDate(modalItem)}</span>
+                  </div>
+                </div>
+                <button onClick={() => setModalItem(null)} className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0 p-1">
+                  <X size={22} />
+                </button>
+              </div>
+
+              {modalItem.texto ? (
+                <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line mt-4">{modalItem.texto}</p>
+              ) : (
+                <p className="text-gray-400 text-sm italic mt-4">Conteúdo completo não disponível.</p>
+              )}
+
+              {modalItem.link && (
+                <div className="mt-6 pt-4 border-t border-gray-100">
+                  <a
+                    href={modalItem.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700 transition-colors"
+                  >
+                    <ExternalLink size={16} /> Ver mais
+                  </a>
+                </div>
+              )}
+            </div>
           </div>
-        ))}
-      </div>
-
-      {/* Paginação numérica */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-6 pt-4 border-t border-gray-100">
-          <button
-            onClick={() => goToPage(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            aria-label="Página anterior"
-          >
-            <ChevronLeft size={16} />
-          </button>
-
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-            <button
-              key={page}
-              onClick={() => goToPage(page)}
-              className={`w-8 h-8 rounded-lg text-sm font-semibold transition-colors ${
-                page === currentPage
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              {page}
-            </button>
-          ))}
-
-          <button
-            onClick={() => goToPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            aria-label="Próxima página"
-          >
-            <ChevronRight size={16} />
-          </button>
         </div>
       )}
-    </div>
+    </>
   );
 }
