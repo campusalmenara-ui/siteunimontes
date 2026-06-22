@@ -347,8 +347,8 @@ export function ProjetoPage({ title, intro, sheetGid, configGid = '2102872257' }
               </div>
             </div>
 
-            {/* Corpo — área scrollável */}
-            <div className="px-6 py-4 overflow-y-auto flex-1">
+            {/* Corpo — área scrollável com altura limitada */}
+            <div className="px-6 py-4 overflow-y-auto min-h-0 max-h-48">
               {modalPost.texto ? (
                 <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{modalPost.texto}</p>
               ) : (
