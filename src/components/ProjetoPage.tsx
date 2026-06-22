@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, AlertCircle, ExternalLink } from 'lucide-react';
+import { ChevronLeft, ChevronRight, AlertCircle, ExternalLink, Calendar } from 'lucide-react';
 import { Header } from '@/components/Header';
 
 interface PostItem {
@@ -7,6 +7,8 @@ interface PostItem {
   caption: string;
   link: string;
   curso: string;
+  data?: string; // dd/mm/aaaa ou dd/mm/aa, vindo da coluna E
+  dataObj?: Date;
 }
 
 interface ProjetoPageProps {
@@ -31,6 +33,28 @@ const parseCSVLine = (line: string): string[] => {
   }
   result.push(current);
   return result;
+};
+
+// Converte "dd/mm/aa" ou "dd/mm/aaaa" em Date
+const parseDateBR = (raw: string): Date | null => {
+  const trimmed = raw.trim();
+  const match = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+  if (!match) return null;
+
+  const dia = parseInt(match[1], 10);
+  const mes = parseInt(match[2], 10);
+  let ano = parseInt(match[3], 10);
+  if (ano < 100) ano += 2000;
+
+  const date = new Date(ano, mes - 1, dia);
+  if (isNaN(date.getTime())) return null;
+  return date;
+};
+
+const formatDateBR = (date: Date) => {
+  const dia = String(date.getDate()).padStart(2, '0');
+  const mes = String(date.getMonth() + 1).padStart(2, '0');
+  return `${dia}/${mes}/${date.getFullYear()}`;
 };
 
 export function ProjetoPage({ title, intro, sheetGid, configGid = '2102872257' }: ProjetoPageProps) {
@@ -65,12 +89,26 @@ export function ProjetoPage({ title, intro, sheetGid, configGid = '2102872257' }
         const parsed: PostItem[] = postsLines
           .map(l => parseCSVLine(l))
           .filter(cells => cells[0]?.trim())
-          .map(cells => ({
-            imageUrl: cells[0]?.trim() || '',
-            caption: cells[1]?.trim() || '',
-            link: cells[2]?.trim() || '',
-            curso: cells[3]?.trim() || 'Todos',  // col D opcional, fallback Todos
-          }));
+          .map(cells => {
+            const dataRaw = cells[4]?.trim() || '';
+            const dataObj = dataRaw ? parseDateBR(dataRaw) : null;
+            return {
+              imageUrl: cells[0]?.trim() || '',
+              caption: cells[1]?.trim() || '',
+              link: cells[2]?.trim() || '',
+              curso: cells[3]?.trim() || 'Todos',  // col D opcional, fallback Todos
+              data: dataObj ? formatDateBR(dataObj) : undefined,
+              dataObj: dataObj || undefined,
+            };
+          });
+
+        // Ordena da mais recente para a mais antiga (itens sem data ficam no final)
+        parsed.sort((a, b) => {
+          if (a.dataObj && b.dataObj) return b.dataObj.getTime() - a.dataObj.getTime();
+          if (a.dataObj) return -1;
+          if (b.dataObj) return 1;
+          return 0;
+        });
 
         setPosts(parsed);
       } catch (err) {
@@ -184,11 +222,19 @@ export function ProjetoPage({ title, intro, sheetGid, configGid = '2102872257' }
                   {/* Conteúdo */}
                   <div className="p-4 flex-1 flex flex-col justify-between">
                     <p className="text-gray-700 text-sm leading-relaxed line-clamp-3">{post.caption}</p>
-                    {post.link && (
-                      <div className="mt-3 flex items-center gap-1 text-blue-500 text-sm font-semibold">
-                        <ExternalLink size={14} /> Saiba mais
-                      </div>
-                    )}
+                    <div className="mt-3 flex items-center justify-between gap-2">
+                      {post.data && (
+                        <div className="flex items-center gap-1 text-xs text-gray-500">
+                          <Calendar size={13} className="flex-shrink-0" />
+                          <span>{post.data}</span>
+                        </div>
+                      )}
+                      {post.link && (
+                        <div className="flex items-center gap-1 text-blue-500 text-sm font-semibold ml-auto">
+                          <ExternalLink size={14} /> Saiba mais
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
