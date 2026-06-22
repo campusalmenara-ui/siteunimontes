@@ -12,7 +12,7 @@ interface NewsItem {
   date: Date;
 }
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 7;
 
 export function NewsSection() {
   const [news, setNews] = useState<NewsItem[]>([]);
