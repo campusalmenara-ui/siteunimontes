@@ -304,16 +304,16 @@ export function ProjetoPage({ title, intro, sheetGid, configGid = '2102872257' }
 
       {modalPost && (
         <div
-          className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/80 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4 md:px-0"
           onClick={() => setModalPost(null)}
         >
           <div
-            className="bg-white w-full md:max-w-2xl md:rounded-2xl overflow-hidden shadow-2xl flex flex-col"
+            className="bg-white w-full rounded-2xl md:max-w-2xl overflow-hidden shadow-2xl flex flex-col"
             style={{ maxHeight: '90dvh' }}
             onClick={e => e.stopPropagation()}
           >
-            {/* Imagem — altura limitada para não comprimir o conteúdo em telas pequenas */}
-            <div className="w-full flex-shrink-0 bg-black" style={{ aspectRatio: '16/9', maxHeight: '240px' }}>
+            {/* Imagem — oculta no mobile para dar espaço ao conteúdo */}
+            <div className="hidden md:block w-full flex-shrink-0 bg-black" style={{ aspectRatio: '16/9', maxHeight: '240px' }}>
               <img
                 src={modalPost.imageUrl}
                 alt={modalPost.caption}
