@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, AlertCircle, ExternalLink, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronRight, AlertCircle, ExternalLink, Calendar, X } from 'lucide-react';
 import { Header } from '@/components/Header';
 
 interface PostItem {
@@ -7,15 +7,16 @@ interface PostItem {
   caption: string;
   link: string;
   curso: string;
-  data?: string; // dd/mm/aaaa ou dd/mm/aa, vindo da coluna E
+  data?: string;
   dataObj?: Date;
+  texto?: string;
 }
 
 interface ProjetoPageProps {
   title: string;
   intro: string | React.ReactNode;
-  sheetGid: string; // gid da aba na planilha
-  configGid?: string; // gid da aba CONFIGURAÇÃO para buscar os cursos
+  sheetGid: string;
+  configGid?: string;
 }
 
 const SHEET_ID = '1q_bLd3HXuFUH7Sogj3lo9D7aLv2BMqgX8P2iAnwbMF0';
@@ -35,7 +36,6 @@ const parseCSVLine = (line: string): string[] => {
   return result;
 };
 
-// Converte "dd/mm/aa" ou "dd/mm/aaaa" em Date
 const parseDateBR = (raw: string): Date | null => {
   const trimmed = raw.trim();
   const match = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
@@ -64,27 +64,26 @@ export function ProjetoPage({ title, intro, sheetGid, configGid = '2102872257' }
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [modalPost, setModalPost] = useState<PostItem | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
 
-        // Buscar cursos da aba CONFIGURAÇÃO
         const configUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${configGid}`;
         const configRes = await fetch(configUrl);
         const configCsv = await configRes.text();
-        const configLines = configCsv.trim().split('\n').slice(1); // pula header
+        const configLines = configCsv.trim().split('\n').slice(1);
         const cursosLista = configLines
           .map(l => parseCSVLine(l)[0]?.trim())
           .filter(Boolean) as string[];
         setCursos(['Todos', ...cursosLista]);
 
-        // Buscar posts da aba do projeto
         const postsUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${sheetGid}`;
         const postsRes = await fetch(postsUrl);
         const postsCsv = await postsRes.text();
-        const postsLines = postsCsv.trim().split('\n').slice(1); // pula header
+        const postsLines = postsCsv.trim().split('\n').slice(1);
 
         const parsed: PostItem[] = postsLines
           .map(l => parseCSVLine(l))
@@ -96,13 +95,13 @@ export function ProjetoPage({ title, intro, sheetGid, configGid = '2102872257' }
               imageUrl: cells[0]?.trim() || '',
               caption: cells[1]?.trim() || '',
               link: cells[2]?.trim() || '',
-              curso: cells[3]?.trim() || 'Todos',  // col D opcional, fallback Todos
+              curso: cells[3]?.trim() || 'Todos',
               data: dataObj ? formatDateBR(dataObj) : undefined,
               dataObj: dataObj || undefined,
+              texto: cells[5]?.trim() || '',
             };
           });
 
-        // Ordena da mais recente para a mais antiga (itens sem data ficam no final)
         parsed.sort((a, b) => {
           if (a.dataObj && b.dataObj) return b.dataObj.getTime() - a.dataObj.getTime();
           if (a.dataObj) return -1;
@@ -122,12 +121,10 @@ export function ProjetoPage({ title, intro, sheetGid, configGid = '2102872257' }
     fetchData();
   }, [sheetGid, configGid]);
 
-  // Filtrar posts pelo curso ativo
   const postsFiltrados = filtroAtivo === 'Todos'
     ? posts
     : posts.filter(p => p.curso === filtroAtivo);
 
-  // Paginação
   const totalPaginas = Math.ceil(postsFiltrados.length / CARDS_PER_PAGE);
   const inicio = (paginaAtual - 1) * CARDS_PER_PAGE;
   const postsPagina = postsFiltrados.slice(inicio, inicio + CARDS_PER_PAGE);
@@ -143,7 +140,6 @@ export function ProjetoPage({ title, intro, sheetGid, configGid = '2102872257' }
 
       <main className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-10 flex-1">
 
-        {/* Título e introdução */}
         <div className="mb-10">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">{title}</h1>
           <div className="text-gray-600 leading-relaxed text-base md:text-lg max-w-4xl">
@@ -153,7 +149,6 @@ export function ProjetoPage({ title, intro, sheetGid, configGid = '2102872257' }
 
         <hr className="border-gray-200 mb-8" />
 
-        {/* Filtros por curso */}
         {!loading && !error && cursos.length > 1 && (
           <div className="flex flex-wrap gap-2 mb-8">
             {cursos.map(curso => (
@@ -172,7 +167,6 @@ export function ProjetoPage({ title, intro, sheetGid, configGid = '2102872257' }
           </div>
         )}
 
-        {/* Estados de loading e erro */}
         {loading && (
           <div className="flex justify-center items-center py-24">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
@@ -186,7 +180,6 @@ export function ProjetoPage({ title, intro, sheetGid, configGid = '2102872257' }
           </div>
         )}
 
-        {/* Grid de cards */}
         {!loading && !error && postsPagina.length === 0 && (
           <div className="text-center py-24 text-gray-400">
             <p className="text-lg">Nenhum registro encontrado.</p>
@@ -199,10 +192,9 @@ export function ProjetoPage({ title, intro, sheetGid, configGid = '2102872257' }
               {postsPagina.map((post, i) => (
                 <div
                   key={i}
-                  onClick={() => post.link && window.open(post.link, '_blank')}
-                  className={`bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col ${post.link ? 'cursor-pointer' : ''}`}
+                  onClick={() => setModalPost(post)}
+                  className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col cursor-pointer"
                 >
-                  {/* Imagem */}
                   <div className="relative h-52 bg-gray-100 overflow-hidden">
                     <img
                       src={post.imageUrl}
@@ -219,7 +211,6 @@ export function ProjetoPage({ title, intro, sheetGid, configGid = '2102872257' }
                     )}
                   </div>
 
-                  {/* Conteúdo */}
                   <div className="p-4 flex-1 flex flex-col justify-between">
                     <p className="text-gray-700 text-sm leading-relaxed line-clamp-3">{post.caption}</p>
                     <div className="mt-3 flex items-center justify-between gap-2">
@@ -229,18 +220,15 @@ export function ProjetoPage({ title, intro, sheetGid, configGid = '2102872257' }
                           <span>{post.data}</span>
                         </div>
                       )}
-                      {post.link && (
-                        <div className="flex items-center gap-1 text-blue-500 text-sm font-semibold ml-auto">
-                          <ExternalLink size={14} /> Saiba mais
-                        </div>
-                      )}
+                      <div className="flex items-center gap-1 text-blue-500 text-sm font-semibold ml-auto">
+                        Saiba mais
+                      </div>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Paginação */}
             {totalPaginas > 1 && (
               <div className="flex items-center justify-center gap-4">
                 <button
@@ -266,8 +254,6 @@ export function ProjetoPage({ title, intro, sheetGid, configGid = '2102872257' }
         )}
       </main>
 
-      {/* Rodapé */}
-      {/* Footer */}
       <div className="bg-gray-800 text-white py-8 px-4 md:px-8 lg:px-16 xl:px-24">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-sm font-semibold">
@@ -278,6 +264,71 @@ export function ProjetoPage({ title, intro, sheetGid, configGid = '2102872257' }
           </p>
         </div>
       </div>
+
+      {modalPost && (
+        <div
+          className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/80 backdrop-blur-sm"
+          onClick={() => setModalPost(null)}
+        >
+          <div
+            className="bg-white w-full md:max-w-2xl md:rounded-2xl overflow-hidden shadow-2xl flex flex-col"
+            style={{ maxHeight: '92vh' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="w-full flex-shrink-0 bg-black" style={{ aspectRatio: '16/9', maxHeight: '320px' }}>
+              <img
+                src={modalPost.imageUrl}
+                alt={modalPost.caption}
+                className="w-full h-full object-cover"
+                onError={e => {
+                  (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect fill="%23e5e7eb" width="400" height="300"/%3E%3C/svg%3E';
+                }}
+              />
+            </div>
+
+            <div className="p-6 overflow-y-auto flex-1">
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div>
+                  {modalPost.curso && modalPost.curso !== 'Todos' && (
+                    <span className="inline-block bg-blue-50 text-blue-600 text-xs font-semibold px-3 py-1 rounded-full mb-2">
+                      {modalPost.curso}
+                    </span>
+                  )}
+                  <h2 className="font-bold text-lg md:text-xl text-gray-800 leading-snug">{modalPost.caption}</h2>
+                  {modalPost.data && (
+                    <div className="flex items-center gap-1 mt-2 text-xs text-gray-500">
+                      <Calendar size={12} className="flex-shrink-0" />
+                      <span>{modalPost.data}</span>
+                    </div>
+                  )}
+                </div>
+                <button onClick={() => setModalPost(null)} className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0 p-1">
+                  <X size={22} />
+                </button>
+              </div>
+
+              {modalPost.texto ? (
+                <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line mt-4">{modalPost.texto}</p>
+              ) : (
+                <p className="text-gray-400 text-sm italic mt-4">Conteúdo completo não disponível.</p>
+              )}
+
+              {modalPost.link && (
+                <div className="mt-6 pt-4 border-t border-gray-100">
+                  <a
+                    href={modalPost.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700 transition-colors"
+                  >
+                    <ExternalLink size={16} /> Ver mais
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
