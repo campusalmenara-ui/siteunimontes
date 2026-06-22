@@ -252,8 +252,9 @@ export function NewsSection() {
         </div>
 
         {/* Paginação numérica */}
+        {/* Paginação compacta */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-6 pt-4 border-t border-gray-100">
+          <div className="flex items-center justify-center gap-1 mt-6 pt-4 border-t border-gray-100">
             <button
               onClick={() => goToPage(currentPage - 1)}
               disabled={currentPage === 1}
@@ -263,19 +264,31 @@ export function NewsSection() {
               <ChevronLeft size={16} />
             </button>
 
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            {currentPage > 2 && (
+              <>
+                <button onClick={() => goToPage(1)} className="w-8 h-8 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors">1</button>
+                {currentPage > 3 && <span className="text-gray-400 text-sm px-1">…</span>}
+              </>
+            )}
+
+            {[currentPage - 1, currentPage, currentPage + 1].filter(p => p >= 1 && p <= totalPages).map((page) => (
               <button
                 key={page}
                 onClick={() => goToPage(page)}
                 className={`w-8 h-8 rounded-lg text-sm font-semibold transition-colors ${
-                  page === currentPage
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-600 hover:bg-gray-100'
+                  page === currentPage ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'
                 }`}
               >
                 {page}
               </button>
             ))}
+
+            {currentPage < totalPages - 1 && (
+              <>
+                {currentPage < totalPages - 2 && <span className="text-gray-400 text-sm px-1">…</span>}
+                <button onClick={() => goToPage(totalPages)} className="w-8 h-8 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors">{totalPages}</button>
+              </>
+            )}
 
             <button
               onClick={() => goToPage(currentPage + 1)}
@@ -292,16 +305,16 @@ export function NewsSection() {
       {/* Modal */}
       {modalItem && (
         <div
-          className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/80 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4 md:px-0"
           onClick={() => setModalItem(null)}
         >
           <div
-            className="bg-white w-full md:max-w-2xl md:rounded-2xl overflow-hidden shadow-2xl flex flex-col"
+            className="bg-white w-full rounded-2xl md:max-w-2xl overflow-hidden shadow-2xl flex flex-col"
             style={{ maxHeight: '90dvh' }}
             onClick={e => e.stopPropagation()}
           >
-            {/* Imagem */}
-            <div className="w-full flex-shrink-0 bg-black" style={{ aspectRatio: '16/9', maxHeight: '240px' }}>
+            {/* Imagem — oculta no mobile para dar espaço ao conteúdo */}
+            <div className="hidden md:block w-full flex-shrink-0 bg-black" style={{ aspectRatio: '16/9', maxHeight: '240px' }}>
               <img
                 src={modalItem.imageUrl}
                 alt={modalItem.title}
