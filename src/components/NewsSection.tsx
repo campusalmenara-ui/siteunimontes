@@ -333,8 +333,8 @@ export function NewsSection() {
               </div>
             </div>
 
-            {/* Corpo — área scrollável */}
-            <div className="px-6 py-4 overflow-y-auto flex-1">
+            {/* Corpo — área scrollável com altura limitada */}
+            <div className="px-6 py-4 overflow-y-auto min-h-0 max-h-48">
               {modalItem.texto ? (
                 <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{modalItem.texto}</p>
               ) : (
