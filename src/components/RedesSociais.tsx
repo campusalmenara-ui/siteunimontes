@@ -11,6 +11,11 @@ interface Post {
 const SHEET_ID = '1q_bLd3HXuFUH7Sogj3lo9D7aLv2BMqgX8P2iAnwbMF0';
 const GID = '1013562204';
 
+// Lista de redes sociais — adicionar novas redes aqui (ex: TikTok, YouTube)
+const REDES = [
+  { nome: 'Instagram', url: 'https://www.instagram.com/unimontes.almenara', Icon: Instagram },
+];
+
 const parseCSVLine = (line: string): string[] => {
   const result: string[] = [];
   let current = '';
@@ -98,7 +103,7 @@ export function RedesSociais() {
 
   const scrollBy = (dir: number) => {
     if (!trackRef.current) return;
-    trackRef.current.scrollBy({ left: dir * 280, behavior: 'smooth' });
+    trackRef.current.scrollBy({ left: dir * 220, behavior: 'smooth' });
   };
 
   return (
@@ -113,27 +118,28 @@ export function RedesSociais() {
           backgroundColor: '#1a2744',
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-12 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-10 md:py-16">
 
-          {/* Cabeçalho */}
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="pl-3 border-l-2 border-white text-2xl md:text-3xl font-bold text-white">
-              🌐💬 Unimontes (Almenara) nas redes
+          {/* Cabeçalho — título + ícones de redes na mesma linha, sempre */}
+          <div className="flex items-center justify-between gap-3 mb-6 md:mb-8">
+            <h2 className="pl-3 border-l-2 border-white text-lg md:text-3xl font-bold text-white whitespace-nowrap overflow-hidden text-ellipsis">
+              Unimontes (Almenara) nas Redes
             </h2>
-            <div className="flex items-center gap-2">
-              <span className="text-white/60 text-sm font-semibold hidden md:inline">Siga-nos:</span>
-              <a href="https://www.instagram.com/unimontes.almenara" target="_blank" rel="noopener noreferrer"
-                className="text-white hover:text-yellow-400 transition-colors" aria-label="Instagram">
-                <Instagram size={22} />
-              </a>
+            <div className="flex items-center gap-2.5 flex-shrink-0">
+              {REDES.map(({ nome, url, Icon }) => (
+                <a key={nome} href={url} target="_blank" rel="noopener noreferrer"
+                  className="text-white hover:text-yellow-400 transition-colors" aria-label={nome}>
+                  <Icon size={20} className="md:w-[22px] md:h-[22px]" />
+                </a>
+              ))}
             </div>
           </div>
 
           {/* Carrossel com scroll nativo + drag */}
           {loading ? (
-            <div className="flex gap-6">
+            <div className="flex gap-4 md:gap-6">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="flex-shrink-0 w-60 h-44 rounded-xl bg-white/10 animate-pulse" />
+                <div key={i} className="flex-shrink-0 w-32 md:w-60 h-44 md:h-64 rounded-xl bg-white/10 animate-pulse" />
               ))}
             </div>
           ) : posts.length === 0 ? (
@@ -141,7 +147,7 @@ export function RedesSociais() {
           ) : (
             <div
               ref={trackRef}
-              className="flex gap-5 overflow-x-auto pb-2 select-none"
+              className="flex gap-3 md:gap-5 overflow-x-auto pb-2 select-none"
               style={{
                 scrollbarWidth: 'none',
                 msOverflowStyle: 'none',
@@ -158,9 +164,9 @@ export function RedesSociais() {
                 <button
                   key={i}
                   onClick={() => !isDragging.current && setModalPost(post)}
-                  className="flex-shrink-0 w-44 md:w-64 rounded-xl overflow-hidden relative group focus:outline-none"
+                  className="flex-shrink-0 w-32 md:w-64 rounded-xl overflow-hidden relative group focus:outline-none"
                   style={{
-                    height: '22rem',
+                    height: '15rem',
                     backgroundImage: `url('${post.imagem}')`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
@@ -168,28 +174,25 @@ export function RedesSociais() {
                   draggable={false}
                 >
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center">
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center">
                     {post.tipo === 'video' || post.tipo === 'reels'
-                      ? <Play size={16} className="text-white ml-0.5" />
-                      : <ImageIcon size={14} className="text-white" />
+                      ? <Play size={14} className="text-white ml-0.5 md:w-4 md:h-4" />
+                      : <ImageIcon size={12} className="text-white md:w-[14px] md:h-[14px]" />
                     }
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
-                    <h3 className="text-white font-semibold text-xs md:text-sm text-left line-clamp-3 overflow-hidden">
+                  <div className="absolute bottom-0 left-0 right-0 p-2.5 md:p-3 z-10">
+                    <h3 className="text-white font-semibold text-[11px] md:text-sm text-left line-clamp-2 md:line-clamp-3 overflow-hidden">
                       {post.legenda}
                     </h3>
-                    <span className="block mt-1 text-yellow-400 text-[11px] font-semibold text-left">
-                      Ver mais
-                    </span>
                   </div>
                 </button>
               ))}
             </div>
           )}
 
-          {/* Controles */}
+          {/* Controles — setas centralizadas no mobile, à direita no desktop */}
           {!loading && posts.length > 0 && (
-            <div className="flex items-center justify-end gap-4 mt-6">
+            <div className="flex items-center justify-center md:justify-end gap-4 mt-5 md:mt-6">
               <button onClick={() => scrollBy(-1)}
                 className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-all">
                 <ChevronLeft size={18} />
@@ -198,10 +201,6 @@ export function RedesSociais() {
                 className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-all">
                 <ChevronRight size={18} />
               </button>
-              <a href="https://www.instagram.com/unimontes.almenara" target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1 text-white text-sm font-medium hover:text-yellow-400 transition-colors ml-2">
-                Perfil oficial no Instagram <ChevronRight size={15} />
-              </a>
             </div>
           )}
 
