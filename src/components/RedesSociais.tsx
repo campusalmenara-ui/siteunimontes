@@ -38,6 +38,8 @@ export function RedesSociais() {
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollLeft = useRef(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -101,10 +103,29 @@ export function RedesSociais() {
     trackRef.current.scrollLeft = scrollLeft.current + walk;
   };
 
+  const CARD_STEP = 220; // largura aproximada do card + gap, usada para paginação
+
   const scrollBy = (dir: number) => {
     if (!trackRef.current) return;
-    trackRef.current.scrollBy({ left: dir * 220, behavior: 'smooth' });
+    trackRef.current.scrollBy({ left: dir * CARD_STEP, behavior: 'smooth' });
   };
+
+  const updatePageIndicator = () => {
+    if (!trackRef.current) return;
+    const { scrollLeft: sl, scrollWidth, clientWidth } = trackRef.current;
+    const maxScroll = scrollWidth - clientWidth;
+    const pages = Math.max(1, Math.ceil(scrollWidth / clientWidth));
+    const page = maxScroll > 0 ? Math.round((sl / maxScroll) * (pages - 1)) + 1 : 1;
+    setTotalPages(pages);
+    setCurrentPage(Math.min(pages, Math.max(1, page)));
+  };
+
+  useEffect(() => {
+    updatePageIndicator();
+    const handleResize = () => updatePageIndicator();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [posts]);
 
   return (
     <>
@@ -120,19 +141,11 @@ export function RedesSociais() {
       >
         <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-10 md:py-16">
 
-          {/* Cabeçalho — título + ícones de redes na mesma linha, sempre */}
-          <div className="flex items-center justify-between gap-3 mb-6 md:mb-8">
-            <h2 className="pl-3 border-l-2 border-white text-lg md:text-3xl font-bold text-white whitespace-nowrap overflow-hidden text-ellipsis">
+          {/* Cabeçalho — apenas título */}
+          <div className="mb-6 md:mb-8">
+            <h2 className="pl-3 border-l-2 border-white text-lg md:text-3xl font-bold text-white">
               Unimontes (Almenara) nas Redes
             </h2>
-            <div className="flex items-center gap-2.5 flex-shrink-0">
-              {REDES.map(({ nome, url, Icon }) => (
-                <a key={nome} href={url} target="_blank" rel="noopener noreferrer"
-                  className="text-white hover:text-yellow-400 transition-colors" aria-label={nome}>
-                  <Icon size={20} className="md:w-[22px] md:h-[22px]" />
-                </a>
-              ))}
-            </div>
           </div>
 
           {/* Carrossel com scroll nativo + drag */}
@@ -159,6 +172,7 @@ export function RedesSociais() {
               onMouseLeave={onMouseUp}
               onTouchStart={onTouchStart}
               onTouchMove={onTouchMove}
+              onScroll={updatePageIndicator}
             >
               {posts.map((post, i) => (
                 <button
@@ -190,17 +204,33 @@ export function RedesSociais() {
             </div>
           )}
 
-          {/* Controles — setas centralizadas no mobile, à direita no desktop */}
+          {/* Controles — setas com indicador de página, ícones de redes abaixo */}
           {!loading && posts.length > 0 && (
-            <div className="flex items-center justify-center md:justify-end gap-4 mt-5 md:mt-6">
-              <button onClick={() => scrollBy(-1)}
-                className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-all">
-                <ChevronLeft size={18} />
-              </button>
-              <button onClick={() => scrollBy(1)}
-                className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-all">
-                <ChevronRight size={18} />
-              </button>
+            <div className="flex flex-col items-center gap-4 mt-5 md:mt-6">
+              {/* Setas + página atual */}
+              <div className="flex items-center gap-3">
+                <button onClick={() => scrollBy(-1)}
+                  className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-all">
+                  <ChevronLeft size={18} />
+                </button>
+                <span className="text-white/70 text-sm font-medium min-w-[3rem] text-center">
+                  {currentPage} / {totalPages}
+                </span>
+                <button onClick={() => scrollBy(1)}
+                  className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-all">
+                  <ChevronRight size={18} />
+                </button>
+              </div>
+
+              {/* Ícones das redes sociais */}
+              <div className="flex items-center gap-3">
+                {REDES.map(({ nome, url, Icon }) => (
+                  <a key={nome} href={url} target="_blank" rel="noopener noreferrer"
+                    className="text-white hover:text-yellow-400 transition-colors" aria-label={nome}>
+                    <Icon size={20} />
+                  </a>
+                ))}
+              </div>
             </div>
           )}
 
