@@ -312,8 +312,8 @@ export function ProjetoPage({ title, intro, sheetGid, configGid = '2102872257' }
             style={{ maxHeight: '90dvh' }}
             onClick={e => e.stopPropagation()}
           >
-            {/* Imagem — oculta no mobile para dar espaço ao conteúdo */}
-            <div className="hidden md:block w-full flex-shrink-0 bg-black" style={{ aspectRatio: '16/9', maxHeight: '240px' }}>
+            {/* Imagem — compacta em todas as telas (16:9, mais baixa no mobile) */}
+            <div className="w-full flex-shrink-0 bg-black" style={{ aspectRatio: '16/9', maxHeight: '140px' }}>
               <img
                 src={modalPost.imageUrl}
                 alt={modalPost.caption}
