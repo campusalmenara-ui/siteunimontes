@@ -13,7 +13,7 @@ interface NewsItem {
   date: Date;
 }
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 6;
 
 // Parser de CSV completo que respeita quebras de linha dentro de células com aspas
 const parseCSV = (csv: string): string[][] => {
@@ -251,7 +251,6 @@ export function NewsSection() {
           ))}
         </div>
 
-        {/* Paginação numérica */}
         {/* Paginação compacta */}
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-1 mt-6 pt-4 border-t border-gray-100">
@@ -313,8 +312,8 @@ export function NewsSection() {
             style={{ maxHeight: '90dvh' }}
             onClick={e => e.stopPropagation()}
           >
-            {/* Imagem — oculta no mobile para dar espaço ao conteúdo */}
-            <div className="hidden md:block w-full flex-shrink-0 bg-black" style={{ aspectRatio: '16/9', maxHeight: '240px' }}>
+            {/* Imagem — compacta em todas as telas (16:9, mais baixa no mobile) */}
+            <div className="w-full flex-shrink-0 bg-black" style={{ aspectRatio: '16/9', maxHeight: '140px' }}>
               <img
                 src={modalItem.imageUrl}
                 alt={modalItem.title}
