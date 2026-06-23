@@ -118,7 +118,7 @@ export function RedesSociais() {
           {/* Cabeçalho */}
           <div className="flex items-center justify-between mb-8">
             <h2 className="pl-3 border-l-2 border-white text-2xl md:text-3xl font-bold text-white">
-              Unimontes (Almenara) nas Redes
+              🌐💬 Unimontes (Almenara) nas redes
             </h2>
             <div className="flex items-center gap-2">
               <span className="text-white/60 text-sm font-semibold hidden md:inline">Siga-nos:</span>
