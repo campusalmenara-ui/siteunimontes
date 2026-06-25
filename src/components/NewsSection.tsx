@@ -313,7 +313,7 @@ export function NewsSection() {
             onClick={e => e.stopPropagation()}
           >
             {/* Imagem — compacta em todas as telas (16:9, mais baixa no mobile) */}
-            <div className="w-full flex-shrink-0 bg-black" style={{ aspectRatio: '16/9', maxHeight: '140px' }}>
+            <div className="w-full flex-shrink-0 bg-black" style={{ aspectRatio: '16/9', maxHeight: '200px' }}>
               <img
                 src={modalItem.imageUrl}
                 alt={modalItem.title}
