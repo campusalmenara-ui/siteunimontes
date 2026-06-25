@@ -1,20 +1,49 @@
 import { useState, useEffect, useRef } from 'react';
-import { Instagram, ChevronLeft, ChevronRight, Play, Image as ImageIcon, X } from 'lucide-react';
+import { Instagram, Youtube, ChevronLeft, ChevronRight, Play, Image as ImageIcon, X } from 'lucide-react';
 
 interface Post {
   imagem: string;
   legenda: string;
   link: string;
-  tipo: string;
+  tipo: string; // 'foto' | 'video'
+  rede: string; // 'instagram' | 'youtube'
 }
 
 const SHEET_ID = '1q_bLd3HXuFUH7Sogj3lo9D7aLv2BMqgX8P2iAnwbMF0';
 const GID = '1013562204';
 
-// Lista de redes sociais — adicionar novas redes aqui (ex: TikTok, YouTube)
+// Lista de redes sociais — adicionar novas redes aqui (ex: TikTok)
 const REDES = [
   { nome: 'Instagram', url: 'https://www.instagram.com/unimontes.almenara', Icon: Instagram },
+  { nome: 'YouTube', url: 'https://www.youtube.com/@unimontes.almenara', Icon: Youtube },
 ];
+
+// Configuração visual do modal por rede social
+const REDE_CONFIG: Record<string, {
+  Icon: typeof Instagram;
+  handle: string;
+  iconBg: string;
+  buttonBg: string;
+  buttonHoverBg: string;
+  buttonLabel: string;
+}> = {
+  instagram: {
+    Icon: Instagram,
+    handle: 'unimontes.almenara',
+    iconBg: 'bg-gradient-to-br from-purple-500 to-pink-500',
+    buttonBg: 'bg-gradient-to-r from-purple-500 to-pink-500',
+    buttonHoverBg: 'hover:opacity-90',
+    buttonLabel: 'Ver no Instagram',
+  },
+  youtube: {
+    Icon: Youtube,
+    handle: '@unimontes.almenara',
+    iconBg: 'bg-red-600',
+    buttonBg: 'bg-red-600',
+    buttonHoverBg: 'hover:bg-red-700',
+    buttonLabel: 'Ver no YouTube',
+  },
+};
 
 const parseCSVLine = (line: string): string[] => {
   const result: string[] = [];
@@ -51,12 +80,20 @@ export function RedesSociais() {
         const parsed: Post[] = lines
           .map(l => parseCSVLine(l))
           .filter(cells => cells[0]?.trim())
-          .map(cells => ({
-            imagem: cells[0]?.trim() || '',
-            legenda: cells[1]?.trim() || '',
-            link:    cells[2]?.trim() || '',
-            tipo:    cells[3]?.trim().toLowerCase() || 'foto',
-          }));
+          .map(cells => {
+            const tipoRaw = cells[3]?.trim().toLowerCase() || 'foto';
+            // Normaliza qualquer variação (vídeo/reels/video) para apenas "foto" ou "video"
+            const tipo = tipoRaw.startsWith('v') || tipoRaw === 'reels' ? 'video' : 'foto';
+            const redeRaw = cells[4]?.trim().toLowerCase() || 'instagram';
+            const rede = redeRaw.includes('youtube') ? 'youtube' : 'instagram';
+            return {
+              imagem: cells[0]?.trim() || '',
+              legenda: cells[1]?.trim() || '',
+              link: cells[2]?.trim() || '',
+              tipo,
+              rede,
+            };
+          });
         setPosts(parsed);
       } catch (err) {
         console.error('Erro ao carregar posts:', err);
@@ -127,6 +164,8 @@ export function RedesSociais() {
     return () => window.removeEventListener('resize', handleResize);
   }, [posts]);
 
+  const modalConfig = modalPost ? REDE_CONFIG[modalPost.rede] || REDE_CONFIG.instagram : null;
+
   return (
     <>
       {/* Seção com fundo escuro — ocupa 100vw saindo do padding do pai */}
@@ -144,7 +183,7 @@ export function RedesSociais() {
           {/* Cabeçalho — apenas título */}
           <div className="mb-6 md:mb-8">
             <h2 className="pl-3 border-l-2 border-white text-lg md:text-3xl font-bold text-white">
-              🤳🏼📲 Unimontes (Almenara) nas Redes
+              Unimontes (Almenara) nas Redes
             </h2>
           </div>
 
@@ -189,7 +228,7 @@ export function RedesSociais() {
                 >
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center">
-                    {post.tipo === 'video' || post.tipo === 'reels'
+                    {post.tipo === 'video'
                       ? <Play size={14} className="text-white ml-0.5 md:w-4 md:h-4" />
                       : <ImageIcon size={12} className="text-white md:w-[14px] md:h-[14px]" />
                     }
@@ -237,8 +276,8 @@ export function RedesSociais() {
         </div>
       </div>
 
-      {/* Modal */}
-      {modalPost && (
+      {/* Modal — estilo personalizado conforme a rede social do post */}
+      {modalPost && modalConfig && (
         <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/80 backdrop-blur-sm"
           onClick={() => setModalPost(null)}>
           <div
@@ -263,10 +302,10 @@ export function RedesSociais() {
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                      <Instagram size={16} className="text-white" />
+                    <div className={`w-8 h-8 rounded-full ${modalConfig.iconBg} flex items-center justify-center`}>
+                      <modalConfig.Icon size={16} className="text-white" />
                     </div>
-                    <span className="font-bold text-sm text-gray-800">unimontes.almenara</span>
+                    <span className="font-bold text-sm text-gray-800">{modalConfig.handle}</span>
                   </div>
                   <button onClick={() => setModalPost(null)} className="text-gray-400 hover:text-gray-600 transition-colors p-1">
                     <X size={20} />
@@ -277,8 +316,8 @@ export function RedesSociais() {
               {modalPost.link && (
                 <div className="mt-4 pt-4 border-t border-gray-100">
                   <a href={modalPost.link} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold text-sm hover:opacity-90 transition-opacity">
-                    <Instagram size={16} /> Ver no Instagram
+                    className={`flex items-center justify-center gap-2 w-full py-3 rounded-xl ${modalConfig.buttonBg} text-white font-semibold text-sm ${modalConfig.buttonHoverBg} transition-all`}>
+                    <modalConfig.Icon size={16} /> {modalConfig.buttonLabel}
                   </a>
                 </div>
               )}
