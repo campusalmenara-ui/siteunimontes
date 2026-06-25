@@ -144,7 +144,7 @@ export function RedesSociais() {
           {/* Cabeçalho — apenas título */}
           <div className="mb-6 md:mb-8">
             <h2 className="pl-3 border-l-2 border-white text-lg md:text-3xl font-bold text-white">
-              Unimontes (Almenara) nas Redes
+              🤳🏼 📲 Unimontes (Almenara) nas Redes
             </h2>
           </div>
 
