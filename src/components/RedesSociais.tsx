@@ -29,7 +29,7 @@ const REDE_CONFIG: Record<string, {
 }> = {
   instagram: {
     Icon: Instagram,
-    handle: 'unimontes.almenara',
+    handle: '.almenara',
     iconBg: 'bg-gradient-to-br from-purple-500 to-pink-500',
     buttonBg: 'bg-gradient-to-r from-purple-500 to-pink-500',
     buttonHoverBg: 'hover:opacity-90',
@@ -37,7 +37,7 @@ const REDE_CONFIG: Record<string, {
   },
   youtube: {
     Icon: Youtube,
-    handle: '@unimontes.almenara',
+    handle: '@.almenara',
     iconBg: 'bg-red-600',
     buttonBg: 'bg-red-600',
     buttonHoverBg: 'hover:bg-red-700',
@@ -183,7 +183,7 @@ export function RedesSociais() {
           {/* Cabeçalho — apenas título */}
           <div className="mb-6 md:mb-8">
             <h2 className="pl-3 border-l-2 border-white text-lg md:text-3xl font-bold text-white">
-              Unimontes (Almenara) nas Redes
+              🤳🏼📲 Unimontes (Almenara) nas Redes
             </h2>
           </div>
 
