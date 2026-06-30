@@ -625,7 +625,7 @@ export default function Home() {
           {/* Seção de Agenda */}
           <div id="agenda-section">
           {/* Header Card - Imagem + Barra Azul */}
-          <div className="header-card rounded-lg overflow-hidden mb-8 shadow-md">
+          <div className="header-card rounded-lg overflow-hidden mb-3 shadow-md">
             {/* Hero Section com Imagem de Agenda Semanal */}
             {/* Banner Responsivo */}
             <div className="relative w-full">
@@ -654,7 +654,7 @@ export default function Home() {
           {/* Cursos */}
           {coursesData.length > 0 ? (
             coursesData.map((course) => (
-              <div key={course.name} className={`mb-10 ${course.wrapperBg} rounded-2xl p-5 md:p-7`}>
+              <div key={course.name} className={`mb-3 ${course.wrapperBg} rounded-2xl p-5 md:p-7`}>
                 {/* Header do Curso */}
                 <div className={`bg-gradient-to-r ${course.bgColor} text-white rounded-xl p-5 mb-5 shadow-md`}>
                   <h3 className="text-2xl md:text-3xl font-bold">{course.name}</h3>
