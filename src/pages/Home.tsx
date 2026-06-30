@@ -32,6 +32,7 @@ interface CourseData {
   name: string;
   classes: ClassInfo[];
   bgColor: string;
+  wrapperBg: string;
 }
 
 // Cores para cada curso
@@ -174,8 +175,8 @@ export default function Home() {
         }
 
         const coursesArray: CourseData[] = [
-          { name: 'Pedagogia',        bgColor: 'from-purple-400 to-purple-500', classes: coursesMap['Pedagogia'] || [] },
-          { name: 'Letras/Português', bgColor: 'from-blue-400 to-blue-500',     classes: coursesMap['Letras'] || [] },
+          { name: 'Pedagogia',        bgColor: 'from-purple-400 to-purple-500', wrapperBg: 'bg-purple-50',  classes: coursesMap['Pedagogia'] || [] },
+          { name: 'Letras/Português', bgColor: 'from-blue-400 to-blue-500',     wrapperBg: 'bg-blue-50',    classes: coursesMap['Letras'] || [] },
         ].filter(c => c.classes.length > 0);
 
         setCoursesData(coursesArray);
@@ -653,9 +654,9 @@ export default function Home() {
           {/* Cursos */}
           {coursesData.length > 0 ? (
             coursesData.map((course) => (
-              <div key={course.name} className="mb-12">
+              <div key={course.name} className={`mb-10 ${course.wrapperBg} rounded-2xl p-5 md:p-7`}>
                 {/* Header do Curso */}
-                <div className={`bg-gradient-to-r ${course.bgColor} text-white rounded-lg p-6 mb-6 shadow-lg`}>
+                <div className={`bg-gradient-to-r ${course.bgColor} text-white rounded-xl p-5 mb-5 shadow-md`}>
                   <h3 className="text-2xl md:text-3xl font-bold">{course.name}</h3>
                 </div>
 
@@ -668,10 +669,10 @@ export default function Home() {
                     >
                       <button
                         onClick={() => toggleExpand(classInfo.id)}
-                        className={`w-full text-left rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden ${
+                        className={`w-full text-left rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden ${
                           isNoClass(classInfo)
-                            ? 'bg-gradient-to-br from-gray-100 to-gray-50 border-l-4 border-gray-300 opacity-75 cursor-not-allowed'
-                            : `border-l-4 ${classInfo.color} ${classInfo.bgColor}`
+                            ? 'bg-white/60 border-l-4 border-gray-300 opacity-75 cursor-not-allowed'
+                            : `bg-white border-l-4 ${classInfo.color}`
                         }`}
                         disabled={isNoClass(classInfo)}
                       >
