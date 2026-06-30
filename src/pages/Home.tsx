@@ -175,7 +175,7 @@ export default function Home() {
         }
 
         const coursesArray: CourseData[] = [
-          { name: 'Pedagogia',        bgColor: 'from-purple-400 to-purple-500', wrapperBg: 'bg-purple-50 border shadow-lg',  classes: coursesMap['Pedagogia'] || [] },
+          { name: 'Pedagogia',        bgColor: 'from-purple-400 to-purple-500', wrapperBg: 'bg-purple-50 shadow-lg',  classes: coursesMap['Pedagogia'] || [] },
           { name: 'Letras/Português', bgColor: 'from-blue-400 to-blue-500',     wrapperBg: 'bg-blue-50 shadow-lg',      classes: coursesMap['Letras'] || [] },
         ].filter(c => c.classes.length > 0);
 
