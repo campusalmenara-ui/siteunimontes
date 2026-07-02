@@ -333,6 +333,34 @@ export default function Home() {
 
       {/* ─── Hero Institucional ─────────────────────────────────────────── */}
       <div className="relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-600 to-blue-500">
+
+        {/* Keyframes — todas as animações do hero */}
+        <style>{`
+          @keyframes heroReveal {
+            from { clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%); opacity: 0; }
+            to   { clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);    opacity: 0.22; }
+          }
+          @keyframes heroFadeUp {
+            from { opacity: 0; transform: translateY(28px); }
+            to   { opacity: 1; transform: translateY(0); }
+          }
+          @keyframes heroSlideLeft {
+            from { opacity: 0; transform: translateX(-40px); }
+            to   { opacity: 1; transform: translateX(0); }
+          }
+          @keyframes heroSlideRight {
+            from { opacity: 0; transform: translateX(40px); }
+            to   { opacity: 1; transform: translateX(0); }
+          }
+          .hero-logo      { opacity: 0; animation: heroSlideLeft  0.7s cubic-bezier(0.16,1,0.3,1) 0.15s forwards; }
+          .hero-card-0    { opacity: 0; animation: heroSlideRight 0.6s cubic-bezier(0.16,1,0.3,1) 0.30s forwards; }
+          .hero-card-1    { opacity: 0; animation: heroSlideRight 0.6s cubic-bezier(0.16,1,0.3,1) 0.42s forwards; }
+          .hero-card-2    { opacity: 0; animation: heroSlideRight 0.6s cubic-bezier(0.16,1,0.3,1) 0.54s forwards; }
+          .hero-card-3    { opacity: 0; animation: heroSlideRight 0.6s cubic-bezier(0.16,1,0.3,1) 0.66s forwards; }
+          .hero-desc      { opacity: 0; animation: heroFadeUp     0.6s cubic-bezier(0.16,1,0.3,1) 0.78s forwards; }
+          .hero-buttons   { opacity: 0; animation: heroFadeUp     0.6s cubic-bezier(0.16,1,0.3,1) 0.92s forwards; }
+        `}</style>
+
         {/* Padrão geométrico de fundo */}
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -352,29 +380,16 @@ export default function Home() {
             backgroundImage: 'url(/siteunimontes/campus.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            opacity: 0.22,
-            animation: 'heroReveal 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            opacity: 0,
+            animation: 'heroReveal 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards',
           }}
         />
-
-        <style>{`
-          @keyframes heroReveal {
-            from {
-              clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
-              opacity: 0;
-            }
-            to {
-              clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);
-              opacity: 0.22;
-            }
-          }
-        `}</style>
 
         <div className="relative max-w-7xl mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-12 md:py-16">
           <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center mb-6">
 
-            {/* Coluna esquerda — Logo */}
-            <div className="flex items-center justify-center">
+            {/* Coluna esquerda — Logo desliza da esquerda */}
+            <div className="hero-logo flex items-center justify-center">
               <img
                 src="/siteunimontes/LogoCapa.png"
                 alt="Unimontes Campus Almenara"
@@ -382,19 +397,19 @@ export default function Home() {
               />
             </div>
 
-            {/* Coluna direita — Cards + descrição */}
+            {/* Coluna direita — Cards entram da direita em stagger + descrição sobe */}
             <div className="flex flex-col gap-3">
               <div className="grid grid-cols-2 gap-3">
                 {[
                   { titulo: 'Agenda Semanal', desc: 'Veja as disciplinas da semana', emoji: '📅', acao: () => { const el = document.getElementById('agenda-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); } },
-                  { titulo: 'Projetos', desc: 'PIBID, AACC, AIEX e mais', emoji: '🔬', acao: () => handleHighlightClick('projetos') },
-                  { titulo: 'Secretaria', desc: 'Solicitações e contatos', emoji: '📋', acao: () => handleHighlightClick('secretaria') },
-                  { titulo: 'Notícias', desc: 'Novidades do campus', emoji: '📰', acao: () => { const el = document.getElementById('noticias-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); } },
+                  { titulo: 'Projetos',       desc: 'PIBID, AACC, AIEX e mais',      emoji: '🔬', acao: () => handleHighlightClick('projetos') },
+                  { titulo: 'Secretaria',     desc: 'Solicitações e contatos',        emoji: '📋', acao: () => handleHighlightClick('secretaria') },
+                  { titulo: 'Notícias',       desc: 'Novidades do campus',            emoji: '📰', acao: () => { const el = document.getElementById('noticias-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); } },
                 ].map((item, i) => (
                   <button
                     key={i}
                     onClick={item.acao}
-                    className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-xl p-4 text-left transition-all duration-200 hover:scale-105 flex flex-col justify-center"
+                    className={`hero-card-${i} bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-xl p-4 text-left transition-all duration-200 hover:scale-105 flex flex-col justify-center`}
                   >
                     <span className="text-2xl mb-2 block">{item.emoji}</span>
                     <p className="text-white font-bold text-sm">{item.titulo}</p>
@@ -402,15 +417,15 @@ export default function Home() {
                   </button>
                 ))}
               </div>
-              <p className="text-blue-100 text-xs md:text-sm leading-relaxed whitespace-nowrap">
+              <p className="hero-desc text-blue-100 text-xs md:text-sm leading-relaxed whitespace-nowrap">
                 Universidade pública de qualidade no Vale do Jequitinhonha.<br />
                 Conhecimento, cultura e extensão a serviço da comunidade desde 2001.
               </p>
             </div>
           </div>
 
-          {/* Botões centralizados */}
-          <div className="flex flex-wrap justify-center gap-3">
+          {/* Botões surgem por último */}
+          <div className="hero-buttons flex flex-wrap justify-center gap-3">
             <button
               onClick={() => { const el = document.getElementById('agenda-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); }}
               className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-blue-900 font-bold px-5 py-2.5 rounded-full shadow-md transition-all duration-200 hover:scale-105 text-sm"
