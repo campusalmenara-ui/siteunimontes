@@ -38,10 +38,10 @@ const cursos = [
 ];
 
 const estrutura = [
-  { icone: Monitor,    texto: '6 salas de aula equipadas com Data-Show' },
-  { icone: Users,      texto: '1 auditório para eventos e palestras' },
-  { icone: BookOpen,   texto: '1 biblioteca com acervo físico e digital' },
-  { icone: Wifi,       texto: '1 laboratório de informática (UAB)' },
+  { icone: Monitor,  texto: '6 salas de aula equipadas com Data-Show' },
+  { icone: Users,    texto: '1 auditório para eventos e palestras' },
+  { icone: BookOpen, texto: '1 biblioteca com acervo físico e digital' },
+  { icone: Wifi,     texto: '1 laboratório de informática (UAB)' },
 ];
 
 function CursoCard({ curso }: { curso: typeof cursos[0] }) {
@@ -49,7 +49,6 @@ function CursoCard({ curso }: { curso: typeof cursos[0] }) {
 
   return (
     <div className={`rounded-2xl border overflow-hidden transition-all duration-300 ${aberto ? 'shadow-lg ' + curso.corLight : 'border-gray-200 bg-white hover:shadow-md'}`}>
-      {/* Header clicável */}
       <button
         onClick={() => setAberto(!aberto)}
         className="w-full flex items-center justify-between p-5 text-left group"
@@ -63,25 +62,19 @@ function CursoCard({ curso }: { curso: typeof cursos[0] }) {
             <p className="text-sm text-gray-500">{curso.modalidade} · {curso.turno}</p>
           </div>
         </div>
-        <ChevronDown
-          size={20}
-          className={`text-gray-400 transition-transform duration-300 flex-shrink-0 ${aberto ? 'rotate-180' : ''}`}
-        />
+        <ChevronDown size={20} className={`text-gray-400 transition-transform duration-300 flex-shrink-0 ${aberto ? 'rotate-180' : ''}`} />
       </button>
 
-      {/* Conteúdo expandido */}
       {aberto && (
         <div className="px-5 pb-6 border-t border-gray-100 pt-5">
-
-          {/* Ficha técnica */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
             {[
-              { label: 'Cidade', value: curso.cidade },
-              { label: 'Turno', value: curso.turno },
-              { label: 'Área', value: curso.area },
+              { label: 'Cidade',     value: curso.cidade },
+              { label: 'Turno',      value: curso.turno },
+              { label: 'Área',       value: curso.area },
               { label: 'Modalidade', value: curso.modalidade },
-              { label: 'Duração', value: curso.duracao },
-              { label: 'Unidade', value: curso.unidade },
+              { label: 'Duração',    value: curso.duracao },
+              { label: 'Unidade',    value: curso.unidade },
             ].map((item, i) => (
               <div key={i} className="bg-white rounded-xl p-3 border border-gray-100">
                 <p className="text-xs text-gray-400 font-medium mb-0.5">{item.label}</p>
@@ -90,11 +83,10 @@ function CursoCard({ curso }: { curso: typeof cursos[0] }) {
             ))}
           </div>
 
-          {/* Seções de conteúdo */}
           {[
-            { titulo: 'Sobre o Curso', conteudo: curso.sobre },
-            { titulo: 'Diferencial na Unimontes', conteudo: curso.diferencial },
-            { titulo: 'Áreas de Atuação', conteudo: curso.atuacao },
+            { titulo: 'Sobre o Curso',             conteudo: curso.sobre },
+            { titulo: 'Diferencial na Unimontes',  conteudo: curso.diferencial },
+            { titulo: 'Áreas de Atuação',          conteudo: curso.atuacao },
           ].map((secao, i) => (
             <div key={i} className="mb-4">
               <h4 className={`text-sm font-bold uppercase tracking-wide mb-2 ${curso.corTexto}`}>{secao.titulo}</h4>
@@ -102,7 +94,6 @@ function CursoCard({ curso }: { curso: typeof cursos[0] }) {
             </div>
           ))}
 
-          {/* Forma de ingresso */}
           <div className={`rounded-xl p-4 ${curso.corLight} border mt-4`}>
             <p className={`text-xs font-bold uppercase tracking-wide mb-1 ${curso.corTexto}`}>Forma de Ingresso</p>
             <p className="text-gray-700 text-sm">{curso.ingresso}</p>
@@ -122,10 +113,40 @@ export default function Sobre() {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-yellow-50">
       <Header />
 
-      {/* Hero — Foto + Título + Introdução + Estrutura */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-600 to-blue-500" style={{ paddingBottom: "80px" }}>
+      {/* ─── Hero ──────────────────────────────────────────────────────── */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-600 to-blue-500" style={{ paddingBottom: '80px' }}>
+
+        {/* Keyframes — animações de entrada do hero */}
+        <style>{`
+          @keyframes sobreFadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+          }
+          @keyframes sobreSlideLeft {
+            from { opacity: 0; transform: translateX(-40px); }
+            to   { opacity: 1; transform: translateX(0); }
+          }
+          @keyframes sobreSlideRight {
+            from { opacity: 0; transform: translateX(40px); }
+            to   { opacity: 1; transform: translateX(0); }
+          }
+          @keyframes bounceDown {
+            0%, 100% { transform: translateY(0); }
+            50%       { transform: translateY(5px); }
+          }
+
+          .sobre-badge     { opacity: 0; animation: sobreFadeUp     0.5s cubic-bezier(0.16,1,0.3,1) 0.10s forwards; }
+          .sobre-titulo-1  { opacity: 0; animation: sobreSlideLeft  0.6s cubic-bezier(0.16,1,0.3,1) 0.22s forwards; }
+          .sobre-titulo-2  { opacity: 0; animation: sobreSlideLeft  0.6s cubic-bezier(0.16,1,0.3,1) 0.34s forwards; }
+          .sobre-titulo-3  { opacity: 0; animation: sobreSlideLeft  0.6s cubic-bezier(0.16,1,0.3,1) 0.46s forwards; }
+          .sobre-paragrafo { opacity: 0; animation: sobreFadeUp     0.6s cubic-bezier(0.16,1,0.3,1) 0.58s forwards; }
+          .sobre-estrutura { opacity: 0; animation: sobreFadeUp     0.6s cubic-bezier(0.16,1,0.3,1) 0.70s forwards; }
+          .sobre-imagem    { opacity: 0; animation: sobreSlideRight 0.7s cubic-bezier(0.16,1,0.3,1) 0.30s forwards; }
+          .sobre-botao     { opacity: 0; animation: sobreFadeUp     0.5s cubic-bezier(0.16,1,0.3,1) 0.85s forwards; }
+        `}</style>
+
         {/* Padrão geométrico de fundo */}
-        <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
           <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -139,26 +160,26 @@ export default function Sobre() {
         <div className="relative max-w-7xl mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-16 md:py-24">
           <div className="grid md:grid-cols-2 gap-12 items-center">
 
-            {/* Texto */}
+            {/* Coluna esquerda — Texto */}
             <div>
-              <span className="inline-block bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-4">
+              <span className="sobre-badge inline-block bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-4">
                 Unimontes
               </span>
-              <h1 className="text-4xl md:text-5xl font-black text-white leading-tight mb-2">
+              <h1 className="sobre-titulo-1 text-4xl md:text-5xl font-black text-white leading-tight mb-2">
                 Bem-vindo à
               </h1>
-              <h2 className="text-4xl md:text-5xl font-black text-yellow-300 leading-tight mb-1">
+              <h2 className="sobre-titulo-2 text-4xl md:text-5xl font-black text-yellow-300 leading-tight mb-1">
                 Unimontes
               </h2>
-              <h2 className="text-4xl md:text-5xl font-black text-white leading-tight mb-6">
+              <h2 className="sobre-titulo-3 text-4xl md:text-5xl font-black text-white leading-tight mb-6">
                 Campus Almenara
               </h2>
-              <p className="text-blue-100 text-base md:text-lg leading-relaxed mb-8 max-w-lg">
+              <p className="sobre-paragrafo text-blue-100 text-base md:text-lg leading-relaxed mb-8 max-w-lg">
                 O Campus de Almenara da Unimontes foi criado pelo Decreto Estadual nº 41.434, de 15 de dezembro de 2000, após aprovação do Conselho Universitário em 20/12/1999. As atividades começaram em março de 2001 com o Curso Normal Superior, expandindo posteriormente para os cursos de Letras/Português e Pedagogia — formando gerações de educadores no Vale do Jequitinhonha.
               </p>
 
-              {/* Estrutura em destaque */}
-              <div className="grid grid-cols-2 gap-3">
+              {/* Grid de estrutura */}
+              <div className="sobre-estrutura grid grid-cols-2 gap-3">
                 {estrutura.map((item, i) => (
                   <div key={i} className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-3">
                     <item.icone size={18} className="text-yellow-300 flex-shrink-0" />
@@ -168,8 +189,8 @@ export default function Sobre() {
               </div>
             </div>
 
-            {/* Imagem do campus */}
-            <div className="relative">
+            {/* Coluna direita — Imagem desliza da direita */}
+            <div className="sobre-imagem relative">
               <div className="rounded-2xl overflow-hidden shadow-2xl border-4 border-white/20">
                 <img
                   src="/siteunimontes/campus.jpg"
@@ -186,10 +207,13 @@ export default function Sobre() {
           </div>
         </div>
 
-        {/* Botão scroll - canto inferior direito, posição absoluta */}
-        <div className="absolute bottom-10 right-8 md:right-16 lg:right-24 xl:right-32">
+        {/* Botão Explorar — entra por último */}
+        <div className="sobre-botao absolute bottom-10 right-8 md:right-16 lg:right-24 xl:right-32">
           <button
-            onClick={() => (() => { const el = document.getElementById('conteudo-sobre'); if (el) { const y = el.getBoundingClientRect().top + window.scrollY - 80; window.scrollTo({ top: y, behavior: 'smooth' }); } })()}
+            onClick={() => {
+              const el = document.getElementById('conteudo-sobre');
+              if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+            }}
             className="group flex items-center gap-3 bg-yellow-400 hover:bg-yellow-300 text-blue-900 font-bold px-5 py-3 rounded-full shadow-lg hover:shadow-yellow-400/40 transition-all duration-300 hover:scale-105"
             aria-label="Explorar"
           >
@@ -201,13 +225,8 @@ export default function Sobre() {
             </div>
           </button>
         </div>
-        <style>{`
-          @keyframes bounceDown {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(5px); }
-          }
-        `}</style>
       </div>
+      {/* ─── Fim Hero ──────────────────────────────────────────────────── */}
 
       <main id="conteudo-sobre" className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-16">
 
@@ -237,8 +256,6 @@ export default function Sobre() {
           </div>
 
           <div className="grid grid-cols-1 max-w-lg gap-6">
-
-            {/* Card principal */}
             <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-6 text-white shadow-lg">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
@@ -280,7 +297,6 @@ export default function Sobre() {
               </div>
             </div>
           </div>
-
         </div>
       </main>
 
