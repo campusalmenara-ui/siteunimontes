@@ -25,22 +25,28 @@ export function Header() {
   const [location, navigate] = useHashLocation();
   const [highlightMenu, setHighlightMenu] = useState<'projetos' | 'secretaria' | null>(null);
 
+  // ── Efeito scroll: detecta se o usuário já desceu da posição inicial ──
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    onScroll(); // checa posição atual ao montar
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   useEffect(() => {
     (window as any).__highlightHeaderMenu = (menu: 'projetos' | 'secretaria') => {
       const isMobile = window.innerWidth < 768;
-
       if (isMobile) {
         setMobileMenuOpen(true);
         setTimeout(() => {
           const submenuId = menu === 'projetos' ? 'projetos-mobile-menu' : 'modelos-mobile-menu';
-          const submenu = document.getElementById(submenuId);
-          if (submenu) submenu.classList.remove('hidden');
+          document.getElementById(submenuId)?.classList.remove('hidden');
         }, 50);
       } else {
         if (menu === 'projetos') setProjetosOpen(true);
         else setModelosOpen(true);
       }
-
       setHighlightMenu(menu);
       setTimeout(() => {
         setHighlightMenu(null);
@@ -50,10 +56,7 @@ export function Header() {
         }
       }, 2000);
     };
-
-    return () => {
-      delete (window as any).__highlightHeaderMenu;
-    };
+    return () => { delete (window as any).__highlightHeaderMenu; };
   }, []);
 
   const highlightClass = "ring-4 ring-yellow-400 ring-offset-2 rounded-lg animate-pulse";
@@ -84,28 +87,45 @@ export function Header() {
   ];
 
   return (
-    <header className="bg-white shadow-md sticky top-0" style={{ zIndex: 100, overflow: 'visible' }}>
-      <div className="py-4 px-4 md:px-8 lg:px-16 xl:px-24">
+    <header
+      className="sticky top-0 transition-all duration-300 ease-out"
+      style={{
+        zIndex: 100,
+        overflow: 'visible',
+        // No topo: fundo branco sólido sem sombra
+        // Ao rolar: fundo levemente translúcido + blur + sombra suave
+        backgroundColor: scrolled ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,1)',
+        backdropFilter: scrolled ? 'blur(12px)' : 'none',
+        WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
+        boxShadow: scrolled
+          ? '0 1px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)'
+          : '0 1px 3px rgba(0,0,0,0.06)',
+      }}
+    >
+      <div
+        className="transition-all duration-300 ease-out px-4 md:px-8 lg:px-16 xl:px-24"
+        style={{ paddingTop: scrolled ? '10px' : '16px', paddingBottom: scrolled ? '10px' : '16px' }}
+      >
         <div className="max-w-7xl mx-auto">
 
           {/* Desktop */}
           <div className="hidden md:flex items-center justify-between">
-            {/* Logo */}
+            {/* Logo — encolhe levemente ao rolar */}
             <div className="flex-shrink-0 cursor-pointer" onClick={() => navigate('/')}>
               <img
                 src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030187894/57Ypr7wbFX6eHCZZ7V6o8w/logo_cc3239cb.png"
                 alt="Unimontes Logo"
-                className="h-12 md:h-14 w-auto"
+                className="w-auto transition-all duration-300 ease-out"
+                style={{ height: scrolled ? '40px' : '56px' }}
               />
             </div>
 
             {/* Navegação */}
             <div className="flex items-center gap-2 md:gap-4 lg:gap-6 flex-1 justify-center flex-nowrap min-w-0 overflow-visible">
+
               {/* Aluno dropdown */}
               <div className="relative flex-shrink-0" onMouseEnter={() => setAlunoOpen(true)} onMouseLeave={() => setAlunoOpen(false)}>
-                <button className={`${navBtn} flex items-center gap-1`}>
-                  Aluno <ChevronDown size={14} />
-                </button>
+                <button className={`${navBtn} flex items-center gap-1`}>Aluno <ChevronDown size={14} /></button>
                 {alunoOpen && (
                   <div className="absolute top-full left-0 bg-white rounded-lg min-w-[180px]" style={dropdownStyle}>
                     <button onClick={() => { navigate('/'); setAlunoOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Agenda Semanal</button>
@@ -118,9 +138,7 @@ export function Header() {
 
               {/* Formas de Ingresso dropdown */}
               <div className="relative flex-shrink-0" onMouseEnter={() => setIngressoOpen(true)} onMouseLeave={() => setIngressoOpen(false)}>
-                <button className={`${navBtn} flex items-center gap-1`}>
-                  Formas de Ingresso <ChevronDown size={14} />
-                </button>
+                <button className={`${navBtn} flex items-center gap-1`}>Formas de Ingresso <ChevronDown size={14} /></button>
                 {ingressoOpen && (
                   <div className="absolute top-full left-0 bg-white rounded-lg min-w-[180px]" style={dropdownStyle}>
                     <button onClick={() => { navigate('/sobre'); setTimeout(() => { const el = document.getElementById('cursos-oferecidos'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); }, 600); setIngressoOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-blue-600">Cursos</button>
@@ -132,9 +150,7 @@ export function Header() {
 
               {/* Projetos dropdown */}
               <div className="relative flex-shrink-0" onMouseEnter={() => setProjetosOpen(true)} onMouseLeave={() => { if (highlightMenu !== 'projetos') setProjetosOpen(false); }}>
-                <button className={`${navBtn} flex items-center gap-1 ${highlightMenu === 'projetos' ? highlightClass : ''}`}>
-                  Projetos <ChevronDown size={14} />
-                </button>
+                <button className={`${navBtn} flex items-center gap-1 ${highlightMenu === 'projetos' ? highlightClass : ''}`}>Projetos <ChevronDown size={14} /></button>
                 {projetosOpen && (
                   <div className="absolute top-full left-0 bg-white rounded-lg min-w-[160px]" style={dropdownStyle}>
                     {projetoLinks.map(([label, path]) => (
@@ -146,9 +162,7 @@ export function Header() {
 
               {/* Secretaria dropdown */}
               <div className="relative flex-shrink-0" onMouseEnter={() => setModelosOpen(true)} onMouseLeave={() => { if (highlightMenu !== 'secretaria') setModelosOpen(false); }}>
-                <button className={`${navBtn} flex items-center gap-1 ${highlightMenu === 'secretaria' ? highlightClass : ''}`}>
-                  Secretaria <ChevronDown size={14} />
-                </button>
+                <button className={`${navBtn} flex items-center gap-1 ${highlightMenu === 'secretaria' ? highlightClass : ''}`}>Secretaria <ChevronDown size={14} /></button>
                 {modelosOpen && (
                   <div className="absolute top-full left-0 bg-white rounded-lg min-w-[160px]" style={dropdownStyle}>
                     {secretariaLinks.map(([label, path]) => (
@@ -179,7 +193,12 @@ export function Header() {
               {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
             <div className="flex justify-center cursor-pointer" onClick={() => navigate('/')}>
-              <img src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030187894/57Ypr7wbFX6eHCZZ7V6o8w/logo_cc3239cb.png" alt="Unimontes Logo" className="h-10 w-auto" />
+              <img
+                src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030187894/57Ypr7wbFX6eHCZZ7V6o8w/logo_cc3239cb.png"
+                alt="Unimontes Logo"
+                className="w-auto transition-all duration-300"
+                style={{ height: scrolled ? '32px' : '40px' }}
+              />
             </div>
             <div className="flex flex-col items-center gap-1 absolute right-0">
               <span className="text-xs font-semibold text-gray-500 whitespace-nowrap">Fale conosco</span>
@@ -194,9 +213,8 @@ export function Header() {
           {/* Mobile menu expandido */}
           {mobileMenuOpen && (
             <div className="md:hidden mt-4 pb-2 border-t border-gray-100 space-y-1">
-              {/* Aluno mobile */}
               <div>
-                <button onClick={() => { const el = document.getElementById('aluno-mobile-menu'); if (el) el.classList.toggle('hidden'); }} className="w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 flex items-center justify-between">
+                <button onClick={() => document.getElementById('aluno-mobile-menu')?.classList.toggle('hidden')} className="w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 flex items-center justify-between">
                   Aluno <ChevronDown size={16} />
                 </button>
                 <div id="aluno-mobile-menu" className="hidden pl-4 space-y-1">
@@ -207,9 +225,8 @@ export function Header() {
                 </div>
               </div>
 
-              {/* Formas de Ingresso mobile */}
               <div>
-                <button onClick={() => { const el = document.getElementById('ingresso-mobile-menu'); if (el) el.classList.toggle('hidden'); }} className="w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 flex items-center justify-between">
+                <button onClick={() => document.getElementById('ingresso-mobile-menu')?.classList.toggle('hidden')} className="w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 flex items-center justify-between">
                   Formas de Ingresso <ChevronDown size={16} />
                 </button>
                 <div id="ingresso-mobile-menu" className="hidden pl-4 space-y-1">
@@ -219,9 +236,8 @@ export function Header() {
                 </div>
               </div>
 
-              {/* Projetos mobile */}
               <div>
-                <button onClick={() => { const el = document.getElementById('projetos-mobile-menu'); if (el) el.classList.toggle('hidden'); }} className={`w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 flex items-center justify-between ${highlightMenu === 'projetos' ? highlightClass : ''}`}>
+                <button onClick={() => document.getElementById('projetos-mobile-menu')?.classList.toggle('hidden')} className={`w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 flex items-center justify-between ${highlightMenu === 'projetos' ? highlightClass : ''}`}>
                   Projetos <ChevronDown size={16} />
                 </button>
                 <div id="projetos-mobile-menu" className="hidden pl-4 space-y-1">
@@ -231,9 +247,8 @@ export function Header() {
                 </div>
               </div>
 
-              {/* Secretaria mobile */}
               <div>
-                <button onClick={() => { const el = document.getElementById('modelos-mobile-menu'); if (el) el.classList.toggle('hidden'); }} className={`w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 flex items-center justify-between ${highlightMenu === 'secretaria' ? highlightClass : ''}`}>
+                <button onClick={() => document.getElementById('modelos-mobile-menu')?.classList.toggle('hidden')} className={`w-full text-left px-4 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 flex items-center justify-between ${highlightMenu === 'secretaria' ? highlightClass : ''}`}>
                   Secretaria <ChevronDown size={16} />
                 </button>
                 <div id="modelos-mobile-menu" className="hidden pl-4 space-y-1">
