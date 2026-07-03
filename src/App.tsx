@@ -17,6 +17,7 @@ import MateriaisGratuitos from "./pages/projetos/MateriaisGratuitos";
 import Solicitacoes from "./pages/secretaria/Solicitacoes";
 import Contatos from "./pages/secretaria/Contatos";
 import Sobre from "./pages/sobre/Sobre";
+import TvDisplay from "./pages/TvDisplay";
 
 function Router() {
   return (
@@ -34,6 +35,7 @@ function Router() {
         <Route path="/secretaria/solicitacoes" component={Solicitacoes} />
         <Route path="/secretaria/contatos" component={Contatos} />
         <Route path="/sobre" component={Sobre} />
+        <Route path="/tv" component={TvDisplay} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>
