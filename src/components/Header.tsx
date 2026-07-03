@@ -87,13 +87,11 @@ export function Header() {
   ];
 
   return (
+    // overflow:visible ficava no header e bloqueava backdropFilter — movido para o div interno
     <header
       className="sticky top-0 transition-all duration-300 ease-out"
       style={{
         zIndex: 100,
-        overflow: 'visible',
-        // No topo: fundo branco sólido sem sombra
-        // Ao rolar: fundo levemente translúcido + blur + sombra suave
         backgroundColor: scrolled ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,1)',
         backdropFilter: scrolled ? 'blur(12px)' : 'none',
         WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
@@ -104,7 +102,11 @@ export function Header() {
     >
       <div
         className="transition-all duration-300 ease-out px-4 md:px-8 lg:px-16 xl:px-24"
-        style={{ paddingTop: scrolled ? '10px' : '16px', paddingBottom: scrolled ? '10px' : '16px' }}
+        style={{
+          overflow: 'visible',
+          paddingTop: scrolled ? '10px' : '16px',
+          paddingBottom: scrolled ? '10px' : '16px',
+        }}
       >
         <div className="max-w-7xl mx-auto">
 
