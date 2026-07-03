@@ -87,16 +87,28 @@ export function Header() {
   ];
 
   return (
-    // Wrapper posicionado sticky — sem fundo, só define o contexto de posição
-    <div className="sticky top-0 transition-all duration-300 ease-out" style={{ zIndex: 100 }}>
+    // Wrapper sticky: padding-top cria o respiro acima do header flutuante
+    <div
+      className="sticky top-0 transition-all duration-300 ease-out"
+      style={{
+        zIndex: 100,
+        paddingTop: scrolled ? '8px' : '0px',
+        paddingLeft: scrolled ? '12px' : '0px',
+        paddingRight: scrolled ? '12px' : '0px',
+        // Fundo transparente no espaço do respiro para não sobrepor o conteúdo abaixo
+        background: scrolled
+          ? 'linear-gradient(to bottom, rgba(241,245,249,0.6) 0%, transparent 100%)'
+          : 'transparent',
+      }}
+    >
       {/* Header flutuante: ao rolar vira uma "ilha" centralizada com bordas arredondadas */}
       <header
         className="transition-all duration-300 ease-out"
         style={{
-          margin: scrolled ? '8px auto' : '0 auto',
+          margin: '0 auto',
           maxWidth: scrolled ? '1100px' : '100%',
           borderRadius: scrolled ? '14px' : '0px',
-          backgroundColor: scrolled ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,1)',
+          backgroundColor: scrolled ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,1)',
           backdropFilter: scrolled ? 'blur(14px)' : 'none',
           WebkitBackdropFilter: scrolled ? 'blur(14px)' : 'none',
           boxShadow: scrolled
