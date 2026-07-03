@@ -87,27 +87,31 @@ export function Header() {
   ];
 
   return (
-    // overflow:visible ficava no header e bloqueava backdropFilter — movido para o div interno
-    <header
-      className="sticky top-0 transition-all duration-300 ease-out"
-      style={{
-        zIndex: 100,
-        backgroundColor: scrolled ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,1)',
-        backdropFilter: scrolled ? 'blur(12px)' : 'none',
-        WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
-        boxShadow: scrolled
-          ? '0 1px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)'
-          : '0 1px 3px rgba(0,0,0,0.06)',
-      }}
-    >
-      <div
-        className="transition-all duration-300 ease-out px-4 md:px-8 lg:px-16 xl:px-24"
+    // Wrapper posicionado sticky — sem fundo, só define o contexto de posição
+    <div className="sticky top-0 transition-all duration-300 ease-out" style={{ zIndex: 100 }}>
+      {/* Header flutuante: ao rolar vira uma "ilha" centralizada com bordas arredondadas */}
+      <header
+        className="transition-all duration-300 ease-out"
         style={{
-          overflow: 'visible',
-          paddingTop: scrolled ? '10px' : '16px',
-          paddingBottom: scrolled ? '10px' : '16px',
+          margin: scrolled ? '8px auto' : '0 auto',
+          maxWidth: scrolled ? '1100px' : '100%',
+          borderRadius: scrolled ? '14px' : '0px',
+          backgroundColor: scrolled ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,1)',
+          backdropFilter: scrolled ? 'blur(14px)' : 'none',
+          WebkitBackdropFilter: scrolled ? 'blur(14px)' : 'none',
+          boxShadow: scrolled
+            ? '0 4px 24px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.05)'
+            : '0 1px 3px rgba(0,0,0,0.06)',
         }}
       >
+        <div
+          className="transition-all duration-300 ease-out px-4 md:px-8 lg:px-16 xl:px-24"
+          style={{
+            overflow: 'visible',
+            paddingTop: scrolled ? '10px' : '16px',
+            paddingBottom: scrolled ? '10px' : '16px',
+          }}
+        >
         <div className="max-w-7xl mx-auto">
 
           {/* Desktop */}
@@ -266,7 +270,8 @@ export function Header() {
           )}
 
         </div>
-      </div>
-    </header>
+        </div>
+      </header>
+    </div>
   );
 }
