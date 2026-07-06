@@ -14,6 +14,7 @@ interface ClassInfo {
 interface NewsItem {
   imageUrl: string;
   title: string;
+  texto: string;
   categoria: string;
   dia: number;
   mes: number;
@@ -185,23 +186,25 @@ function AgendaPanel({ classes, weekDates }: { classes: ClassInfo[]; weekDates: 
         <div className="flex-1 flex flex-col gap-2 min-h-0">
           {classes.map((c, idx) => {
             const cfg = cursoConfig[c.curso] || { dot: 'bg-gray-400', tag: c.curso.toUpperCase() };
+            const isNoClass = c.subject === 'Sem agendamento';
             return (
-              <div key={idx} className="flex-1 min-h-0 bg-white/10 rounded-xl px-4 py-2 flex gap-3 items-center overflow-hidden">
-                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${cfg.dot}`} />
+              <div key={idx} className={`flex-1 min-h-0 rounded-xl px-4 py-2 flex gap-3 items-center overflow-hidden ${isNoClass ? 'bg-white/5 opacity-60' : 'bg-white/10'}`}>
+                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${isNoClass ? 'bg-gray-500' : cfg.dot}`} />
                 <div className="min-w-0 flex-1">
-                  <div className="text-[10px] font-bold text-blue-300 uppercase tracking-wide leading-tight">
-                    {cfg.tag}<br />{c.period}
+                  {/* Curso + período na mesma linha */}
+                  <div className="text-[10px] font-bold text-blue-300 uppercase tracking-wide leading-tight truncate">
+                    {cfg.tag} · {c.period}
                   </div>
-                  <p className="text-white font-semibold text-sm leading-snug mt-0.5 truncate">
+                  <p className={`font-semibold text-sm leading-snug mt-0.5 truncate ${isNoClass ? 'text-blue-400 italic' : 'text-white'}`}>
                     {c.subject}
                   </p>
-                  {c.professor && (
+                  {!isNoClass && c.professor && (
                     <p className="text-blue-300 text-xs truncate">{c.professor}</p>
                   )}
-                  {c.hours && (
+                  {!isNoClass && c.hours && (
                     <p className="text-blue-400 text-[10px]">⏱ {c.hours}</p>
                   )}
-                  {c.observation && (
+                  {!isNoClass && c.observation && (
                     <p className="text-yellow-300/80 text-[10px] truncate">⚠ {c.observation}</p>
                   )}
                 </div>
@@ -216,14 +219,19 @@ function AgendaPanel({ classes, weekDates }: { classes: ClassInfo[]; weekDates: 
 
 // ─── Painel de Notícias (carrossel normal) ─────────────────────────────────────
 
+const NEWS_PER_PAGE = 3;
+
+// ─── Painel de Notícias (3 por vez, rotação por página) ───────────────────────
+
 function NewsPanel({ news }: { news: NewsItem[] }) {
-  const [current, setCurrent] = useState(0);
+  const totalPages = Math.max(1, Math.ceil(news.length / NEWS_PER_PAGE));
+  const [page, setPage] = useState(0);
 
   useEffect(() => {
-    if (news.length <= 1) return;
-    const id = setInterval(() => setCurrent(prev => (prev + 1) % news.length), NEWS_ROTATION_MS);
+    if (totalPages <= 1) return;
+    const id = setInterval(() => setPage(prev => (prev + 1) % totalPages), NEWS_ROTATION_MS);
     return () => clearInterval(id);
-  }, [news.length]);
+  }, [totalPages]);
 
   if (news.length === 0) return (
     <div className="flex flex-col h-full">
@@ -231,42 +239,55 @@ function NewsPanel({ news }: { news: NewsItem[] }) {
         <div className="w-1 h-6 bg-yellow-400 rounded-full flex-shrink-0" />
         <h2 className="text-xl font-bold text-white">Notícias</h2>
       </div>
-      <p className="text-blue-300 text-sm">Nenhuma notícia disponível.</p>
+      <p className="text-blue-300 text-sm">Nenhuma notícia nos últimos 15 dias.</p>
     </div>
   );
 
-  const item = news[current];
+  const slice = news.slice(page * NEWS_PER_PAGE, page * NEWS_PER_PAGE + NEWS_PER_PAGE);
+
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center gap-2 mb-4">
+    <div className="flex flex-col h-full min-h-0">
+      <div className="flex items-center gap-2 mb-3 flex-shrink-0">
         <div className="w-1 h-6 bg-yellow-400 rounded-full flex-shrink-0" />
         <h2 className="text-xl font-bold text-white">Notícias</h2>
-        <span className="ml-auto text-blue-300 text-xs">{current + 1}/{news.length}</span>
-      </div>
-
-      <div className="relative w-full rounded-2xl overflow-hidden bg-white/10 flex-shrink-0" style={{ aspectRatio: '16/7' }}>
-        <img key={item.imageUrl} src={item.imageUrl} alt={item.title}
-          className="w-full h-full object-cover"
-          onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-        {item.categoria && (
-          <span className="absolute top-3 left-3 bg-yellow-400 text-blue-900 text-xs font-bold px-3 py-1 rounded-full">
-            {item.categoria}
-          </span>
+        {totalPages > 1 && (
+          <span className="ml-auto text-blue-300 text-xs">{page + 1}/{totalPages}</span>
         )}
-        <div className="absolute bottom-3 left-3 right-3">
-          <p className="text-white font-bold text-lg leading-snug line-clamp-2 drop-shadow">{item.title}</p>
-          <p className="text-blue-200 text-xs mt-1">
-            {String(item.dia).padStart(2,'0')}/{String(item.mes).padStart(2,'0')}/{item.ano}
-          </p>
-        </div>
       </div>
 
-      {news.length > 1 && (
-        <div className="flex gap-1.5 mt-3 justify-center">
-          {news.map((_, i) => (
-            <button key={i} onClick={() => setCurrent(i)}
-              className={`rounded-full transition-all duration-300 ${i === current ? 'w-6 h-2 bg-yellow-400' : 'w-2 h-2 bg-white/30'}`} />
+      {/* Lista de 3 notícias — cada uma flex-1 para dividir igualmente */}
+      <div className="flex-1 flex flex-col gap-3 min-h-0">
+        {slice.map((item, i) => (
+          <div key={`${page}-${i}`} className="flex-1 min-h-0 bg-white/10 rounded-xl overflow-hidden flex gap-3">
+            {/* Imagem lateral */}
+            <div className="flex-shrink-0 w-28 relative">
+              <img src={item.imageUrl} alt={item.title}
+                className="w-full h-full object-cover"
+                onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20" />
+            </div>
+            {/* Texto */}
+            <div className="flex-1 py-3 pr-3 flex flex-col justify-center min-w-0">
+              {item.categoria && (
+                <span className="inline-block bg-yellow-400 text-blue-900 text-[10px] font-bold px-2 py-0.5 rounded-full mb-1 w-fit">
+                  {item.categoria}
+                </span>
+              )}
+              <p className="text-white font-semibold text-sm leading-snug line-clamp-2">{item.title}</p>
+              <p className="text-blue-300 text-[10px] mt-1">
+                {String(item.dia).padStart(2,'0')}/{String(item.mes).padStart(2,'0')}/{item.ano}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Indicadores de página */}
+      {totalPages > 1 && (
+        <div className="flex gap-1.5 mt-2 justify-center flex-shrink-0">
+          {Array.from({ length: totalPages }).map((_, i) => (
+            <button key={i} onClick={() => setPage(i)}
+              className={`rounded-full transition-all duration-300 ${i === page ? 'w-6 h-1.5 bg-yellow-400' : 'w-3 h-1.5 bg-white/30'}`} />
           ))}
         </div>
       )}
@@ -293,49 +314,80 @@ function NewsSlide({ news, onDone }: { news: NewsItem[]; onDone: () => void }) {
 
   if (news.length === 0) return null;
   const item = news[idx];
+  const hasText = !!item.texto;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black flex flex-col">
-      {/* Imagem de fundo */}
-      <div className="absolute inset-0">
-        <img src={item.imageUrl} alt={item.title}
-          className="w-full h-full object-cover opacity-40"
+    <div className="fixed inset-0 z-50 flex flex-col" style={{ background: '#0f1f4a' }}>
+      {/* Imagem de fundo desfocada (só quando sem texto longo) */}
+      <div className="absolute inset-0 overflow-hidden">
+        <img src={item.imageUrl} alt=""
+          className={`w-full h-full object-cover transition-opacity duration-700 ${hasText ? 'opacity-10 blur-sm' : 'opacity-30'}`}
           onError={e => { (e.target as HTMLImageElement).style.display='none'; }} />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80" />
       </div>
 
-      {/* Logo + skip */}
-      <div className="relative flex items-center justify-between px-12 py-6">
+      {/* Header do slide */}
+      <div className="relative flex-shrink-0 flex items-center justify-between px-12 py-5 border-b border-white/10">
         <img src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030187894/57Ypr7wbFX6eHCZZ7V6o8w/logo_cc3239cb.png"
-          alt="Unimontes" className="h-12 brightness-0 invert" />
-        <button onClick={onDone} className="text-white/50 hover:text-white text-sm transition-colors">
-          Fechar apresentação ✕
-        </button>
+          alt="Unimontes" className="h-10 brightness-0 invert" />
+        <div className="flex items-center gap-4">
+          <span className="text-white/40 text-sm">{idx + 1} de {news.length}</span>
+          <button onClick={onDone} className="text-white/40 hover:text-white text-sm transition-colors">✕ Fechar</button>
+        </div>
       </div>
 
-      {/* Conteúdo centralizado */}
-      <div className="relative flex-1 flex flex-col items-center justify-center px-24 text-center">
-        {item.categoria && (
-          <span className="bg-yellow-400 text-blue-900 text-sm font-bold px-5 py-1.5 rounded-full mb-6 inline-block">
-            {item.categoria}
-          </span>
-        )}
-        <h1 className="text-white font-bold text-5xl leading-tight max-w-4xl drop-shadow-lg">
-          {item.title}
-        </h1>
-        <p className="text-blue-300 text-lg mt-6">
-          {String(item.dia).padStart(2,'0')}/{String(item.mes).padStart(2,'0')}/{item.ano}
-        </p>
+      {/* Conteúdo principal */}
+      <div className="relative flex-1 flex gap-8 px-12 py-8 min-h-0">
+
+        {/* Coluna esquerda — imagem + meta */}
+        <div className="flex flex-col gap-4 flex-shrink-0" style={{ width: '38%' }}>
+          <div className="rounded-2xl overflow-hidden flex-1 min-h-0">
+            <img src={item.imageUrl} alt={item.title}
+              className="w-full h-full object-cover"
+              onError={e => { (e.target as HTMLImageElement).style.display='none'; }} />
+          </div>
+          <div>
+            {item.categoria && (
+              <span className="inline-block bg-yellow-400 text-blue-900 text-sm font-bold px-4 py-1 rounded-full mb-2">
+                {item.categoria}
+              </span>
+            )}
+            <p className="text-blue-300 text-sm">
+              {String(item.dia).padStart(2,'0')}/{String(item.mes).padStart(2,'0')}/{item.ano}
+            </p>
+          </div>
+        </div>
+
+        {/* Coluna direita — título + texto */}
+        <div className="flex-1 flex flex-col justify-center min-h-0 min-w-0">
+          <h1 className="text-white font-bold leading-tight mb-4 drop-shadow-lg"
+            style={{ fontSize: item.title.length > 80 ? '1.6rem' : item.title.length > 50 ? '2rem' : '2.4rem' }}>
+            {item.title}
+          </h1>
+          {hasText && (
+            <p className="text-blue-100 leading-relaxed overflow-hidden"
+              style={{
+                fontSize: item.texto.length > 600 ? '0.85rem' : item.texto.length > 300 ? '0.95rem' : '1.05rem',
+                display: '-webkit-box',
+                WebkitLineClamp: item.texto.length > 600 ? 12 : item.texto.length > 300 ? 10 : 8,
+                WebkitBoxOrient: 'vertical',
+              }}>
+              {item.texto}
+            </p>
+          )}
+          {!hasText && (
+            <p className="text-blue-400 text-base italic">Clique em "Ver mais" no site para ler a notícia completa.</p>
+          )}
+        </div>
       </div>
 
-      {/* Progresso + contador */}
-      <div className="relative px-12 py-6 flex items-center gap-6">
-        <div className="flex gap-2">
+      {/* Barra de progresso */}
+      <div className="relative flex-shrink-0 px-12 py-4 border-t border-white/10 flex items-center gap-4">
+        <div className="flex gap-2 flex-1">
           {news.map((_, i) => (
-            <div key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === idx ? 'w-10 bg-yellow-400' : 'w-4 bg-white/30'}`} />
+            <div key={i} className={`h-1 rounded-full transition-all duration-500 flex-1 ${i === idx ? 'bg-yellow-400' : 'bg-white/20'}`} />
           ))}
         </div>
-        <span className="text-white/50 text-xs ml-auto">{idx + 1} de {news.length}</span>
       </div>
     </div>
   );
@@ -418,29 +470,33 @@ export default function TvDisplay() {
         const professor = cells[5]?.trim() || '';
         const hours     = cells[6]?.trim() || '';
         const obs       = cells[7]?.trim() || '';
-        if (!curso || !periodo || !materia || materia === 'Sem agendamento') continue;
-        // ② formato: "1º PERÍODO" sem "O" duplicado
+        if (!curso || !periodo || !materia) continue;
+        // "º" já vem na variável periodo (ex: "1º"), não duplicar
         loadedClasses.push({
-          period:      `${periodo}º PERÍODO`,
+          period:      `${periodo} PERÍODO`,
           subject:     materia,
           professor:   professor || undefined,
-          hours:       hours     || undefined,
-          observation: obs       || undefined,
+          hours:       materia !== 'Sem agendamento' ? (hours || undefined) : undefined,
+          observation: materia !== 'Sem agendamento' ? (obs   || undefined) : undefined,
           curso,
         });
       }
       setClasses(loadedClasses);
 
-      // Notícias
+      // Notícias — últimos 15 dias
       const newsRows = await fetchCSV('1463370073');
       const loadedNews: NewsItem[] = [];
+      const quinzeDiasAtras = new Date();
+      quinzeDiasAtras.setDate(quinzeDiasAtras.getDate() - 15);
+      quinzeDiasAtras.setHours(0,0,0,0);
       for (const cells of newsRows.slice(1)) {
         const imageUrl  = cells[0]?.trim() || '';
         const title     = cells[1]?.trim() || '';
         const categoria = cells[3]?.trim() || '';
         const parsed    = parseDateBR(cells[4]?.trim() || '');
-        if (imageUrl.startsWith('http') && parsed)
-          loadedNews.push({ imageUrl, title, categoria, dia: parsed.dia, mes: parsed.mes, ano: parsed.ano });
+        const texto     = cells[5]?.trim() || '';
+        if (imageUrl.startsWith('http') && parsed && parsed.date >= quinzeDiasAtras)
+          loadedNews.push({ imageUrl, title, texto, categoria, dia: parsed.dia, mes: parsed.mes, ano: parsed.ano });
       }
       loadedNews.sort((a,b) => new Date(b.ano,b.mes-1,b.dia).getTime() - new Date(a.ano,a.mes-1,a.dia).getTime());
       setNews(loadedNews.slice(0, 10));
