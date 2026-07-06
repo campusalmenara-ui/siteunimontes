@@ -154,7 +154,7 @@ function AgendaPanel({ classes, weekDates }: { classes: ClassInfo[]; weekDates: 
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-[10px] font-semibold text-blue-300 uppercase tracking-wide">
-                      {c.curso} • {c.period}
+                      {c.curso} - {c.period}
                     </span>
                   </div>
                   <p className="text-white font-semibold text-sm leading-snug mt-0.5 truncate">
@@ -329,7 +329,7 @@ export default function TvDisplay() {
         const materia   = cells[4]?.trim() || '';
         const professor = cells[5]?.trim() || '';
         if (!curso || !periodo || !materia || materia === 'Sem agendamento') continue;
-        loadedClasses.push({ period: `${periodo}° P`, subject: materia, professor: professor || undefined, curso });
+        loadedClasses.push({ period: `${periodo} Período`, subject: materia, professor: professor || undefined, curso });
       }
       setClasses(loadedClasses);
 
