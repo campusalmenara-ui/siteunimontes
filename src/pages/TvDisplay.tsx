@@ -182,29 +182,27 @@ function AgendaPanel({ classes, weekDates }: { classes: ClassInfo[]; weekDates: 
       {classes.length === 0 ? (
         <p className="text-blue-300 text-sm">Nenhuma aula cadastrada.</p>
       ) : (
-        <div className="flex-1 overflow-hidden space-y-2">
+        <div className="flex-1 flex flex-col gap-2 min-h-0">
           {classes.map((c, idx) => {
             const cfg = cursoConfig[c.curso] || { dot: 'bg-gray-400', tag: c.curso.toUpperCase() };
             return (
-              <div key={idx} className="bg-white/10 rounded-xl px-4 py-2.5 flex gap-3 items-start">
-                <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${cfg.dot}`} />
+              <div key={idx} className="flex-1 min-h-0 bg-white/10 rounded-xl px-4 py-2 flex gap-3 items-center overflow-hidden">
+                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${cfg.dot}`} />
                 <div className="min-w-0 flex-1">
-                  {/* ① Quebra de linha no nome do curso + formato correto do período */}
                   <div className="text-[10px] font-bold text-blue-300 uppercase tracking-wide leading-tight">
                     {cfg.tag}<br />{c.period}
                   </div>
-                  <p className="text-white font-semibold text-sm leading-snug mt-1">
+                  <p className="text-white font-semibold text-sm leading-snug mt-0.5 truncate">
                     {c.subject}
                   </p>
                   {c.professor && (
-                    <p className="text-blue-300 text-xs mt-0.5 truncate">{c.professor}</p>
+                    <p className="text-blue-300 text-xs truncate">{c.professor}</p>
                   )}
-                  {/* ⑥ Carga horária e observação */}
                   {c.hours && (
-                    <p className="text-blue-400 text-[10px] mt-0.5">⏱ {c.hours}</p>
+                    <p className="text-blue-400 text-[10px]">⏱ {c.hours}</p>
                   )}
                   {c.observation && (
-                    <p className="text-yellow-300/80 text-[10px] mt-0.5 line-clamp-1">⚠ {c.observation}</p>
+                    <p className="text-yellow-300/80 text-[10px] truncate">⚠ {c.observation}</p>
                   )}
                 </div>
               </div>
@@ -356,14 +354,14 @@ function CalendarPanel({ items }: { items: CalendarItem[] }) {
       {items.length === 0 ? (
         <p className="text-blue-300 text-sm">Nenhum evento próximo.</p>
       ) : (
-        <div className="flex-1 overflow-hidden space-y-2">
+        <div className="flex-1 flex flex-col gap-2 min-h-0">
           {items.map((item, idx) => (
-            <div key={idx} className="bg-white/10 rounded-xl px-3 py-2.5 flex gap-3 items-start">
-              <div className="flex-shrink-0 bg-yellow-400 rounded-lg w-11 text-center py-1.5">
+            <div key={idx} className="flex-1 min-h-0 bg-white/10 rounded-xl px-3 flex gap-3 items-center overflow-hidden">
+              <div className="flex-shrink-0 bg-yellow-400 rounded-lg w-11 text-center py-1">
                 <div className="text-base font-bold text-blue-900 leading-none">{item.dia}</div>
-                <div className="text-[9px] font-bold text-blue-900 mt-0.5">{MESES_ABREV[item.mes - 1]}</div>
+                <div className="text-[9px] font-bold text-blue-900">{MESES_ABREV[item.mes - 1]}</div>
               </div>
-              <p className="text-white text-xs leading-relaxed line-clamp-2 flex-1 pt-0.5">{item.atividade}</p>
+              <p className="text-white text-xs leading-relaxed line-clamp-2 flex-1">{item.atividade}</p>
             </div>
           ))}
         </div>
@@ -493,7 +491,7 @@ export default function TvDisplay() {
         <NewsSlide news={news} onDone={() => setSlideMode(false)} />
       )}
 
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 flex flex-col select-none overflow-hidden"
+      <div className="h-screen overflow-hidden bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 flex flex-col select-none"
         style={{ fontFamily: "'Poppins','Inter',sans-serif" }}>
 
         {/* ── Header ────────────────────────────────────────────────────────── */}
@@ -518,8 +516,9 @@ export default function TvDisplay() {
           </div>
         </header>
 
-        {/* ── Conteúdo principal ──────────────────────────────────────────── */}
-        <main className="flex-1 grid grid-cols-3 gap-5 px-8 py-5 min-h-0">
+        {/* ── Conteúdo principal — altura fixa, nunca precisa de scroll ────── */}
+        {/* Header ~72px + footer ~36px + padding vertical 20px × 2 = ~148px  */}
+        <main className="grid grid-cols-3 gap-5 px-8 py-5" style={{ height: 'calc(100dvh - 148px)' }}>
           <div className="bg-white/5 rounded-2xl p-5 flex flex-col min-h-0 overflow-hidden border border-white/10">
             <AgendaPanel classes={classes} weekDates={weekDates} />
           </div>
