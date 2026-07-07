@@ -255,10 +255,10 @@ function NewsPanel({ news }: { news: NewsItem[] }) {
         )}
       </div>
 
-      {/* Lista de 3 notícias — cada uma flex-1 para dividir igualmente */}
-      <div className="flex-1 flex flex-col gap-3 min-h-0">
+      {/* Lista de 3 notícias */}
+      <div className="flex-1 flex flex-col gap-3 min-h-0 justify-center">
         {slice.map((item, i) => (
-          <div key={`${page}-${i}`} className="flex-1 min-h-0 rounded-xl overflow-hidden relative">
+          <div key={`${page}-${i}`} className="rounded-xl overflow-hidden relative flex-shrink-0" style={{ height: `calc((100% - ${(slice.length - 1) * 12}px) / ${slice.length})`, maxHeight: '38%' }}>
             {/* Imagem cobrindo o card todo */}
             <img src={item.imageUrl} alt={item.title}
               className="absolute inset-0 w-full h-full object-cover"
