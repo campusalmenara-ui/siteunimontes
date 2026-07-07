@@ -259,22 +259,21 @@ function NewsPanel({ news }: { news: NewsItem[] }) {
       <div className="flex-1 flex flex-col gap-3 min-h-0">
         {slice.map((item, i) => (
           <div key={`${page}-${i}`} className="flex-1 min-h-0 bg-white/10 rounded-xl overflow-hidden flex">
-            {/* Imagem à esquerda com badge sobreposto */}
-            <div className="flex-shrink-0 w-32 relative">
+            {/* Imagem à esquerda — colada, sem gap, altura total do card */}
+            <div className="relative w-36 flex-shrink-0">
               <img src={item.imageUrl} alt={item.title}
-                className="w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover"
                 onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20" />
               {item.categoria && (
-                <span className="absolute top-2 left-2 bg-yellow-400 text-blue-900 text-[9px] font-bold px-2 py-0.5 rounded-full">
+                <span className="absolute top-2 left-2 z-10 bg-yellow-400 text-blue-900 text-[9px] font-bold px-2 py-0.5 rounded-full">
                   {item.categoria}
                 </span>
               )}
             </div>
-            {/* Título e data à direita */}
-            <div className="flex-1 px-3 flex flex-col justify-center min-w-0">
+            {/* Título e data */}
+            <div className="flex-1 px-4 flex flex-col justify-center min-w-0">
               <p className="text-white font-semibold text-sm leading-snug line-clamp-3">{item.title}</p>
-              <p className="text-blue-300 text-[10px] mt-1">
+              <p className="text-blue-300 text-[10px] mt-1.5">
                 {String(item.dia).padStart(2,'0')}/{String(item.mes).padStart(2,'0')}/{item.ano}
               </p>
             </div>
