@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-
 // ─── Interfaces ────────────────────────────────────────────────────────────────
 
 interface ClassInfo {
@@ -255,26 +254,28 @@ function NewsPanel({ news }: { news: NewsItem[] }) {
         )}
       </div>
 
-      {/* Lista de 3 notícias */}
-      <div className="flex-1 flex flex-col gap-3 min-h-0 justify-center">
+      {/* Lista de 3 notícias — cada uma flex-1 para dividir igualmente */}
+      <div className="flex-1 flex flex-col gap-3 min-h-0">
         {slice.map((item, i) => (
-          <div key={`${page}-${i}`} className="rounded-xl overflow-hidden relative flex-shrink-0" style={{ height: `calc((100% - ${(slice.length - 1) * 12}px) / ${slice.length})`, maxHeight: '38%' }}>
-            {/* Imagem cobrindo o card todo */}
-            <img src={item.imageUrl} alt={item.title}
-              className="absolute inset-0 w-full h-full object-cover"
-              onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-            {/* Gradiente escuro na parte inferior */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-            {/* Badge no canto superior esquerdo */}
-            {item.categoria && (
-              <span className="absolute top-2 left-2 z-10 bg-yellow-400 text-blue-900 text-[9px] font-bold px-2 py-0.5 rounded-full">
-                {item.categoria}
-              </span>
-            )}
-            {/* Título e data na parte inferior */}
-            <div className="absolute bottom-0 left-0 right-0 px-3 py-2 z-10">
-              <p className="text-white font-semibold text-sm leading-snug line-clamp-2 drop-shadow">{item.title}</p>
-              <p className="text-blue-200 text-[10px] mt-0.5">{String(item.dia).padStart(2,'0')}/{String(item.mes).padStart(2,'0')}/{item.ano}</p>
+          <div key={`${page}-${i}`} className="flex-1 min-h-0 bg-white/10 rounded-xl overflow-hidden flex">
+            {/* Imagem à esquerda com badge sobreposto */}
+            <div className="flex-shrink-0 w-32 relative">
+              <img src={item.imageUrl} alt={item.title}
+                className="w-full h-full object-cover"
+                onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20" />
+              {item.categoria && (
+                <span className="absolute top-2 left-2 bg-yellow-400 text-blue-900 text-[9px] font-bold px-2 py-0.5 rounded-full">
+                  {item.categoria}
+                </span>
+              )}
+            </div>
+            {/* Título e data à direita */}
+            <div className="flex-1 px-3 flex flex-col justify-center min-w-0">
+              <p className="text-white font-semibold text-sm leading-snug line-clamp-3">{item.title}</p>
+              <p className="text-blue-300 text-[10px] mt-1">
+                {String(item.dia).padStart(2,'0')}/{String(item.mes).padStart(2,'0')}/{item.ano}
+              </p>
             </div>
           </div>
         ))}
@@ -545,11 +546,62 @@ export default function TvDisplay() {
         <NewsSlide news={news} onDone={() => setSlideMode(false)} />
       )}
 
-      <div className="h-screen overflow-hidden bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 flex flex-col select-none"
+      <div className="h-screen overflow-hidden flex flex-col select-none relative"
         style={{ fontFamily: "'Poppins','Inter',sans-serif" }}>
 
+        {/* Fundo animado — gradiente em mesh com CSS puro, sem dependências */}
+        <div className="absolute inset-0" style={{
+          background: 'linear-gradient(135deg, #0d1f5c, #1a3a8f, #0a4f8a, #1e2d6b)',
+          backgroundSize: '400% 400%',
+          animation: 'meshGradient 20s ease infinite',
+        }} />
+        {/* Camada de blob para efeito mesh */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div style={{
+            position: 'absolute', width: '60%', height: '60%',
+            borderRadius: '50%', filter: 'blur(80px)', opacity: 0.25,
+            background: '#2563eb',
+            animation: 'blob1 18s ease-in-out infinite',
+          }} />
+          <div style={{
+            position: 'absolute', width: '50%', height: '50%',
+            borderRadius: '50%', filter: 'blur(80px)', opacity: 0.2,
+            background: '#1d4ed8',
+            animation: 'blob2 22s ease-in-out infinite',
+          }} />
+          <div style={{
+            position: 'absolute', width: '40%', height: '40%',
+            borderRadius: '50%', filter: 'blur(60px)', opacity: 0.15,
+            background: '#3b82f6',
+            animation: 'blob3 16s ease-in-out infinite',
+          }} />
+        </div>
+
+        <style>{`
+          @keyframes meshGradient {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+          @keyframes blob1 {
+            0%,100% { top: -10%; left: -10%; }
+            33%     { top: 30%;  left: 50%;  }
+            66%     { top: 60%;  left: 10%;  }
+          }
+          @keyframes blob2 {
+            0%,100% { top: 60%; right: -10%; left: auto; }
+            33%     { top: 10%; right: 30%;  left: auto; }
+            66%     { top: 50%; right: 60%;  left: auto; }
+          }
+          @keyframes blob3 {
+            0%,100% { bottom: -10%; left: 30%; }
+            33%     { bottom: 50%;  left: 60%; }
+            66%     { bottom: 20%;  left: 10%; }
+          }
+        `}</style>
+
         {/* ── Header ────────────────────────────────────────────────────────── */}
-        <header className="flex-shrink-0 px-8 py-3 flex items-center justify-between border-b border-white/10">
+        <header className="relative z-10 flex-shrink-0 px-8 py-3 flex items-center justify-between border-b border-white/10">
 
           {/* ③ Logo centralizada sem texto — usa grid de 3 colunas */}
           <div className="flex-1 flex items-center gap-3">
@@ -572,7 +624,7 @@ export default function TvDisplay() {
 
         {/* ── Conteúdo principal — altura fixa, nunca precisa de scroll ────── */}
         {/* Header ~72px + footer ~36px + padding vertical 20px × 2 = ~148px  */}
-        <main className="grid grid-cols-3 gap-5 px-8 py-5" style={{ height: 'calc(100dvh - 148px)' }}>
+        <main className="relative z-10 grid grid-cols-3 gap-5 px-8 py-5" style={{ height: 'calc(100dvh - 148px)' }}>
           <div className="bg-white/5 rounded-2xl p-5 flex flex-col min-h-0 overflow-hidden border border-white/10">
             <AgendaPanel classes={classes} weekDates={weekDates} />
           </div>
@@ -585,7 +637,7 @@ export default function TvDisplay() {
         </main>
 
         {/* ── Rodapé ─────────────────────────────────────────────────────── */}
-        <footer className="flex-shrink-0 px-8 py-2 border-t border-white/10 flex items-center justify-between">
+        <footer className="relative z-10 flex-shrink-0 px-8 py-2 border-t border-white/10 flex items-center justify-between">
           <p className="text-blue-400 text-xs">Universidade Estadual de Montes Claros — Campus Almenara</p>
           {lastUpdated && (
             <p className="text-blue-500 text-xs">Atualizado às {pad(lastUpdated.getHours())}:{pad(lastUpdated.getMinutes())}</p>
