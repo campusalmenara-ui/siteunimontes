@@ -254,28 +254,26 @@ function NewsPanel({ news }: { news: NewsItem[] }) {
         )}
       </div>
 
-      {/* Lista de 3 notícias — cada uma flex-1 para dividir igualmente */}
-      <div className="flex-1 flex flex-col gap-3 min-h-0">
+      {/* Lista de 3 notícias */}
+      <div className="flex-1 flex flex-col gap-3 min-h-0 justify-center">
         {slice.map((item, i) => (
-          <div key={`${page}-${i}`} className="flex-1 min-h-0 bg-white/10 rounded-xl overflow-hidden flex">
-            {/* Imagem à esquerda com badge sobreposto */}
-            <div className="flex-shrink-0 w-32 relative">
-              <img src={item.imageUrl} alt={item.title}
-                className="w-full h-full object-cover"
-                onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20" />
-              {item.categoria && (
-                <span className="absolute top-2 left-2 bg-yellow-400 text-blue-900 text-[9px] font-bold px-2 py-0.5 rounded-full">
-                  {item.categoria}
-                </span>
-              )}
-            </div>
-            {/* Título e data à direita */}
-            <div className="flex-1 px-3 flex flex-col justify-center min-w-0">
-              <p className="text-white font-semibold text-sm leading-snug line-clamp-3">{item.title}</p>
-              <p className="text-blue-300 text-[10px] mt-1">
-                {String(item.dia).padStart(2,'0')}/{String(item.mes).padStart(2,'0')}/{item.ano}
-              </p>
+          <div key={`${page}-${i}`} className="rounded-xl overflow-hidden relative flex-shrink-0" style={{ height: `calc((100% - ${(slice.length - 1) * 12}px) / ${slice.length})`, maxHeight: '38%' }}>
+            {/* Imagem cobrindo o card todo */}
+            <img src={item.imageUrl} alt={item.title}
+              className="absolute inset-0 w-full h-full object-cover"
+              onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+            {/* Gradiente escuro na parte inferior */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            {/* Badge no canto superior esquerdo */}
+            {item.categoria && (
+              <span className="absolute top-2 left-2 z-10 bg-yellow-400 text-blue-900 text-[9px] font-bold px-2 py-0.5 rounded-full">
+                {item.categoria}
+              </span>
+            )}
+            {/* Título e data na parte inferior */}
+            <div className="absolute bottom-0 left-0 right-0 px-3 py-2 z-10">
+              <p className="text-white font-semibold text-sm leading-snug line-clamp-2 drop-shadow">{item.title}</p>
+              <p className="text-blue-200 text-[10px] mt-0.5">{String(item.dia).padStart(2,'0')}/{String(item.mes).padStart(2,'0')}/{item.ano}</p>
             </div>
           </div>
         ))}
