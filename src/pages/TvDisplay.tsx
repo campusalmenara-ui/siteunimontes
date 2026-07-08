@@ -768,9 +768,9 @@ export default function TvDisplay() {
 
         {/* ── Rodapé ─────────────────────────────────────────────────────── */}
         <footer className="relative z-10 flex-shrink-0 px-8 py-2 border-t border-white/10 flex items-center justify-between">
-          <p className="text-blue-400 text-xs">Universidade Estadual de Montes Claros — Campus Almenara</p>
+          <p className="text-blue-100 text-xs">Universidade Estadual de Montes Claros — Campus Almenara</p>
           {lastUpdated && (
-            <p className="text-blue-500 text-xs">Atualizado às {pad(lastUpdated.getHours())}:{pad(lastUpdated.getMinutes())}</p>
+            <p className="text-blue-100 text-xs">Atualizado às {pad(lastUpdated.getHours())}:{pad(lastUpdated.getMinutes())}</p>
           )}
         </footer>
       </div>
