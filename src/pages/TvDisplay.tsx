@@ -487,14 +487,35 @@ function NewsSlide({ feed, onDone }: { feed: FeedItem[]; onDone: () => void }) {
         </div>
       </div>
 
-       {/* Barra de progresso */}
+       {/* Barra de progresso com animação de carregamento no slide ativo */}
+      <style>{`
+        @keyframes slideProgress {
+          from { width: 0%; }
+          to   { width: 100%; }
+        }
+      `}</style>
       <div className="relative flex-shrink-0 px-12 py-4 border-t border-white/10">
         <div className="flex gap-2 flex-1">
           {feed.map((_, i) => (
-            <div key={i} className={`h-1 rounded-full transition-all duration-500 flex-1 ${i === idx ? 'bg-yellow-400' : 'bg-white/20'}`} />
+            <div key={i} className="flex-1 h-1.5 rounded-full bg-white/20 overflow-hidden relative">
+              {i === idx && (
+                <div
+                  key={idx}
+                  className="absolute left-0 top-0 h-full rounded-full bg-yellow-400"
+                  style={{
+                    width: '0%',
+                    animation: `slideProgress ${SLIDE_DURATION_MS}ms linear forwards`,
+                  }}
+                />
+              )}
+              {i < idx && (
+                <div className="absolute left-0 top-0 h-full w-full rounded-full bg-yellow-400/60" />
+              )}
+            </div>
           ))}
         </div>
       </div>
+      }
 
 // ─── Painel de Calendário ──────────────────────────────────────────────────────
 
