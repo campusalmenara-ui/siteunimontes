@@ -33,6 +33,19 @@ interface WeatherData {
   wind: number;
 }
 
+interface SocialPost {
+  imagem: string;
+  legenda: string;
+  link: string;
+  tipo: string;
+  rede: string;
+}
+
+// Item unificado para o painel de notícias/social
+type FeedItem =
+  | { kind: 'news'; imageUrl: string; title: string; texto: string; categoria: string; dia: number; mes: number; ano: number }
+  | { kind: 'social'; imagem: string; legenda: string; link: string; tipo: string; rede: string };
+
 // ─── Constantes ────────────────────────────────────────────────────────────────
 
 const SPREADSHEET_ID    = '1q_bLd3HXuFUH7Sogj3lo9D7aLv2BMqgX8P2iAnwbMF0';
@@ -49,6 +62,23 @@ const SLIDE_INTERVAL_MS = 3 * 60_000; // a cada 3 min entra no modo slide
 const SLIDE_DURATION_MS = 20_000;    // cada notícia em fullscreen dura 20s
 const DATA_REFRESH_MS   = 5 * 60_000;
 const WEATHER_REFRESH_MS= 15 * 60_000;
+
+const SOCIAL_GID = '1013562204';
+
+const REDE_CONFIG: Record<string, { label: string; iconBg: string; btnBg: string; btnLabel: string }> = {
+  instagram: {
+    label:    'Instagram',
+    iconBg:   'linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045)',
+    btnBg:    'linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045)',
+    btnLabel: 'Ver no Instagram',
+  },
+  youtube: {
+    label:    'YouTube',
+    iconBg:   '#ff0000',
+    btnBg:    '#ff0000',
+    btnLabel: 'Ver no YouTube',
+  },
+};
 
 // Mapa simplificado de WMO weather codes → emoji + descrição
 const WMO_MAP: { [k: number]: [string, string] } = {
@@ -220,10 +250,28 @@ function AgendaPanel({ classes, weekDates }: { classes: ClassInfo[]; weekDates: 
 
 const NEWS_PER_PAGE = 3;
 
-// ─── Painel de Notícias (3 por vez, rotação por página) ───────────────────────
+// ─── Ícones SVG inline ────────────────────────────────────────────────────────
 
-function NewsPanel({ news }: { news: NewsItem[] }) {
-  const totalPages = Math.max(1, Math.ceil(news.length / NEWS_PER_PAGE));
+function InstagramIcon({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+    </svg>
+  );
+}
+
+function YoutubeIcon({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/>
+    </svg>
+  );
+}
+
+// ─── Painel de Notícias + Social (3 por vez) ──────────────────────────────────
+
+function NewsPanel({ feed }: { feed: FeedItem[] }) {
+  const totalPages = Math.max(1, Math.ceil(feed.length / NEWS_PER_PAGE));
   const [page, setPage] = useState(0);
 
   useEffect(() => {
@@ -232,54 +280,73 @@ function NewsPanel({ news }: { news: NewsItem[] }) {
     return () => clearInterval(id);
   }, [totalPages]);
 
-  if (news.length === 0) return (
+  if (feed.length === 0) return (
     <div className="flex flex-col h-full">
       <div className="flex items-center gap-2 mb-4">
         <div className="w-1 h-6 bg-yellow-400 rounded-full flex-shrink-0" />
-        <h2 className="text-xl font-bold text-white">Notícias</h2>
+        <h2 className="text-xl font-bold text-white">Notícias & Redes</h2>
       </div>
-      <p className="text-blue-300 text-sm">Nenhuma notícia nos últimos 15 dias.</p>
+      <p className="text-blue-300 text-sm">Nenhum conteúdo disponível.</p>
     </div>
   );
 
-  const slice = news.slice(page * NEWS_PER_PAGE, page * NEWS_PER_PAGE + NEWS_PER_PAGE);
+  const slice = feed.slice(page * NEWS_PER_PAGE, page * NEWS_PER_PAGE + NEWS_PER_PAGE);
 
   return (
     <div className="flex flex-col h-full min-h-0">
       <div className="flex items-center gap-2 mb-3 flex-shrink-0">
         <div className="w-1 h-6 bg-yellow-400 rounded-full flex-shrink-0" />
-        <h2 className="text-xl font-bold text-white">Notícias</h2>
+        <h2 className="text-xl font-bold text-white">Notícias & Redes</h2>
         {totalPages > 1 && (
           <span className="ml-auto text-blue-300 text-xs">{page + 1}/{totalPages}</span>
         )}
       </div>
 
-      {/* Lista de 3 notícias */}
       <div className="flex-1 flex flex-col gap-3 min-h-0 justify-center">
-        {slice.map((item, i) => (
-          <div key={`${page}-${i}`} className="rounded-xl overflow-hidden relative flex-shrink-0" style={{ height: `calc((100% - ${(slice.length - 1) * 12}px) / ${slice.length})`, maxHeight: '38%' }}>
-            {/* Imagem cobrindo o card todo */}
-            <img src={item.imageUrl} alt={item.title}
-              className="absolute inset-0 w-full h-full object-cover"
-              onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-            {/* Gradiente escuro na parte inferior */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-            {/* Badge no canto superior esquerdo */}
-            {item.categoria && (
-              <span className="absolute top-2 left-2 z-10 bg-yellow-400 text-blue-900 text-[9px] font-bold px-2 py-0.5 rounded-full">
-                {item.categoria}
-              </span>
-            )}
-            {/* Título e data na parte inferior */}
-            <div className="absolute bottom-0 left-0 right-0 px-3 py-2 z-10">
-              <p className="text-white font-semibold text-sm leading-snug line-clamp-2 drop-shadow">{item.title}</p>
-              <p className="text-blue-200 text-[10px] mt-0.5">{String(item.dia).padStart(2,'0')}/{String(item.mes).padStart(2,'0')}/{item.ano}</p>
+        {slice.map((item, i) => {
+          const img      = item.kind === 'news' ? item.imageUrl : item.imagem;
+          const isSocial = item.kind === 'social';
+          const rede     = isSocial ? item.rede : '';
+          const cfg      = isSocial ? (REDE_CONFIG[rede] ?? REDE_CONFIG.instagram) : null;
+
+          return (
+            <div key={`${page}-${i}`}
+              className="rounded-xl overflow-hidden relative flex-shrink-0"
+              style={{ height: `calc((100% - ${(slice.length - 1) * 12}px) / ${slice.length})`, maxHeight: '38%' }}>
+              <img src={img} alt=""
+                className="absolute inset-0 w-full h-full object-cover"
+                onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+              {/* Badge: ícone da rede OU categoria */}
+              <div className="absolute top-2 left-2 z-10">
+                {isSocial ? (
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center text-white shadow"
+                    style={{ background: cfg!.iconBg }}>
+                    {rede === 'youtube' ? <YoutubeIcon size={12} /> : <InstagramIcon size={12} />}
+                  </div>
+                ) : (item.kind === 'news' && item.categoria) ? (
+                  <span className="bg-yellow-400 text-blue-900 text-[9px] font-bold px-2 py-0.5 rounded-full">
+                    {item.categoria}
+                  </span>
+                ) : null}
+              </div>
+
+              <div className="absolute bottom-0 left-0 right-0 px-3 py-2 z-10">
+                <p className="text-white font-semibold text-sm leading-snug line-clamp-2 drop-shadow">
+                  {item.kind === 'news' ? item.title : item.legenda}
+                </p>
+                {item.kind === 'news' && (
+                  <p className="text-blue-200 text-[10px] mt-0.5">
+                    {String(item.dia).padStart(2,'0')}/{String(item.mes).padStart(2,'0')}/{item.ano}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      {/* Indicadores de página */}
       {totalPages > 1 && (
         <div className="flex gap-1.5 mt-2 justify-center flex-shrink-0">
           {Array.from({ length: totalPages }).map((_, i) => (
@@ -294,74 +361,103 @@ function NewsPanel({ news }: { news: NewsItem[] }) {
 
 // ─── Slide Fullscreen ─────────────────────────────────────────────────────────
 
-function NewsSlide({ news, onDone }: { news: NewsItem[]; onDone: () => void }) {
+function NewsSlide({ feed, onDone }: { feed: FeedItem[]; onDone: () => void }) {
   const [idx, setIdx] = useState(0);
 
   useEffect(() => {
-    if (news.length === 0) { onDone(); return; }
+    if (feed.length === 0) { onDone(); return; }
     const id = setInterval(() => {
       setIdx(prev => {
         const next = prev + 1;
-        if (next >= news.length) { clearInterval(id); onDone(); return prev; }
+        if (next >= feed.length) { clearInterval(id); onDone(); return prev; }
         return next;
       });
     }, SLIDE_DURATION_MS);
     return () => clearInterval(id);
-  }, [news.length, onDone]);
+  }, [feed.length, onDone]);
 
-  if (news.length === 0) return null;
-  const item = news[idx];
-  const hasText = !!item.texto;
+  if (feed.length === 0) return null;
+
+  const item     = feed[idx];
+  const isSocial = item.kind === 'social';
+  const img      = isSocial ? item.imagem : item.imageUrl;
+  const rede     = isSocial ? item.rede : '';
+  const cfg      = isSocial ? (REDE_CONFIG[rede] ?? REDE_CONFIG.instagram) : null;
+  const hasText  = !isSocial && !!item.texto;
+  const legenda  = isSocial ? item.legenda : '';
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col" style={{ background: '#0f1f4a' }}>
-      {/* Imagem de fundo desfocada (só quando sem texto longo) */}
+      {/* Imagem de fundo */}
       <div className="absolute inset-0 overflow-hidden">
-        <img src={item.imageUrl} alt=""
-          className={`w-full h-full object-cover transition-opacity duration-700 ${hasText ? 'opacity-10 blur-sm' : 'opacity-30'}`}
+        <img src={img} alt=""
+          className="w-full h-full object-cover opacity-15 blur-sm"
           onError={e => { (e.target as HTMLImageElement).style.display='none'; }} />
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80" />
       </div>
 
-      {/* Header do slide */}
+      {/* Header */}
       <div className="relative flex-shrink-0 flex items-center justify-between px-12 py-5 border-b border-white/10">
         <img src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030187894/57Ypr7wbFX6eHCZZ7V6o8w/logo_cc3239cb.png"
           alt="Unimontes" className="h-10 brightness-0 invert" />
+        {/* Badge da rede social no centro do header */}
+        {isSocial && cfg && (
+          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full text-white text-sm font-semibold"
+            style={{ background: cfg.iconBg }}>
+            {rede === 'youtube' ? <YoutubeIcon size={16} /> : <InstagramIcon size={16} />}
+            {cfg.label}
+          </div>
+        )}
         <div className="flex items-center gap-4">
-          <span className="text-white/40 text-sm">{idx + 1} de {news.length}</span>
+          <span className="text-white/40 text-sm">{idx + 1} de {feed.length}</span>
           <button onClick={onDone} className="text-white/40 hover:text-white text-sm transition-colors">✕ Fechar</button>
         </div>
       </div>
 
-      {/* Conteúdo principal */}
+      {/* Conteúdo */}
       <div className="relative flex-1 flex gap-8 px-12 py-8 min-h-0">
 
-        {/* Coluna esquerda — imagem + meta */}
+        {/* Coluna esquerda — imagem */}
         <div className="flex flex-col gap-4 flex-shrink-0" style={{ width: '38%' }}>
           <div className="rounded-2xl overflow-hidden flex-1 min-h-0">
-            <img src={item.imageUrl} alt={item.title}
+            <img src={img} alt=""
               className="w-full h-full object-cover"
               onError={e => { (e.target as HTMLImageElement).style.display='none'; }} />
           </div>
+          {/* Meta abaixo da imagem */}
           <div>
-            {item.categoria && (
+            {!isSocial && item.categoria && (
               <span className="inline-block bg-yellow-400 text-blue-900 text-sm font-bold px-4 py-1 rounded-full mb-2">
                 {item.categoria}
               </span>
             )}
-            <p className="text-blue-300 text-sm">
-              {String(item.dia).padStart(2,'0')}/{String(item.mes).padStart(2,'0')}/{item.ano}
-            </p>
+            {!isSocial && (
+              <p className="text-blue-300 text-sm">
+                {String(item.dia).padStart(2,'0')}/{String(item.mes).padStart(2,'0')}/{item.ano}
+              </p>
+            )}
+            {isSocial && cfg && (
+              <a href={item.link} target="_blank" rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-white font-semibold text-sm transition-opacity hover:opacity-90"
+                style={{ background: cfg.btnBg }}>
+                {rede === 'youtube' ? <YoutubeIcon size={14} /> : <InstagramIcon size={14} />}
+                {cfg.btnLabel}
+              </a>
+            )}
           </div>
         </div>
 
-        {/* Coluna direita — título + texto */}
+        {/* Coluna direita — título/legenda + texto */}
         <div className="flex-1 flex flex-col justify-center min-h-0 min-w-0">
           <h1 className="text-white font-bold leading-tight mb-4 drop-shadow-lg"
-            style={{ fontSize: item.title.length > 80 ? '1.6rem' : item.title.length > 50 ? '2rem' : '2.4rem' }}>
-            {item.title}
+            style={{ fontSize: isSocial
+              ? (legenda.length > 200 ? '1.4rem' : '1.8rem')
+              : (item.title.length > 80 ? '1.6rem' : item.title.length > 50 ? '2rem' : '2.4rem') }}>
+            {isSocial ? legenda.split('\n')[0] : item.title}
           </h1>
-          {hasText && (
+
+          {/* Notícia: texto completo */}
+          {!isSocial && hasText && (
             <p className="text-blue-100 leading-relaxed overflow-hidden"
               style={{
                 fontSize: item.texto.length > 600 ? '0.85rem' : item.texto.length > 300 ? '0.95rem' : '1.05rem',
@@ -372,16 +468,29 @@ function NewsSlide({ news, onDone }: { news: NewsItem[]; onDone: () => void }) {
               {item.texto}
             </p>
           )}
-          {!hasText && (
-            <p className="text-blue-400 text-base italic">Clique em "Ver mais" no site para ler a notícia completa.</p>
+          {!isSocial && !hasText && (
+            <p className="text-blue-400 text-base italic">Acesse o site para ler a notícia completa.</p>
+          )}
+
+          {/* Social: restante da legenda após a primeira linha */}
+          {isSocial && legenda.includes('\n') && (
+            <p className="text-blue-100 leading-relaxed overflow-hidden"
+              style={{
+                fontSize: '0.9rem',
+                display: '-webkit-box',
+                WebkitLineClamp: 10,
+                WebkitBoxOrient: 'vertical',
+              }}>
+              {legenda.split('\n').slice(1).join('\n')}
+            </p>
           )}
         </div>
       </div>
 
       {/* Barra de progresso */}
-      <div className="relative flex-shrink-0 px-12 py-4 border-t border-white/10 flex items-center gap-4">
+      <div className="relative flex-shrink-0 px-12 py-4 border-t border-white/10">
         <div className="flex gap-2 flex-1">
-          {news.map((_, i) => (
+          {feed.map((_, i) => (
             <div key={i} className={`h-1 rounded-full transition-all duration-500 flex-1 ${i === idx ? 'bg-yellow-400' : 'bg-white/20'}`} />
           ))}
         </div>
@@ -424,7 +533,7 @@ function CalendarPanel({ items }: { items: CalendarItem[] }) {
 export default function TvDisplay() {
   const [classes, setClasses]         = useState<ClassInfo[]>([]);
   const [weekDates, setWeekDates]     = useState({ start: '', end: '' });
-  const [news, setNews]               = useState<NewsItem[]>([]);
+  const [feed, setFeed]               = useState<FeedItem[]>([]);
   const [calendar, setCalendar]       = useState<CalendarItem[]>([]);
   const [weather, setWeather]         = useState<WeatherData | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
@@ -482,7 +591,7 @@ export default function TvDisplay() {
 
       // Notícias — últimos 15 dias
       const newsRows = await fetchCSV('1463370073');
-      const loadedNews: NewsItem[] = [];
+      const loadedNews: (FeedItem & { kind: 'news' })[] = [];
       const quinzeDiasAtras = new Date();
       quinzeDiasAtras.setDate(quinzeDiasAtras.getDate() - 15);
       quinzeDiasAtras.setHours(0,0,0,0);
@@ -493,10 +602,33 @@ export default function TvDisplay() {
         const parsed    = parseDateBR(cells[4]?.trim() || '');
         const texto     = cells[5]?.trim() || '';
         if (imageUrl.startsWith('http') && parsed && parsed.date >= quinzeDiasAtras)
-          loadedNews.push({ imageUrl, title, texto, categoria, dia: parsed.dia, mes: parsed.mes, ano: parsed.ano });
+          loadedNews.push({ kind: 'news', imageUrl, title, texto, categoria, dia: parsed.dia, mes: parsed.mes, ano: parsed.ano });
       }
       loadedNews.sort((a,b) => new Date(b.ano,b.mes-1,b.dia).getTime() - new Date(a.ano,a.mes-1,a.dia).getTime());
-      setNews(loadedNews.slice(0, 10));
+
+      // Posts de redes sociais — últimos 10
+      const socialRows = await fetchCSV(SOCIAL_GID);
+      const loadedSocial: (FeedItem & { kind: 'social' })[] = socialRows.slice(1)
+        .map(cells => {
+          const imagem  = cells[0]?.trim() || '';
+          const legenda = cells[1]?.trim() || '';
+          const link    = cells[2]?.trim() || '';
+          const tipoRaw = cells[3]?.trim().toLowerCase() || 'foto';
+          const tipo    = tipoRaw.startsWith('v') || tipoRaw === 'reels' ? 'video' : 'foto';
+          const redeRaw = cells[4]?.trim().toLowerCase() || 'instagram';
+          const rede    = redeRaw.includes('youtube') ? 'youtube' : 'instagram';
+          return { kind: 'social' as const, imagem, legenda, link, tipo, rede };
+        })
+        .filter(p => p.imagem.startsWith('http'));
+
+      // Intercalar: notícia, social, notícia, social...
+      const merged: FeedItem[] = [];
+      const maxLen = Math.max(loadedNews.length, loadedSocial.slice(0, 10).length);
+      for (let i = 0; i < maxLen; i++) {
+        if (i < loadedNews.length)               merged.push(loadedNews[i]);
+        if (i < loadedSocial.slice(0,10).length) merged.push(loadedSocial[i]);
+      }
+      setFeed(merged.slice(0, 20));
 
       // Calendário — ⑤ 9 itens
       const calRows = await fetchCSV('1799591414');
@@ -532,16 +664,16 @@ export default function TvDisplay() {
   // ⑦ Disparar slide fullscreen a cada SLIDE_INTERVAL_MS
   useEffect(() => {
     const id = setInterval(() => {
-      if (news.length > 0) setSlideMode(true);
+      if (feed.length > 0) setSlideMode(true);
     }, SLIDE_INTERVAL_MS);
     return () => clearInterval(id);
-  }, [news.length]);
+  }, [feed.length]);
 
   return (
     <>
       {/* ⑦ Modo slide fullscreen */}
-      {slideMode && news.length > 0 && (
-        <NewsSlide news={news} onDone={() => setSlideMode(false)} />
+      {slideMode && feed.length > 0 && (
+        <NewsSlide feed={feed} onDone={() => setSlideMode(false)} />
       )}
 
       <div className="h-screen overflow-hidden flex flex-col select-none relative"
@@ -627,7 +759,7 @@ export default function TvDisplay() {
             <AgendaPanel classes={classes} weekDates={weekDates} />
           </div>
           <div className="bg-white/5 rounded-2xl p-5 flex flex-col min-h-0 overflow-hidden border border-white/10">
-            <NewsPanel news={news} />
+            <NewsPanel feed={feed} />
           </div>
           <div className="bg-white/5 rounded-2xl p-5 flex flex-col min-h-0 overflow-hidden border border-white/10">
             <CalendarPanel items={calendar} />
