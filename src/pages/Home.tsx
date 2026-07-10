@@ -301,10 +301,12 @@ export default function Home() {
                           }`}
                           disabled={isNoClass(classInfo)}
                         >
-                          <div className="p-4">
+                           <div className="p-4">
                             <div className="flex items-start justify-between gap-3">
                               <div className="flex-1">
-                                <p className="text-xs md:text-sm font-semibold text-gray-500 uppercase tracking-wide">{classInfo.period}</p>
+                                <span className={`inline-block text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wide mb-1 ${
+                                  classInfo.color.includes('purple') ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
+                                }`}>{classInfo.period}</span>
                                 <div className="flex items-center gap-2 mt-1">
                                   {isNoClass(classInfo) && <Coffee size={18} className="text-gray-400 flex-shrink-0" />}
                                   <h3 className={`text-base md:text-lg font-bold line-clamp-2 pr-2 ${isNoClass(classInfo) ? 'text-gray-500 italic' : 'text-gray-900'}`}>{classInfo.subject}</h3>
