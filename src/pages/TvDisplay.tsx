@@ -444,21 +444,64 @@ function NewsSlide({ feed, onDone }: { feed: FeedItem[]; onDone: () => void }) {
 // ─── Calendário ────────────────────────────────────────────────────────────────
 
 function CalendarPanel({ items }: { items: CalendarItem[] }) {
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+
+  const isToday = (item: CalendarItem) => {
+    const d = new Date(item.ano, item.mes - 1, item.dia);
+    return d.getTime() === hoje.getTime();
+  };
+
+  const todayItems  = items.filter(isToday);
+  const futureItems = items.filter(i => !isToday(i));
+
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex items-center gap-2 mb-3">
         <div className="w-1 h-6 bg-yellow-400 rounded-full flex-shrink-0" />
         <h2 className="text-xl font-bold text-white">Calendário Escolar</h2>
       </div>
+
       {items.length === 0 ? (
         <p className="text-blue-300 text-sm">Nenhum evento próximo.</p>
       ) : (
         <div className="flex-1 flex flex-col gap-2 min-h-0">
-          {items.map((item, idx) => (
-            <div key={idx} className="flex-1 min-h-0 bg-white/10 rounded-xl px-3 flex gap-3 items-center overflow-hidden">
-              <div className="flex-shrink-0 bg-yellow-400 rounded-lg w-11 text-center py-1">
-                <div className="text-base font-bold text-blue-900 leading-none">{item.dia}</div>
-                <div className="text-[9px] font-bold text-blue-900">{MESES_ABREV[item.mes - 1]}</div>
+
+          {/* ── Card hero para eventos de HOJE ─────────────────────────── */}
+          {todayItems.map((item, idx) => (
+            <div key={`today-${idx}`}
+              className="flex-shrink-0 rounded-xl overflow-hidden relative"
+              style={{
+                background: 'linear-gradient(135deg, #1e40af 0%, #1d4ed8 50%, #2563eb 100%)',
+                border: '1px solid rgba(250,204,21,0.4)',
+                minHeight: '72px',
+              }}>
+              {/* Brilho decorativo */}
+              <div className="absolute inset-0 opacity-10"
+                style={{ background: 'radial-gradient(circle at 20% 50%, #fbbf24, transparent 60%)' }} />
+              <div className="relative flex gap-3 items-center px-3 py-3">
+                {/* Badge data amarelo maior */}
+                <div className="flex-shrink-0 bg-yellow-400 rounded-lg w-13 text-center py-1.5 px-2 shadow-lg">
+                  <div className="text-lg font-black text-blue-900 leading-none">{item.dia}</div>
+                  <div className="text-[9px] font-black text-blue-900 mt-0.5">{MESES_ABREV[item.mes - 1]}</div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="inline-block bg-yellow-400 text-blue-900 text-[9px] font-black px-2 py-0.5 rounded-full mb-1 uppercase tracking-wide">
+                    HOJE
+                  </span>
+                  <p className="text-white font-semibold text-sm leading-snug line-clamp-2">{item.atividade}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {/* ── Eventos futuros (estilo compacto) ──────────────────────── */}
+          {futureItems.map((item, idx) => (
+            <div key={`future-${idx}`}
+              className="flex-1 min-h-0 bg-white/10 rounded-xl px-3 flex gap-3 items-center overflow-hidden">
+              <div className="flex-shrink-0 bg-white/20 rounded-lg w-11 text-center py-1">
+                <div className="text-base font-bold text-white leading-none">{item.dia}</div>
+                <div className="text-[9px] font-bold text-blue-300">{MESES_ABREV[item.mes - 1]}</div>
               </div>
               <p className="text-white text-xs leading-relaxed line-clamp-2 flex-1">{item.atividade}</p>
             </div>
