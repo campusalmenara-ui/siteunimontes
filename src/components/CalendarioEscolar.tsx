@@ -210,12 +210,7 @@ export function CalendarioEscolar() {
                 const hoje = new Date(); hoje.setHours(0,0,0,0);
                 const isToday = new Date(item.ano, item.mes - 1, item.dia).getTime() === hoje.getTime();
                 return (
-                  <div className="flex-shrink-0 w-14 text-center relative">
-                    {isToday && (
-                      <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-yellow-400 text-blue-900 text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-wide leading-none whitespace-nowrap z-10">
-                        HOJE
-                      </span>
-                    )}
+                  <div className="flex-shrink-0 w-14 text-center">
                     <div className={`rounded-lg py-2 ${isToday ? 'bg-yellow-400' : 'bg-blue-50'}`}>
                       <div className={`text-xl font-bold leading-none ${isToday ? 'text-blue-900' : 'text-blue-600'}`}>{item.dia}</div>
                       <div className={`text-[10px] font-semibold mt-1 ${isToday ? 'text-blue-900' : 'text-blue-500'}`}>{MESES_ABREV[item.mes - 1]}</div>
@@ -224,6 +219,15 @@ export function CalendarioEscolar() {
                 );
               })()}
               <div className="flex-1 pt-1">
+                {(() => {
+                  const hoje = new Date(); hoje.setHours(0,0,0,0);
+                  const isToday = new Date(item.ano, item.mes - 1, item.dia).getTime() === hoje.getTime();
+                  return isToday ? (
+                    <span className="inline-block mb-1 bg-yellow-400 text-blue-900 text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wide">
+                      HOJE
+                    </span>
+                  ) : null;
+                })()}
                 <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{item.atividade}</p>
               </div>
             </div>
