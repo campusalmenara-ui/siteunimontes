@@ -35,7 +35,7 @@ interface WeatherData {
 
 type FeedItem =
   | { kind: 'news'; imageUrl: string; title: string; texto: string; categoria: string; dia: number; mes: number; ano: number }
-  | { kind: 'social'; imagem: string; titulo: string; legenda: string; link: string; tipo: string; rede: string };
+  | { kind: 'social'; imagem: string; titulo: string; legenda: string; link: string; tipo: string; rede: string; dia?: number; mes?: number; ano?: number };
 
 // ─── Constantes ────────────────────────────────────────────────────────────────
 
@@ -275,7 +275,7 @@ function NewsPanel({ feed }: { feed: FeedItem[] }) {
                 <p className="text-white font-semibold text-sm leading-snug line-clamp-2 drop-shadow">
                   {item.kind === 'news' ? item.title : (item.titulo || item.legenda)}
                 </p>
-                {item.kind === 'news' && (
+                {(item.kind === 'news' || (item.kind === 'social' && item.dia)) && (
                   <p className="text-blue-200 text-[10px] mt-0.5">
                     {String(item.dia).padStart(2,'0')}/{String(item.mes).padStart(2,'0')}/{item.ano}
                   </p>
@@ -365,6 +365,9 @@ function NewsSlide({ feed, onDone }: { feed: FeedItem[]; onDone: () => void }) {
             {!isSocial && (
               <p className="text-blue-300 text-sm">{String(item.dia).padStart(2,'0')}/{String(item.mes).padStart(2,'0')}/{item.ano}</p>
             )}
+            {isSocial && item.dia && (
+              <p className="text-blue-300 text-sm mt-1">{String(item.dia).padStart(2,'0')}/{String(item.mes).padStart(2,'0')}/{item.ano}</p>
+            )}
             {isSocial && cfg && (
               <a href={item.link} target="_blank" rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-white font-semibold text-sm hover:opacity-90 transition-opacity"
@@ -415,9 +418,11 @@ function NewsSlide({ feed, onDone }: { feed: FeedItem[]; onDone: () => void }) {
         <div className="flex gap-2">
           {feed.map((_, i) => (
             <div key={i} className="flex-1 h-1.5 rounded-full bg-white/20 overflow-hidden relative">
+              {/* Slide já exibido — preenchido */}
               {i < idx && (
                 <div className="absolute inset-0 bg-yellow-400/60 rounded-full" />
               )}
+              {/* Slide atual — animação de 0% → 100% em SLIDE_DURATION_MS */}
               {i === idx && (
                 <div
                   key={`progress-${idx}`}
@@ -523,17 +528,31 @@ export default function TvDisplay() {
       loadedNews.sort((a,b) => new Date(b.ano,b.mes-1,b.dia).getTime() - new Date(a.ano,a.mes-1,a.dia).getTime());
 
       const socialRows = await fetchCSV(SOCIAL_GID);
+      const quinzeDiasAtrasS = new Date();
+      quinzeDiasAtrasS.setDate(quinzeDiasAtrasS.getDate() - 15);
+      quinzeDiasAtrasS.setHours(0,0,0,0);
       const loadedSocial: (FeedItem & { kind: 'social' })[] = socialRows.slice(1)
         .map(cells => {
-          const imagem = cells[0]?.trim() || '', legenda = cells[1]?.trim() || '', link = cells[2]?.trim() || '';
+          const imagem  = cells[0]?.trim() || '';
+          const legenda = cells[1]?.trim() || '';
+          const link    = cells[2]?.trim() || '';
           const tipoRaw = cells[3]?.trim().toLowerCase() || 'foto';
-          const tipo = tipoRaw.startsWith('v') || tipoRaw === 'reels' ? 'video' : 'foto';
+          const tipo    = tipoRaw.startsWith('v') || tipoRaw === 'reels' ? 'video' : 'foto';
           const redeRaw = cells[4]?.trim().toLowerCase() || 'instagram';
-          const rede = redeRaw.includes('youtube') ? 'youtube' : 'instagram';
-          const titulo = cells[5]?.trim() || legenda; // col F = título; fallback para legenda se vazio
-          return { kind: 'social' as const, imagem, titulo, legenda, link, tipo, rede };
+          const rede    = redeRaw.includes('youtube') ? 'youtube' : 'instagram';
+          const titulo  = cells[5]?.trim() || legenda; // col F = título; fallback para legenda se vazio
+          const parsed  = parseDateBR(cells[6]?.trim() || ''); // col G = data
+          return { kind: 'social' as const, imagem, titulo, legenda, link, tipo, rede,
+            dia: parsed?.dia, mes: parsed?.mes, ano: parsed?.ano,
+            _date: parsed?.date };
         })
-        .filter(p => p.imagem.startsWith('http'));
+        .filter(p => {
+          if (!p.imagem.startsWith('http')) return false;
+          // Se não tem data preenchida, inclui sempre (retrocompatível)
+          if (!p._date) return true;
+          return p._date >= quinzeDiasAtrasS;
+        })
+        .map(({ _date, ...rest }) => rest);
 
       const merged: FeedItem[] = [];
       const maxLen = Math.max(loadedNews.length, loadedSocial.slice(0,10).length);
