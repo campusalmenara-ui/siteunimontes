@@ -206,12 +206,18 @@ export function CalendarioEscolar() {
               key={idx}
               className={`flex gap-4 py-4 ${idx !== paginatedItems.length - 1 ? 'border-b border-gray-100' : ''}`}
             >
-              <div className="flex-shrink-0 w-14 text-center">
-                <div className="bg-blue-50 rounded-lg py-2">
-                  <div className="text-xl font-bold text-blue-600 leading-none">{item.dia}</div>
-                  <div className="text-[10px] font-semibold text-blue-500 mt-1">{MESES_ABREV[item.mes - 1]}</div>
-                </div>
-              </div>
+              {(() => {
+                const hoje = new Date(); hoje.setHours(0,0,0,0);
+                const isToday = new Date(item.ano, item.mes - 1, item.dia).getTime() === hoje.getTime();
+                return (
+                  <div className="flex-shrink-0 w-14 text-center">
+                    <div className={`rounded-lg py-2 ${isToday ? 'bg-yellow-400' : 'bg-blue-50'}`}>
+                      <div className={`text-xl font-bold leading-none ${isToday ? 'text-blue-900' : 'text-blue-600'}`}>{item.dia}</div>
+                      <div className={`text-[10px] font-semibold mt-1 ${isToday ? 'text-blue-900' : 'text-blue-500'}`}>{MESES_ABREV[item.mes - 1]}</div>
+                    </div>
+                  </div>
+                );
+              })()}
               <div className="flex-1 pt-1">
                 <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{item.atividade}</p>
               </div>
@@ -220,9 +226,9 @@ export function CalendarioEscolar() {
         </div>
       )}
 
-      {/* Paginação compacta */}
+      {/* Paginação numérica */}
       {!loading && !error && totalPages > 1 && (
-        <div className="flex items-center justify-center gap-1 mt-6 pt-4 border-t border-gray-100">
+        <div className="flex items-center justify-center gap-2 mt-6 pt-4 border-t border-gray-100">
           <button
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
@@ -232,34 +238,19 @@ export function CalendarioEscolar() {
             <ChevronLeft size={16} />
           </button>
 
-          {/* Primeira página sempre visível */}
-          {currentPage > 2 && (
-            <>
-              <button onClick={() => goToPage(1)} className="w-8 h-8 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors">1</button>
-              {currentPage > 3 && <span className="text-gray-400 text-sm px-1">…</span>}
-            </>
-          )}
-
-          {/* Página anterior, atual e próxima */}
-          {[currentPage - 1, currentPage, currentPage + 1].filter(p => p >= 1 && p <= totalPages).map((page) => (
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
             <button
               key={page}
               onClick={() => goToPage(page)}
               className={`w-8 h-8 rounded-lg text-sm font-semibold transition-colors ${
-                page === currentPage ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'
+                page === currentPage
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-600 hover:bg-gray-100'
               }`}
             >
               {page}
             </button>
           ))}
-
-          {/* Última página sempre visível */}
-          {currentPage < totalPages - 1 && (
-            <>
-              {currentPage < totalPages - 2 && <span className="text-gray-400 text-sm px-1">…</span>}
-              <button onClick={() => goToPage(totalPages)} className="w-8 h-8 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors">{totalPages}</button>
-            </>
-          )}
 
           <button
             onClick={() => goToPage(currentPage + 1)}
