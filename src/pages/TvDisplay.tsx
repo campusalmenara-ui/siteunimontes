@@ -211,7 +211,9 @@ function AgendaPanel({ classes, weekDates }: { classes: ClassInfo[]; weekDates: 
               <div key={idx} className={`flex-1 min-h-0 rounded-xl px-4 py-2 flex gap-3 items-center overflow-hidden ${isNoClass ? 'bg-white/5 opacity-60' : 'bg-white/10'}`}>
                 <div className={`w-2 h-2 rounded-full flex-shrink-0 ${isNoClass ? 'bg-gray-500' : cfg.dot}`} />
                 <div className="min-w-0 flex-1">
-                  <div className="text-[10px] font-bold text-blue-300 uppercase tracking-wide leading-tight truncate">{cfg.tag} · {c.period}</div>
+                  <span className={`inline-block text-[9px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-wide mb-0.5 ${
+                    c.curso === 'Pedagogia' ? 'bg-purple-400/30 text-purple-200' : 'bg-sky-400/30 text-sky-200'
+                  }`}>{cfg.tag} · {c.period}</span>
                   <p className={`font-semibold text-sm leading-snug mt-0.5 truncate ${isNoClass ? 'text-blue-400 italic' : 'text-white'}`}>{c.subject}</p>
                   {!isNoClass && c.professor && <p className="text-blue-300 text-xs truncate">{c.professor}</p>}
                   {!isNoClass && c.hours && <p className="text-blue-400 text-[10px]">⏱ {c.hours}</p>}
