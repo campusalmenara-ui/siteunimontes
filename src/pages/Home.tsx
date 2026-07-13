@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useHashLocation } from 'wouter/use-hash-location';
 import { ChevronDown, BookOpen, User, Clock, AlertCircle, Coffee } from 'lucide-react';
 import { NewsSection } from '@/components/NewsSection';
@@ -24,6 +24,167 @@ interface CourseData {
   wrapperBg: string;
 }
 
+// ─── Hook: anima elemento ao entrar na viewport ────────────────────────────────
+function useScrollReveal<T extends HTMLElement>(
+  options: { threshold?: number; delay?: number } = {}
+) {
+  const ref = useRef<T>(null);
+  const { threshold = 0.12, delay = 0 } = options;
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = `opacity 0.55s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.55s cubic-bezier(0.16,1,0.3,1) ${delay}ms`;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+          observer.disconnect();
+        }
+      },
+      { threshold }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold, delay]);
+
+  return ref;
+}
+
+// ─── Componente: bloco de curso com reveal nos cards ──────────────────────────
+function CourseBlock({
+  course,
+  expandedId,
+  toggleExpand,
+  hasDetails,
+  isNoClass,
+}: {
+  course: CourseData;
+  expandedId: string | null;
+  toggleExpand: (id: string) => void;
+  hasDetails: (c: ClassInfo) => boolean | undefined;
+  isNoClass: (c: ClassInfo) => boolean;
+}) {
+  const headerRef = useScrollReveal<HTMLDivElement>({ threshold: 0.1 });
+  const gridRef   = useRef<HTMLDivElement>(null);
+
+  // Stagger nos cards ao entrar na viewport
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+
+    const cards = Array.from(grid.children) as HTMLElement[];
+    cards.forEach((card, i) => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      card.style.transition = `opacity 0.5s cubic-bezier(0.16,1,0.3,1) ${i * 70}ms, transform 0.5s cubic-bezier(0.16,1,0.3,1) ${i * 70}ms`;
+    });
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          cards.forEach(card => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          });
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.05 }
+    );
+
+    observer.observe(grid);
+    return () => observer.disconnect();
+  }, [course.classes]);
+
+  return (
+    <div className={`mb-3 ${course.wrapperBg} rounded-2xl p-5 md:p-7`}>
+      <div ref={headerRef} className={`bg-gradient-to-r ${course.bgColor} text-white rounded-xl p-5 mb-5 shadow-md`}>
+        <h3 className="text-2xl md:text-3xl font-bold">{course.name}</h3>
+      </div>
+      <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {course.classes.map((classInfo) => (
+          <div key={classInfo.id}>
+            <button
+              onClick={() => toggleExpand(classInfo.id)}
+              className={`w-full text-left rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden ${
+                isNoClass(classInfo)
+                  ? 'bg-white/60 border-l-4 border-gray-300 opacity-75 cursor-not-allowed'
+                  : `bg-white border-l-4 ${classInfo.color}`
+              }`}
+              disabled={isNoClass(classInfo)}
+            >
+              <div className="p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1">
+                    <span className={`inline-block text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wide mb-1 ${
+                      classInfo.color.includes('purple') ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
+                    }`}>{classInfo.period}</span>
+                    <div className="flex items-center gap-2 mt-1">
+                      {isNoClass(classInfo) && <Coffee size={18} className="text-gray-400 flex-shrink-0" />}
+                      <h3 className={`text-base md:text-lg font-bold line-clamp-2 pr-2 ${isNoClass(classInfo) ? 'text-gray-500 italic' : 'text-gray-900'}`}>{classInfo.subject}</h3>
+                    </div>
+                  </div>
+                  {hasDetails(classInfo) && !isNoClass(classInfo) && (
+                    <ChevronDown size={20} className={`flex-shrink-0 text-gray-600 transition-transform duration-300 ${expandedId === classInfo.id ? 'rotate-180' : ''}`} />
+                  )}
+                </div>
+              </div>
+              {hasDetails(classInfo) && (
+                <div className={`overflow-hidden transition-all duration-300 ease-out ${expandedId === classInfo.id ? 'max-h-96' : 'max-h-0'}`}>
+                  <div className="px-4 pb-4 pt-6 border-t border-gray-200 space-y-3 bg-gray-50">
+                    <div className="flex items-start gap-3">
+                      <BookOpen size={18} className="text-blue-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-xs font-semibold text-gray-500 uppercase">Matéria</p>
+                        <p className="text-sm md:text-base font-semibold text-gray-900">{classInfo.subject}</p>
+                      </div>
+                    </div>
+                    {classInfo.professor && (
+                      <div className="flex items-start gap-3">
+                        <User size={18} className="text-yellow-600 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-xs font-semibold text-gray-500 uppercase">Professor</p>
+                          <p className="text-sm md:text-base font-semibold text-gray-900">{classInfo.professor}</p>
+                        </div>
+                      </div>
+                    )}
+                    {classInfo.hours && (
+                      <div className="flex items-start gap-3">
+                        <Clock size={18} className="text-orange-600 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-xs font-semibold text-gray-500 uppercase">Carga Horária</p>
+                          <p className="text-sm md:text-base font-semibold text-gray-900">{classInfo.hours}</p>
+                        </div>
+                      </div>
+                    )}
+                    {classInfo.observation && (
+                      <div className="flex items-start gap-3">
+                        <AlertCircle size={18} className="text-red-600 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-xs font-semibold text-gray-500 uppercase">Observação</p>
+                          <p className="text-sm md:text-base text-gray-900">{classInfo.observation}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Página principal ──────────────────────────────────────────────────────────
 export default function Home() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [, navigate] = useHashLocation();
@@ -31,6 +192,11 @@ export default function Home() {
   const [weekDates, setWeekDates] = useState({ start: '', end: '' });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Refs de scroll reveal para seções maiores
+  const agendaHeaderRef  = useScrollReveal<HTMLDivElement>({ threshold: 0.1 });
+  const redesRef         = useScrollReveal<HTMLDivElement>({ threshold: 0.08 });
+  const noticiasRef      = useScrollReveal<HTMLDivElement>({ threshold: 0.08 });
 
   const handleHighlightClick = (menu: 'projetos' | 'secretaria') => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -150,12 +316,10 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-yellow-50">
 
-      {/* Header com efeito flutuante ao rolar */}
       <Header />
 
-      {/* ─── Hero Institucional ─────────────────────────────────────────── */}
+      {/* ─── Hero ───────────────────────────────────────────────────────── */}
       <div className="relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-600 to-blue-500">
-
         <style>{`
           @keyframes heroReveal {
             from { clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%); opacity: 0; }
@@ -182,7 +346,6 @@ export default function Home() {
           .hero-buttons { opacity: 0; animation: heroFadeUp     0.6s cubic-bezier(0.16,1,0.3,1) 0.92s forwards; }
         `}</style>
 
-        {/* Padrão geométrico */}
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -194,31 +357,18 @@ export default function Home() {
           </svg>
         </div>
 
-        {/* Foto campus — diagonal reveal */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            backgroundImage: 'url(/siteunimontes/campus.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            opacity: 0,
-            animation: 'heroReveal 1.4s cubic-bezier(0.16,1,0.3,1) 0.1s forwards',
-          }}
-        />
+        <div className="absolute inset-0 pointer-events-none" style={{
+          backgroundImage: 'url(/siteunimontes/campus.jpg)',
+          backgroundSize: 'cover', backgroundPosition: 'center',
+          opacity: 0, animation: 'heroReveal 1.4s cubic-bezier(0.16,1,0.3,1) 0.1s forwards',
+        }} />
 
         <div className="relative max-w-7xl mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-12 md:py-16">
           <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center mb-6">
-
-            {/* Logo */}
             <div className="hero-logo flex items-center justify-center">
-              <img
-                src="/siteunimontes/LogoCapa.png"
-                alt="Unimontes Campus Almenara"
-                className="w-full max-w-xs md:max-w-sm lg:max-w-md h-auto object-contain drop-shadow-2xl"
-              />
+              <img src="/siteunimontes/LogoCapa.png" alt="Unimontes Campus Almenara"
+                className="w-full max-w-xs md:max-w-sm lg:max-w-md h-auto object-contain drop-shadow-2xl" />
             </div>
-
-            {/* Cards + descrição */}
             <div className="flex flex-col gap-3">
               <div className="grid grid-cols-2 gap-3">
                 {[
@@ -227,11 +377,8 @@ export default function Home() {
                   { titulo: 'Secretaria',     desc: 'Solicitações e contatos',        emoji: '📋', acao: () => handleHighlightClick('secretaria') },
                   { titulo: 'Notícias',       desc: 'Novidades do campus',            emoji: '📰', acao: () => { const el = document.getElementById('noticias-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); } },
                 ].map((item, i) => (
-                  <button
-                    key={i}
-                    onClick={item.acao}
-                    className={`hero-card-${i} bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-xl p-4 text-left transition-all duration-200 hover:scale-105 flex flex-col justify-center`}
-                  >
+                  <button key={i} onClick={item.acao}
+                    className={`hero-card-${i} bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-xl p-4 text-left transition-all duration-200 hover:scale-105 flex flex-col justify-center`}>
                     <span className="text-2xl mb-2 block">{item.emoji}</span>
                     <p className="text-white font-bold text-sm">{item.titulo}</p>
                     <p className="text-blue-200 text-xs mt-0.5">{item.desc}</p>
@@ -244,19 +391,13 @@ export default function Home() {
               </p>
             </div>
           </div>
-
-          {/* Botões */}
           <div className="hero-buttons flex flex-wrap justify-center gap-3">
-            <button
-              onClick={() => { const el = document.getElementById('agenda-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); }}
-              className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-blue-900 font-bold px-5 py-2.5 rounded-full shadow-md transition-all duration-200 hover:scale-105 text-sm"
-            >
+            <button onClick={() => { const el = document.getElementById('agenda-section'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); }}
+              className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-blue-900 font-bold px-5 py-2.5 rounded-full shadow-md transition-all duration-200 hover:scale-105 text-sm">
               Ver Agenda Semanal
             </button>
-            <button
-              onClick={() => navigate('/sobre')}
-              className="flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white font-bold px-5 py-2.5 rounded-full border border-white/30 transition-all duration-200 text-sm"
-            >
+            <button onClick={() => navigate('/sobre')}
+              className="flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white font-bold px-5 py-2.5 rounded-full border border-white/30 transition-all duration-200 text-sm">
               Conhecer o Campus
             </button>
           </div>
@@ -264,13 +405,13 @@ export default function Home() {
       </div>
       {/* ─── Fim Hero ───────────────────────────────────────────────────── */}
 
-      {/* Main Content */}
       <div className="py-8 md:py-12 px-4 md:px-8 lg:px-16 xl:px-24">
         <div className="max-w-7xl mx-auto">
 
           {/* Agenda */}
           <div id="agenda-section">
-            <div className="header-card rounded-lg overflow-hidden mb-3 shadow-md">
+            {/* Banner da semana — reveal suave */}
+            <div ref={agendaHeaderRef} className="header-card rounded-lg overflow-hidden mb-3 shadow-md">
               <div className="relative w-full">
                 <picture>
                   <source media="(max-width: 767px)" srcSet="/siteunimontes/agendasemanal2.png" />
@@ -283,85 +424,17 @@ export default function Home() {
               </h2>
             </div>
 
+            {/* Blocos de curso — cada um com reveal independente + stagger nos cards */}
             {coursesData.length > 0 ? (
               coursesData.map((course) => (
-                <div key={course.name} className={`mb-3 ${course.wrapperBg} rounded-2xl p-5 md:p-7`}>
-                  <div className={`bg-gradient-to-r ${course.bgColor} text-white rounded-xl p-5 mb-5 shadow-md`}>
-                    <h3 className="text-2xl md:text-3xl font-bold">{course.name}</h3>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {course.classes.map((classInfo) => (
-                      <div key={classInfo.id} className="transition-all duration-300 ease-out">
-                        <button
-                          onClick={() => toggleExpand(classInfo.id)}
-                          className={`w-full text-left rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden ${
-                            isNoClass(classInfo)
-                              ? 'bg-white/60 border-l-4 border-gray-300 opacity-75 cursor-not-allowed'
-                              : `bg-white border-l-4 ${classInfo.color}`
-                          }`}
-                          disabled={isNoClass(classInfo)}
-                        >
-                           <div className="p-4">
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="flex-1">
-                                <span className={`inline-block text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wide mb-1 ${
-                                  classInfo.color.includes('purple') ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
-                                }`}>{classInfo.period}</span>
-                                <div className="flex items-center gap-2 mt-1">
-                                  {isNoClass(classInfo) && <Coffee size={18} className="text-gray-400 flex-shrink-0" />}
-                                  <h3 className={`text-base md:text-lg font-bold line-clamp-2 pr-2 ${isNoClass(classInfo) ? 'text-gray-500 italic' : 'text-gray-900'}`}>{classInfo.subject}</h3>
-                                </div>
-                              </div>
-                              {hasDetails(classInfo) && !isNoClass(classInfo) && (
-                                <ChevronDown size={20} className={`flex-shrink-0 text-gray-600 transition-transform duration-300 ${expandedId === classInfo.id ? 'rotate-180' : ''}`} />
-                              )}
-                            </div>
-                          </div>
-                          {hasDetails(classInfo) && (
-                            <div className={`overflow-hidden transition-all duration-300 ease-out ${expandedId === classInfo.id ? 'max-h-96' : 'max-h-0'}`}>
-                              <div className="px-4 pb-4 pt-6 border-t border-gray-200 space-y-3 bg-gray-50">
-                                <div className="flex items-start gap-3">
-                                  <BookOpen size={18} className="text-blue-600 flex-shrink-0 mt-0.5" />
-                                  <div>
-                                    <p className="text-xs font-semibold text-gray-500 uppercase">Matéria</p>
-                                    <p className="text-sm md:text-base font-semibold text-gray-900">{classInfo.subject}</p>
-                                  </div>
-                                </div>
-                                {classInfo.professor && (
-                                  <div className="flex items-start gap-3">
-                                    <User size={18} className="text-yellow-600 flex-shrink-0 mt-0.5" />
-                                    <div>
-                                      <p className="text-xs font-semibold text-gray-500 uppercase">Professor</p>
-                                      <p className="text-sm md:text-base font-semibold text-gray-900">{classInfo.professor}</p>
-                                    </div>
-                                  </div>
-                                )}
-                                {classInfo.hours && (
-                                  <div className="flex items-start gap-3">
-                                    <Clock size={18} className="text-orange-600 flex-shrink-0 mt-0.5" />
-                                    <div>
-                                      <p className="text-xs font-semibold text-gray-500 uppercase">Carga Horária</p>
-                                      <p className="text-sm md:text-base font-semibold text-gray-900">{classInfo.hours}</p>
-                                    </div>
-                                  </div>
-                                )}
-                                {classInfo.observation && (
-                                  <div className="flex items-start gap-3">
-                                    <AlertCircle size={18} className="text-red-600 flex-shrink-0 mt-0.5" />
-                                    <div>
-                                      <p className="text-xs font-semibold text-gray-500 uppercase">Observação</p>
-                                      <p className="text-sm md:text-base text-gray-900">{classInfo.observation}</p>
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          )}
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <CourseBlock
+                  key={course.name}
+                  course={course}
+                  expandedId={expandedId}
+                  toggleExpand={toggleExpand}
+                  hasDetails={hasDetails}
+                  isNoClass={isNoClass}
+                />
               ))
             ) : (
               <div className="text-center p-8 bg-yellow-50 border border-yellow-200 rounded-lg">
@@ -370,20 +443,19 @@ export default function Home() {
             )}
           </div>
 
-          {/* Redes Sociais */}
-          <div id="redes-section">
+          {/* Redes Sociais — reveal ao entrar na viewport */}
+          <div ref={redesRef} id="redes-section">
             <RedesSociais />
           </div>
 
-          {/* Calendário + Notícias */}
-          <div id="noticias-section" className="mt-16 grid md:grid-cols-2 gap-10">
+          {/* Calendário + Notícias — reveal ao entrar na viewport */}
+          <div ref={noticiasRef} id="noticias-section" className="mt-16 grid md:grid-cols-2 gap-10">
             <CalendarioEscolar />
             <NewsSection />
           </div>
         </div>
       </div>
 
-      {/* Footer */}
       <div className="bg-gray-800 text-white py-8 px-4 md:px-8 lg:px-16 xl:px-24">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-sm font-semibold">Universidade Estadual de Montes Claros - UNIMONTES - Campus Almenara</p>
