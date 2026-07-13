@@ -195,7 +195,7 @@ export function RedesSociais() {
               ))}
             </div>
           ) : posts.length === 0 ? (
-            <p className="text-white/50 text-sm">Nenhuma postagem encontrada. Adicione dados na aba REDES SOCIAIS da planilha.</p>
+            <p className="text-white/50 text-sm">Nenhuma postagem encontrada.</p>
           ) : (
             <div
               ref={trackRef}
