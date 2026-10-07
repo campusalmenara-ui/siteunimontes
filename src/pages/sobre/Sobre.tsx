@@ -271,9 +271,8 @@ export default function Sobre() {
                 <div className="flex items-start gap-3">
                   <MapPin size={18} className="text-yellow-300 flex-shrink-0 mt-0.5" />
                   <p className="text-blue-100 text-sm leading-relaxed">
-                    Rua Doutor Sabino Silva, nº 1<br />
-                    Bairro Santo Antônio — CEP: 39900-000<br />
-                    Almenara — MG
+                    Rua Imaculada Conceição, 689 <br />
+                    Centro —  Almenara — MG 
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
