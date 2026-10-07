@@ -131,7 +131,7 @@ export function Header() {
             {/* Logo — encolhe levemente ao rolar */}
             <div className="flex-shrink-0 cursor-pointer" onClick={() => navigate('/')}>
               <img
-                src="/logor.png"
+                src="siteunimontes/logor.png"
                 alt="Unimontes Logo"
                 className="w-auto transition-all duration-300 ease-out"
                 style={{ height: scrolled ? '40px' : '56px' }}
@@ -212,7 +212,7 @@ export function Header() {
             </button>
             <div className="flex justify-center cursor-pointer" onClick={() => navigate('/')}>
               <img
-                src="/logor.png"
+                src="siteunimontes/logor.png"
                 alt="Unimontes Logo"
                 className="w-auto transition-all duration-300"
                 style={{ height: scrolled ? '32px' : '40px' }}
